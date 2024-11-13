@@ -1,0 +1,28 @@
+service creation:
+
+1) Install dependencies:
+ - dotnet add package Microsoft.EntityFrameworkCore --version 8.0.10
+ - dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL --version 8.0.10
+
+2) Add environment variables: 
+  -> dotnet user-secrets init
+  -> dotnet user-secrets set "DB_USER" "database.imptel"
+  -> dotnet user-secrets set "DB_PASSWORD" "Imp7e1_db"
+  -> dotnet user-secrets set "DB_HOST" "database.imptel"
+  -> dotnet user-secrets set "DB_PORT" "5432"
+  -> dotnet user-secrets set "DB_NAME" "database.imptel"
+
+3) Configure Json serialization
+
+4) Configure Data Context
+
+5) Create EntityModel (/models)
+
+6) Create Controllers (/controllers)
+
+7) Set Database Connection (appsettings.json)
+
+8) Create Database Context 'EntityDataContext' (/data_contexts)
+
+
+
