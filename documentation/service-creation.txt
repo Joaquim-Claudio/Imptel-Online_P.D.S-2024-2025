@@ -14,15 +14,12 @@ service creation:
 
 3) Configure Json serialization
 
-4) Configure Data Context
+4) Configure Data Source connection
 
 5) Create EntityModel (/models)
 
 6) Create Controllers (/controllers)
 
 7) Set Database Connection (appsettings.json)
-
-8) Create Database Context 'EntityDataContext' (/data_contexts)
-
 
 
