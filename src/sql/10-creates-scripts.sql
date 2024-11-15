@@ -2,56 +2,8 @@
 
 CREATE TYPE Role AS ENUM ('Secretary', 'Teacher', 'Student');
 CREATE TYPE Level AS ENUM ('10', '11', '12', '13');
-CREATE TYPE FeeRole AS ENUM ('Secretary', 'Teacher', 'Student');
-
-CREATE TABLE "User" (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    address TEXT,
-    phone TEXT,
-    birthDate DATE,
-    hashPassword TEXT NOT NULL,
-    role Role NOT NULL
-);
-
-
-CREATE TABLE Secretary (
-    id INTEGER PRIMARY KEY REFERENCES "User" (id),
-    mec TEXT,
-    position TEXT
-);
-
-
-CREATE TABLE Teacher (
-    id INTEGER PRIMARY KEY REFERENCES "User" (id),
-    mec TEXT,
-    academicLevel TEXT,
-    course TEXT
-);
-
-
-CREATE TABLE Student (
-    id INTEGER PRIMARY KEY REFERENCES "User" (id),
-    internalId TEXT
-);
-
-
-CREATE TABLE Course (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    duration INTEGER,
-    level Level
-);
-
-
-CREATE TABLE Registry (
-    id SERIAL PRIMARY KEY,
-    student_id INTEGER REFERENCES Student (id),
-    date DATE,
-    building_id INTEGER REFERENCES Building (id)
-);
-
+CREATE TYPE FeeRole AS ENUM ('Tuition', 'Subscription', 'Renewal', 'Late');
+CREATE TYPE Status AS ENUM ('Active', 'Inactive', 'Finished');
 
 CREATE TABLE Building (
     id SERIAL PRIMARY KEY,
@@ -61,12 +13,65 @@ CREATE TABLE Building (
     email TEXT
 );
 
+CREATE TABLE "User" (
+    id SERIAL PRIMARY KEY,
+    internId TEXT,
+    name TEXT NOT NULL,
+    email TEXT,
+    address TEXT,
+    phone TEXT,
+    birthDate DATE,
+    hashPassword TEXT NOT NULL,
+    role Role NOT NULL
+);
+
+
+CREATE TABLE Secretary (
+    position TEXT,
+    building_id INTEGER REFERENCES building(id)
+) INHERITS ("User");
+
+
+CREATE TABLE Teacher (
+    academicLevel TEXT,
+    course TEXT
+) INHERITS ("User");
+
+
+CREATE TABLE Student (
+) INHERITS ("User");
+
+
+CREATE TABLE Course (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    duration INTEGER
+);
+
+CREATE TABLE "Class" (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    roomId TEXT
+);
+
 
 CREATE TABLE Enrollment (
     id SERIAL PRIMARY KEY,
-    student_id INTEGER REFERENCES Student (id),
-    course_id INTEGER REFERENCES Course (id),
+    class INTEGER REFERENCES "Class" (id) ON DELETE SET NULL,
+    course_id INTEGER REFERENCES Course (id) ON DELETE SET NULL,
+    acadYear TEXT,
     level Level
+);
+
+
+CREATE TABLE Registry (
+    id SERIAL PRIMARY KEY,
+    date DATE,
+    status Status,
+    approved bool,
+    student_id INTEGER,
+    building_id INTEGER REFERENCES Building (id) ON DELETE SET NULL,
+    enrollment_id INTEGER REFERENCES Enrollment (id) ON DELETE SET NULL
 );
 
 
@@ -78,9 +83,9 @@ CREATE TABLE Fee (
 
 
 CREATE TABLE EnrollmentFee (
-    id INTEGER PRIMARY KEY REFERENCES Fee (id),
-    role FeeRole
-);
+    role FeeRole,
+    limitDate DATE
+) inherits (Fee);
 
 
 CREATE TABLE Invoice (
@@ -89,12 +94,6 @@ CREATE TABLE Invoice (
     reference TEXT,
     value DECIMAL,
     fee_id INTEGER REFERENCES Fee (id)
-);
-
-
-CREATE TABLE "Module" (
-    id SERIAL PRIMARY KEY,
-    finalGrade DECIMAL
 );
 
 
@@ -111,13 +110,8 @@ CREATE TABLE TrimesterAssessment (
     p1 DECIMAL,
     p2 DECIMAL,
     mt DECIMAL,
+    triId INTEGER,
     classification_id INTEGER REFERENCES Classification (id)
-);
-
-
-CREATE TABLE StudyPlan (
-    id SERIAL PRIMARY KEY,
-    acadYear TEXT
 );
 
 
@@ -127,10 +121,26 @@ CREATE TABLE Unit (
 );
 
 
-CREATE TABLE "Class" (
+CREATE TABLE StudyPlan (
     id SERIAL PRIMARY KEY,
-    name TEXT,
-    roomId TEXT
+    acadYear TEXT,
+    teacher_id INTEGER,
+    unit_id INTEGER REFERENCES Unit(id) ON DELETE SET NULL,
+    class_id INTEGER REFERENCES "Class"(id) ON DELETE SET NULL
+);
+
+
+CREATE TABLE "Module" (
+    id SERIAL PRIMARY KEY,
+    classification_id INTEGER REFERENCES Classification (id),
+    studyPlan_id INTEGER REFERENCES StudyPlan (id) ON DELETE SET NULL
+);
+
+
+CREATE TABLE Enrollment_module (
+    enrollment_id INTEGER REFERENCES Enrollment (id),
+    module_id INTEGER REFERENCES "Module" (id),
+    PRIMARY KEY (enrollment_id, module_id)
 );
 
 
@@ -140,16 +150,3 @@ CREATE TABLE TimeSlot (
     end TIME,
     stuplan_id INTEGER REFERENCES StudyPlan (id)
 );
-
-
-
-CREATE TABLE Enrollment_module (
-    enrollment_id INTEGER REFERENCES Enrollment (id),
-    module_id INTEGER REFERENCES Module (id),
-    PRIMARY KEY (enrollment_id, module_id)
-);
-
-
-ALTER TABLE Student ADD COLUMN registry_id INTEGER REFERENCES Registry (id);
-ALTER TABLE StudyPlan ADD COLUMN class_id INTEGER REFERENCES "Class" (id);
-ALTER TABLE StudyPlan ADD COLUMN module_id INTEGER REFERENCES "Module" (id);

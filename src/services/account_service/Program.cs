@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
-using account_service.data_contexts;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,10 +21,12 @@ string? connectionString = builder.Configuration.GetConnectionString("DefaultCon
     ?.Replace("{PORT}", db_port)
     ?.Replace("{DATABASE}", db_name);
 
-builder.Services.AddDbContext<UserDataContext>(options => 
-    options.UseNpgsql(connectionString));
 
-
+builder.Services.AddSingleton<NpgsqlConnection>( provider => {
+    var connection = new NpgsqlConnection(connectionString);
+    connection.Open();
+    return connection;
+});
 
 var app = builder.Build();
 
