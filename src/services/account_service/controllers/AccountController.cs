@@ -1,15 +1,22 @@
 using System.Data;
 using account_service.models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Npgsql;
+using Npgsql.Replication;
 
 namespace account_service.controllers;
 
 [ApiController]
 [Route("/api/accounts/")]
-public class AccountController (NpgsqlConnection connection) : Controller {
+public class AccountController (NpgsqlConnection connection, IDistributedCache session) : Controller {
 
     private readonly NpgsqlConnection _connection = connection;
+    private readonly IDistributedCache _session = session;
+    private static readonly PasswordHasher<Object> passwordService = new();
+
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserCredentials credentials)
@@ -17,23 +24,14 @@ public class AccountController (NpgsqlConnection connection) : Controller {
 
         try {
             
-            await using NpgsqlDataReader reader1 = await Auth(credentials);
+            var AuthData = await Auth(credentials);
+            UserData? user = AuthData.Item1; int id = AuthData.Item2;
 
             // Return HTTP 401 Error if no user is matched 
-            if(!reader1.HasRows) {
-                await reader1.CloseAsync();
-                return Unauthorized();
-            }
+            if(user is null || id == -1) return Unauthorized();
 
-            reader1.Read();
-
-            int id = reader1.GetInt32(0);
-            string internId = reader1.GetString(1), 
-            name = reader1.GetString(2),
-            role = reader1.GetString(3);
-            reader1.Close();
-
-            switch (role) {
+            
+            switch (user.Role) {
 
                 // Case Role == 'Student'
                 case "Student":
@@ -55,7 +53,7 @@ public class AccountController (NpgsqlConnection connection) : Controller {
 
                     await stdReader.ReadAsync();
 
-                    StudentData studentData = new (internId, name, role,
+                    StudentData studentData = new (user,
                         new BuildingModel(
                             stdReader.GetString(0),
                             stdReader.GetString(1),
@@ -77,7 +75,7 @@ public class AccountController (NpgsqlConnection connection) : Controller {
                                             "INNER JOIN unit AS u1 ON s1.unit_id=u1.id "+
                                             "WHERE s1.teacher_id = ($1) "+
                                             "ORDER BY c1.name;";
-
+ 
                     Console.WriteLine(teacherQuery + " id=" + id + "\n");
 
                     var teaCmd = new NpgsqlCommand(teacherQuery, _connection) {
@@ -97,12 +95,7 @@ public class AccountController (NpgsqlConnection connection) : Controller {
                         classes.Add(new StudyPlan(clss, unit, acadYear));
                     }
 
-                    TeacherData teacherData = new (
-                        internId,
-                        name,
-                        role,
-                        classes
-                    );
+                    TeacherData teacherData = new (user, classes);
 
                     await teaReader.CloseAsync();
                     return Ok(teacherData);
@@ -114,6 +107,7 @@ public class AccountController (NpgsqlConnection connection) : Controller {
                                         "FROM secretary AS s1 "+
                                         "INNER JOIN building AS b1 ON s1.building_id=b1.id "+
                                         "WHERE s1.id = ($1)";
+
                     var secCmd = new NpgsqlCommand(secQuery, _connection) {
                         Parameters = {new() {Value=id}}
                     };
@@ -122,7 +116,7 @@ public class AccountController (NpgsqlConnection connection) : Controller {
 
                     await secReader.ReadAsync();
 
-                    SecretaryData secretaryData = new(internId, name, role, new(
+                    SecretaryData secretaryData = new(user, new(
                         secReader.GetString(0), 
                         secReader.GetString(1), 
                         secReader.GetString(2),
@@ -134,7 +128,6 @@ public class AccountController (NpgsqlConnection connection) : Controller {
                     return Ok(secretaryData);
 
                 default:
-                    await reader1.CloseAsync();
                     return NotFound();
             }
 
@@ -146,25 +139,63 @@ public class AccountController (NpgsqlConnection connection) : Controller {
 
     // Executes user athentication process
     // Returns a DataReader
-    public async Task<NpgsqlDataReader> Auth (UserCredentials credentials) {
+    public async Task<(UserData?, int)> Auth (UserCredentials credentials) {
+
         try {
 
-
-            string authenticationQuery = "SELECT u1.id, u1.internid, u1.name, u1.role "+
+            // SQL query to retrieve a matching user 
+            string authenticationQuery = "SELECT u1.id, u1.hashpassword, u1.internid, u1.name, u1.role "+
                                             "FROM \"User\" AS u1 "+
-                                            "WHERE u1.internid = ($1) AND u1.hashpassword = ($2);";
-
+                                            "WHERE u1.internid = ($1);";
+            
+            // Dev: Prints the query for debug
             Console.WriteLine(authenticationQuery);
+
 
             using var cmd1 = new NpgsqlCommand(authenticationQuery, _connection) {
                 Parameters = {
-                    new () {Value = credentials.Username},
-                    new () {Value = credentials.Password}
+                    new () {Value = credentials.Username}
                 }
             };
 
             // SQL command execution
-            return await cmd1.ExecuteReaderAsync();
+            NpgsqlDataReader reader = await cmd1.ExecuteReaderAsync();
+            
+            // Breaks if no user matches
+            if(!reader.HasRows) {
+                await reader.CloseAsync();
+                return (null, -1);
+            }
+
+            await reader.ReadAsync();
+
+            int id = reader.GetInt32(0);
+            string hashedPassword = reader.GetString(1);
+
+
+            // Breaks if the password doesn't match
+            if(passwordService.VerifyHashedPassword(null, hashedPassword, credentials.Password) == PasswordVerificationResult.Failed){
+                await reader.CloseAsync();
+                return  (null, -1);
+            }
+            
+
+            // Success: Creates a UserData to return
+            UserData user = new( reader.GetString(2), reader.GetString(3), reader.GetString(4) );
+
+            await reader.CloseAsync();
+
+            //await HttpContext.Session.LoadAsync();
+            //HttpContext.Session.SetString("item2", "valor2");
+            await _session.SetStringAsync("item2", "valor2", new DistributedCacheEntryOptions{
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(48)
+            });
+
+            string? item1 = await _session.GetStringAsync("item2");
+            // var item1 = HttpContext.Session.GetString("item1");
+            Console.WriteLine("Item1: " + item1);
+
+            return (user, id);
 
         } catch (Exception e) {
             throw new Exception(e.ToString());
@@ -180,26 +211,34 @@ public class AccountController (NpgsqlConnection connection) : Controller {
     }
 
 
-    public class StudentData (string internId, string name, string role, BuildingModel building, string course){
+    public class UserData {
+        public string InternId {get; set;}
+        public string Name {get; set;}
+        public string Role {get; set;}
 
-        public string InternId {get; set;} = internId;
-        public string Name {get; set;} = name;
-        public string Role {get; set;} = role;
+        public UserData (string internId, string name, string role) {
+            this.InternId = internId;
+            this.Name = name;
+            this.Role = role;
+        }
+
+        public UserData(UserData other) {
+            this.InternId = other.InternId;
+            this.Name = other.Name;
+            this.Role = other.Role;
+        }
+    }
+
+    public class StudentData(UserData userData, BuildingModel building, string course) : UserData(userData){
         public BuildingModel Building {get; set;} = building;
         public string Course {get; set;} = course;
     }
 
-    public class TeacherData (string internId, string name, string role, List<StudyPlan> classes ) {
-        public string InternId {get; set;} = internId;
-        public string Name {get; set;} = name;
-        public string Role {get; set;} = role;
+    public class TeacherData (UserData userData, List<StudyPlan> classes ) : UserData(userData){
         public List<StudyPlan> Classes {get; set;} = classes;
     }
 
-    public class SecretaryData (string internId, string name, string role, BuildingModel building) {
-        public string InternId {get; set;} = internId;
-        public string Name {get; set;} = name;
-        public string Role {get; set;} = role;
+    public class SecretaryData (UserData userData, BuildingModel building) : UserData(userData){
         public BuildingModel Building {get; set;} = building;
     }
 
