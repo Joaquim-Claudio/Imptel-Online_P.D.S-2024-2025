@@ -1,0 +1,33 @@
+Portal de estudante para o IMPTEL
+
+
+Features:
+ - Informações gerais sobre a escola (contato, preçario, localização, redes sociais, eventos)
+ - Registo de utilizadores (Perfil: employee)
+ - Horário de aulas
+ - Classificações (Notas)
+ - Pedidos (documentos) *
+ - FAQs
+
+
+
+Tecnologias:
+ - Back-end: .NET (Joaquim)
+ - Front-end: React (limite: 8 pag. | Edja/Joaquim)
+ - SGDB: Postgres (Laís/Joaquim)
+ - Arquitetura: REST, Microservices
+ - Inteligência Artificial: FAQs
+
+
+GERAL:
+ - Login, Recp. senha
+
+
+ALUNO:
+ - Home, horários, Pedidos, Notas, FAQs-PopUp
+
+SECRETARIA: 
+ - Dashboard: Gerir pedidos, turmas, notas(ler, publicar/autorizar), eventos, alunos/professor
+
+PROFESSOR:
+ - Dashboard: Gerir notas(inserir, ler, alterar), horário(ler).

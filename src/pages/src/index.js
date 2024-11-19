@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-    return res.send('Hello world');
+    return res.render('index');
 })
 
-app.listen(8080);
+app.listen(3000);

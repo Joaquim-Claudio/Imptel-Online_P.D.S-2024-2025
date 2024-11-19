@@ -43,7 +43,15 @@ $(document).ready(function() {
                         
                     })
                     .catch(error => {
-                        Swal.showValidationError(`Pedido falhou: ${error}`)
+                        Swal.fire({
+                            title: "Upsss!",
+                            text: "Algo correu mal... Tente outra vez dentro de alguns minutos.",
+                            icon: "warning",
+                            timer: 5000,
+                            showConfirmButton: false,
+                        })
+
+                        return false;
                     })
         
                 }, allowOutsideClick: () => !Swal.isLoading(),
@@ -62,7 +70,8 @@ $(document).ready(function() {
                         Swal.fire({
                             title:"Bem-vindo", 
                             icon: "success",
-                            showConfirmButton: false
+                            showConfirmButton: false,
+                            timer: 3000,
                         });  
                             
                         setTimeout(() => {
