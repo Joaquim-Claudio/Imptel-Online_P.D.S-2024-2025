@@ -1,6 +1,6 @@
 namespace account_service.models;
 
-public class Class(
+public class ClassModel(
     int id,
     string name, 
     string rommId)
