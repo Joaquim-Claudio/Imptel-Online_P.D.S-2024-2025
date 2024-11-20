@@ -20,9 +20,10 @@ CREATE TABLE "User" (
     email TEXT,
     address TEXT,
     phone TEXT,
-    birthDate DATE,
+    birthDate DATE NOT NULL,
     hashPassword TEXT NOT NULL,
-    role Role NOT NULL
+    role Role NOT NULL,
+    docId TEXT NOT NULL
 );
 
 

@@ -51,6 +51,7 @@ public class LoginController (NpgsqlConnection connection,
                                             "INNER JOIN course AS c1 ON e1.course_id = c1.id " +
                                             "WHERE r1.student_id = ($1) AND r1.status='Active';";
 
+                    // FIXME: Remove 
                     Console.WriteLine(studentQuery + " id=" + id + "\n");
 
                     var stdCmd = new NpgsqlCommand(studentQuery, _connection) {
@@ -98,7 +99,8 @@ public class LoginController (NpgsqlConnection connection,
                                             "INNER JOIN unit AS u1 ON s1.unit_id=u1.id "+
                                             "WHERE s1.teacher_id = ($1) "+
                                             "ORDER BY c1.name;";
- 
+
+                    // FIXME: Remove 
                     Console.WriteLine(teacherQuery + " id=" + id + "\n");
 
                     var teaCmd = new NpgsqlCommand(teacherQuery, _connection) {
@@ -147,6 +149,9 @@ public class LoginController (NpgsqlConnection connection,
                                         "FROM secretary AS s1 "+
                                         "INNER JOIN building AS b1 ON s1.building_id=b1.id "+
                                         "WHERE s1.id = ($1)";
+
+                    // FIXME: Remove 
+                    Console.WriteLine(secQuery + " id=" + id + "\n");
 
                     var secCmd = new NpgsqlCommand(secQuery, _connection) {
                         Parameters = {new() {Value=id}}
