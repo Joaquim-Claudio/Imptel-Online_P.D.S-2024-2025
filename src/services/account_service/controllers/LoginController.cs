@@ -146,7 +146,7 @@ public class LoginController (NpgsqlConnection connection,
                 case "Secretary":
                     
                     string secQuery = "SELECT b1.name, b1.address, b1.phone, b1.email "+
-                                        "FROM secretary AS s1 "+
+                                        "FROM Secretary AS s1 "+
                                         "INNER JOIN building AS b1 ON s1.building_id=b1.id "+
                                         "WHERE s1.id = ($1)";
 
@@ -190,6 +190,48 @@ public class LoginController (NpgsqlConnection connection,
                     });
 
                     return Ok();
+
+
+                case "Helpdesk":
+                    
+                    if (user.InternId == null) throw new Exception();
+
+                    string? hp_sid = _protector.Protect(user.InternId);
+
+                    await _session.SetStringAsync(hp_sid , 
+                    JsonSerializer.Serialize<UserData>(user),
+                    new DistributedCacheEntryOptions{
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(SESSION_EXPIRE_TIME_IN_HOURS)
+                    });
+                    
+                    HttpContext.Response.Cookies.Append("connect.sid", hp_sid,
+                    new CookieOptions{
+                        HttpOnly = true,
+                        Secure = true
+                    });
+
+                    return Ok();
+
+                case "Admin":
+                    
+                    if (user.InternId == null) throw new Exception();
+
+                    string? adm_sid = _protector.Protect(user.InternId);
+
+                    await _session.SetStringAsync(adm_sid , 
+                    JsonSerializer.Serialize<UserData>(user),
+                    new DistributedCacheEntryOptions{
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(SESSION_EXPIRE_TIME_IN_HOURS)
+                    });
+                    
+                    HttpContext.Response.Cookies.Append("connect.sid", adm_sid,
+                    new CookieOptions{
+                        HttpOnly = true,
+                        Secure = true
+                    });
+
+                    return Ok();
+
 
                 default:
                     return NotFound();
@@ -242,7 +284,6 @@ public class LoginController (NpgsqlConnection connection,
                 await reader.CloseAsync();
                 return  (null, -1);
             }
-            
 
             // Success: Creates a UserData to return
             UserData user = new( reader.GetString(2), reader.GetString(3), reader.GetString(4) );

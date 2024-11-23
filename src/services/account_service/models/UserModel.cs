@@ -2,7 +2,7 @@ namespace account_service.models;
 
 
 public enum Role {
-    Student, Teacher, Secretary
+    Student, Teacher, Secretary, Helpdesk, Admin
 }
 
 public class UserModel(

@@ -27,17 +27,13 @@ public class AuthController(IDistributedCache session) : Controller {
 
         UserData? userData = JsonSerializer.Deserialize<UserData>(jsonData) ?? throw new Exception();
 
-        switch(userData.Role) {
-            case "Student":
-                userData = JsonSerializer.Deserialize<StudentData>(jsonData);
-            break;
-            case "Teacher":
-                userData = JsonSerializer.Deserialize<TeacherData>(jsonData);
-            break;
-            case "Secretary":
-                userData = JsonSerializer.Deserialize<SecretaryData>(jsonData);
-            break;
-        }
+        userData = userData.Role switch
+        {
+            "Student" => JsonSerializer.Deserialize<StudentData>(jsonData),
+            "Teacher" => JsonSerializer.Deserialize<TeacherData>(jsonData),
+            "Secretary" => JsonSerializer.Deserialize<SecretaryData>(jsonData),
+            _ => JsonSerializer.Deserialize<UserData>(jsonData),
+        };
 
         return Ok(userData);
     }

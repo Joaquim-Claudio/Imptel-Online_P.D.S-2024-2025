@@ -1,6 +1,6 @@
 -- Updated
 
-CREATE TYPE Role AS ENUM ('Secretary', 'Teacher', 'Student');
+CREATE TYPE Role AS ENUM ('Secretary', 'Teacher', 'Student', 'Helpdesk', 'Admin');
 CREATE TYPE Level AS ENUM ('10', '11', '12', '13');
 CREATE TYPE FeeRole AS ENUM ('Tuition', 'Subscription', 'Renewal', 'Late');
 CREATE TYPE Status AS ENUM ('Active', 'Inactive', 'Finished');
