@@ -11,13 +11,21 @@ public class LogoutController(IDistributedCache session) : Controller {
 
     [HttpGet("logout")]
     public async Task<IActionResult> Logout() {
+        try {
+            
+            string? sid = HttpContext.Request.Cookies["connect.sid"];
 
-        string? sid = HttpContext.Request.Cookies["connect.sid"];
+            if(string.IsNullOrWhiteSpace(sid)) return Unauthorized();
 
-        if(string.IsNullOrWhiteSpace(sid)) return Unauthorized();
+            await _session.RemoveAsync(sid);
+            HttpContext.Response.Cookies.Delete("connect.sid");
+            return Ok();
 
-        await _session.RemoveAsync(sid);
-        HttpContext.Response.Cookies.Delete("connect.sid");
-        return Ok();
+        } catch (Exception e) {
+
+            Console.WriteLine("Failed to retrieve session data.");
+            throw new Exception(e.ToString());
+        }
     }
+        
 }

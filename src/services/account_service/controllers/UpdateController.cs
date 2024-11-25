@@ -1,69 +1,52 @@
-using System.Text.Json;
 using account_service.models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Npgsql;
+using System.Text.Json;
 
 namespace account_service.controllers;
 
+
 [ApiController]
-[Route("/api/accounts/create/")]
-public class CreateController(IDistributedCache session,
+[Route("/api/accounts/update/")]
+
+public class UpdateController(IDistributedCache session, 
                                 NpgsqlConnection connection) : Controller {
     private readonly int SESSION_EXPIRED_CODE = 0;
     private readonly int SUCCESS_CODE = 1;
-    private readonly string SECRETARY_PREFIX = "3000";
-    private readonly string TEACHER_PREFIX = "5000";
-    private readonly string HELPDESK_PREFIX = "1000";
-
     private readonly IDistributedCache _session = session;
     private readonly NpgsqlConnection _connection = connection;
-    private static readonly PasswordHasher<Object> passwordService = new();
 
-    [HttpPost("student")]
-    public async Task<IActionResult> CreateStudent([FromBody] StudentModel student) {
 
-        if(!string.Equals(student.Role.ToString(), "Student")) return BadRequest();
-
-        var result = await CheckProfile(student.Role.ToString());
+    [HttpPut("self/{internId}")]
+    public async Task<IActionResult> Update([FromRoute] string internId ,[FromBody] UserModel user) {
+        var result = await CheckSelfProfile(user.Role.ToString(), internId);
         if(!result.Item1) return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
 
-        if(!ValidateData(student)) return BadRequest();
+        if(!ValidateData(user)) return BadRequest();
 
         try {
+            string query = "UPDATE \"User\" "+
+                        "SET email = ($1), address = ($2), phone = ($3) " +
+                        "WHERE internId = ($4) "+
+                        "RETURNING id, internid, name, email, address, phone, birthdate, role, docid";
 
-            string? internId = await GenerateInternId(student.Role.ToString());
-            string? password = GenerateDefaultPassword(internId);
-
-            student.InternId = internId;
-            student.HashPassword = passwordService.HashPassword(new(), password);
-
-            string query = "INSERT INTO Student (internid, name, email, address, phone, birthdate, hashpassword, role, docid) "+
-                            $"VALUES ( ($1), ($2), ($3), ($4), ($5), ($6), ($7), '{student.Role}', ($8) ) "+
-                            "RETURNING id, internid, name, email, address, phone, birthdate, role, docid";
-
-            // FIXME: Remove 
+            // FIXME: Remove query
             Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {
-                    new() {Value = student.InternId},
-                    new() {Value = student.Name},
-                    new() {Value = student.Email},
-                    new() {Value = student.Address},
-                    new() {Value = student.Phone},
-                    new() {Value = student.BirthDate},
-                    new() {Value = student.HashPassword},
-                    new() {Value = student.DocId},
+                    new() {Value = user.Email},
+                    new() {Value = user.Address},
+                    new() {Value = user.Phone},
+                    new() {Value = internId},
                 }
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
             await reader.ReadAsync();
 
-
-            StudentModel newStudent = new(
+            UserModel updatedUser = new(
                 reader.GetInt32(0),
                 reader.GetString(1),
                 reader.GetString(2),
@@ -76,20 +59,79 @@ public class CreateController(IDistributedCache session,
                 reader.GetString(8)
             );
 
-            return Created("/", newStudent);
+            return Ok(updatedUser);
 
-        } catch (Exception e) {
+        }catch(Exception e) {
 
             throw new Exception(e.ToString());
         }
 
         
+
     }
 
 
 
-    [HttpPost("teacher")]
-    public async Task<IActionResult> CreateTeacher([FromBody] TeacherModel teacher) {
+    [HttpPut("student/{internId}")]
+    public async Task<IActionResult> UpdateStudent([FromRoute] string internId, [FromBody] StudentModel student) {
+
+        if(!string.Equals(student.Role.ToString(), "Student")) return BadRequest();
+
+        var result = await CheckProfile(student.Role.ToString());
+        if(!result.Item1) return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+
+        if(!ValidateData(student)) return BadRequest();
+
+        try {
+            string query = "UPDATE Student "+
+                        "SET email = ($1), address = ($2), phone = ($3), docId = ($4) " +
+                        "WHERE internId = ($5) "+
+                        "RETURNING id, internid, name, email, address, phone, birthdate, role, docid";
+
+            // FIXME: Remove query
+            Console.WriteLine(query + "\n");
+
+            var cmd = new NpgsqlCommand(query, _connection) {
+                Parameters = {
+                    new() {Value = student.Email},
+                    new() {Value = student.Address},
+                    new() {Value = student.Phone},
+                    new() {Value = student.DocId},
+                    new() {Value = internId},
+                }
+            };
+
+            using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+            await reader.ReadAsync();
+
+            StudentModel updatedStudent = new(
+                reader.GetInt32(0),
+                reader.GetString(1),
+                reader.GetString(2),
+                reader.GetString(3),
+                reader.GetString(4),
+                reader.GetString(5),
+                reader.GetFieldValue<DateOnly>(6),
+                "",
+                reader.GetString(7),
+                reader.GetString(8)
+            );
+
+            return Ok(updatedStudent);
+
+        } catch(Exception e) {
+
+            throw new Exception(e.ToString());
+        }
+
+        
+
+    }
+
+
+
+    [HttpPut("teacher/{internId}")]
+    public async Task<IActionResult> UpdateTeacher([FromRoute] string internId, [FromBody] TeacherModel teacher) {
 
         if(!string.Equals(teacher.Role.ToString(), "Teacher")) return BadRequest();
 
@@ -99,40 +141,30 @@ public class CreateController(IDistributedCache session,
         if(!ValidateData(teacher)) return BadRequest();
 
         try {
+            string query = "UPDATE Teacher "+
+                        "SET email = ($1), address = ($2), phone = ($3), docId = ($4), academicLevel = ($5), course = ($6) " +
+                        "WHERE internId = ($7) "+
+                        "RETURNING id, internid, name, email, address, phone, birthdate, role, docid, academicLevel, course";
 
-            string? internId = await GenerateInternId(teacher.Role.ToString());
-            string? password = GenerateDefaultPassword(internId);
-
-            teacher.InternId = internId;
-            teacher.HashPassword = passwordService.HashPassword(new(), password);
-
-            string query = "INSERT INTO Teacher (internid, name, email, address, phone, birthdate, hashpassword, role, docid, academicLevel, course) "+
-                            $"VALUES ( ($1), ($2), ($3), ($4), ($5), ($6), ($7), '{teacher.Role}', ($8), ($9), ($10)  ) "+
-                            "RETURNING id, internid, name, email, address, phone, birthdate, role, docid, academicLevel, course";
-
-            // FIXME: Remove 
+            // FIXME: Remove query
             Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {
-                    new() {Value = teacher.InternId},
-                    new() {Value = teacher.Name},
                     new() {Value = teacher.Email},
                     new() {Value = teacher.Address},
                     new() {Value = teacher.Phone},
-                    new() {Value = teacher.BirthDate},
-                    new() {Value = teacher.HashPassword},
                     new() {Value = teacher.DocId},
                     new() {Value = teacher.AcademicLevel},
                     new() {Value = teacher.Course},
+                    new() {Value = internId},
                 }
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
             await reader.ReadAsync();
 
-
-            TeacherModel newTeacher = new(
+            TeacherModel updatedTeacher = new(
                 reader.GetInt32(0),
                 reader.GetString(1),
                 reader.GetString(2),
@@ -147,18 +179,20 @@ public class CreateController(IDistributedCache session,
                 reader.GetString(10)
             );
 
-            return Created("/", newTeacher);
+            return Ok(updatedTeacher);
 
         } catch(Exception e) {
 
             throw new Exception(e.ToString());
         }
+
         
     }
 
 
-    [HttpPost("secretary")]
-    public async Task<IActionResult> CreateSecretary([FromBody] SecretaryModel secretary) {
+
+    [HttpPut("secretary/{internId}")]
+    public async Task<IActionResult> UpdateSecretary([FromRoute] string internId, [FromBody] SecretaryModel secretary) {
 
         if(!string.Equals(secretary.Role.ToString(), "Secretary")) return BadRequest();
 
@@ -168,38 +202,30 @@ public class CreateController(IDistributedCache session,
         if(!ValidateData(secretary)) return BadRequest();
 
         try {
-            string? internId = await GenerateInternId(secretary.Role.ToString());
-            string? password = GenerateDefaultPassword(internId);
+            string query = "UPDATE Secretary "+
+                        "SET email = ($1), address = ($2), phone = ($3), docId = ($4), position = ($5), building_id = ($6) " +
+                        "WHERE internId = ($7) "+
+                        "RETURNING id, internid, name, email, address, phone, birthdate, role, docid, position, building_id";
 
-            secretary.InternId = internId;
-            secretary.HashPassword = passwordService.HashPassword(new(), password);
-
-            string query = "INSERT INTO Secretary (internid, name, email, address, phone, birthdate, hashpassword, role, docid, position, building_id) "+
-                            $"VALUES ( ($1), ($2), ($3), ($4), ($5), ($6), ($7), '{secretary.Role}', ($8), ($9), ($10) ) "+
-                            "RETURNING id, internid, name, email, address, phone, birthdate, role, docid, position, building_id";
-
-            // FIXME: Remove 
+            // FIXME: Remove query
             Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {
-                    new() {Value = secretary.InternId},
-                    new() {Value = secretary.Name},
                     new() {Value = secretary.Email},
                     new() {Value = secretary.Address},
                     new() {Value = secretary.Phone},
-                    new() {Value = secretary.BirthDate},
-                    new() {Value = secretary.HashPassword},
                     new() {Value = secretary.DocId},
                     new() {Value = secretary.Position},
                     new() {Value = secretary.BuildingId},
+                    new() {Value = internId},
                 }
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
             await reader.ReadAsync();
 
-            SecretaryModel newSecretary = new(
+            SecretaryModel updatedSecretary = new(
                 reader.GetInt32(0),
                 reader.GetString(1),
                 reader.GetString(2),
@@ -214,17 +240,20 @@ public class CreateController(IDistributedCache session,
                 reader.GetInt32(10)
             );
 
-            return Created("/", newSecretary);
+            return Ok(updatedSecretary);
 
         } catch(Exception e) {
 
             throw new Exception(e.ToString());
         }
+
+        
+
     }
 
 
-    [HttpPost("helpdesk")]
-    public async Task<IActionResult> CreateHelpdesk([FromBody] UserModel helpdesk) {
+    [HttpPut("helpdesk/{internId}")]
+    public async Task<IActionResult> UpdateHelpdesk([FromRoute] string internId, [FromBody] UserModel helpdesk) {
 
         if(!string.Equals(helpdesk.Role.ToString(), "Helpdesk")) return BadRequest();
 
@@ -234,38 +263,27 @@ public class CreateController(IDistributedCache session,
         if(!ValidateData(helpdesk)) return BadRequest();
 
         try {
+            string query = "UPDATE \"User\" "+
+                        "SET email = ($1), address = ($2), phone = ($3) " +
+                        "WHERE internId = ($4) "+
+                        "RETURNING id, internid, name, email, address, phone, birthdate, role, docid";
 
-            string? internId = await GenerateInternId(helpdesk.Role.ToString());
-            string? password = GenerateDefaultPassword(internId);
-
-            helpdesk.InternId = internId;
-            helpdesk.HashPassword = passwordService.HashPassword(new(), password);
-
-            string query = "INSERT INTO \"User\" (internid, name, email, address, phone, birthdate, hashpassword, role, docId) "+
-                            $"VALUES ( ($1), ($2), ($3), ($4), ($5), ($6), ($7), '{helpdesk.Role}', ($8)) "+
-                            "RETURNING id, internid, name, email, address, phone, birthdate, role, docId";
-
-            // FIXME: Remove 
+            // FIXME: Remove query
             Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {
-                    new() {Value = helpdesk.InternId},
-                    new() {Value = helpdesk.Name},
                     new() {Value = helpdesk.Email},
                     new() {Value = helpdesk.Address},
                     new() {Value = helpdesk.Phone},
-                    new() {Value = helpdesk.BirthDate},
-                    new() {Value = helpdesk.HashPassword},
-                    new() {Value = helpdesk.DocId},
+                    new() {Value = internId},
                 }
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
             await reader.ReadAsync();
 
-
-            UserModel newHelpdesk = new(
+            UserModel updatedHelpdesk = new(
                 reader.GetInt32(0),
                 reader.GetString(1),
                 reader.GetString(2),
@@ -278,16 +296,45 @@ public class CreateController(IDistributedCache session,
                 reader.GetString(8)
             );
 
-            return Created("/", newHelpdesk);
+            return Ok(updatedHelpdesk);
 
         } catch (Exception e) {
-
+            
             throw new Exception(e.ToString());
         }
+
     }
 
 
-    private async Task<(bool, int)> CheckProfile (string newUserRole) {
+    private async Task<(bool, int)> CheckSelfProfile (string role, string internId) {
+
+        try {
+            
+            string? sid = HttpContext.Request.Cookies["connect.sid"];
+            if(string.IsNullOrWhiteSpace(sid)) return (false, -1);
+
+            string? jsonData = await _session.GetStringAsync(sid);
+
+            if(string.IsNullOrWhiteSpace(jsonData)) {
+                HttpContext.Response.Cookies.Delete("connect.sid");
+                return (false, SESSION_EXPIRED_CODE);
+            }
+
+            UserData? user = JsonSerializer.Deserialize<UserData>(jsonData) ?? throw new Exception();
+            if(!string.Equals(user.Role, role) || !string.Equals(user.InternId, internId)) return (false, -1);
+
+            return (true, SUCCESS_CODE);
+
+        } catch(Exception e) {
+
+            Console.WriteLine("Failed to retrieve session data.");
+            throw new Exception(e.ToString());
+        }
+
+
+    }
+
+    private async Task<(bool, int)> CheckProfile (string userToUpdateRole) {
 
         try {
 
@@ -303,7 +350,7 @@ public class CreateController(IDistributedCache session,
 
             UserData? user = JsonSerializer.Deserialize<UserData>(jsonData) ?? throw new Exception();
 
-            switch(newUserRole) {
+            switch(userToUpdateRole) {
                 case "Student": 
                     if(string.Equals(user.Role, "Secretary") 
                     || string.Equals(user.Role, "Helpdesk")
@@ -326,15 +373,15 @@ public class CreateController(IDistributedCache session,
             }
 
             return (false, -1);
-
+            
         } catch(Exception e) {
 
             Console.WriteLine("Failed to retrieve session data.");
             throw new Exception(e.ToString());
         }
-        
-        
+
     }
+
 
 
     private static bool ValidateData(UserModel user) {
@@ -350,55 +397,4 @@ public class CreateController(IDistributedCache session,
         return true;
     }
 
-
-    private static string GenerateDefaultPassword(string internId) {
-        string prefix= "Imptel";
-        return prefix + internId;
-    }
-
-
-
-    private async Task<string> GenerateInternId(string role) {
-        string internId = "";
-        string? nextId;
-
-        switch (role)
-        {
-            case "Student":
-                string? currentYear = await _session.GetStringAsync("CURRENT_ACAD_YEAR");
-                nextId = await _session.GetStringAsync("NEXT_STUDENT_SUFIX") ?? throw new Exception("Next id not found!");
-                string stdNextId = (int.Parse(nextId) + 1).ToString().PadLeft(4, '0');
-                await _session.SetStringAsync("NEXT_STUDENT_SUFIX", stdNextId);
-
-                internId = currentYear + nextId;
-                break;
-
-            case "Teacher":
-                nextId = await _session.GetStringAsync("NEXT_TEACHER_SUFIX") ?? throw new Exception("Next id not found!");
-                string teaNextId = (int.Parse(nextId) + 1).ToString().PadLeft(4, '0');
-                await _session.SetStringAsync("NEXT_TEACHER_SUFIX", teaNextId);
-
-                internId = TEACHER_PREFIX + nextId;
-                break;
-
-            case "Secretary":
-                nextId = await _session.GetStringAsync("NEXT_SECRETARY_SUFIX") ?? throw new Exception("Next id not found!");
-                string secNextId = (int.Parse(nextId) + 1).ToString().PadLeft(4, '0');
-                await _session.SetStringAsync("NEXT_SECRETARY_SUFIX", secNextId);
-
-                internId = SECRETARY_PREFIX + nextId;
-                break;
-
-            case "Helpdesk":
-                nextId = await _session.GetStringAsync("NEXT_HELPDESK_SUFIX") ?? throw new Exception("Next id not found!");
-                string hpNextId = (int.Parse(nextId) + 1).ToString().PadLeft(4, '0');
-                await _session.SetStringAsync("NEXT_HELPDESK_SUFIX", hpNextId);
-
-                internId = HELPDESK_PREFIX + nextId;
-                break;
-
-        }
-
-        return internId;
-    }
 }

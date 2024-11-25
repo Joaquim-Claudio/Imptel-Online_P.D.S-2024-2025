@@ -68,7 +68,7 @@ public class LoginController (NpgsqlConnection connection,
                             stdReader.GetString(1),
                             stdReader.GetString(2),
                             stdReader.GetString(3)),
-                        stdReader.GetString(4)
+                            stdReader.GetString(4)
                     );
 
                     await stdReader.CloseAsync();
@@ -239,6 +239,7 @@ public class LoginController (NpgsqlConnection connection,
 
 
         } catch(Exception e) {
+            await _connection.CloseAsync();
             throw new Exception(e.ToString());
         }
     }
@@ -265,13 +266,10 @@ public class LoginController (NpgsqlConnection connection,
             };
 
             // SQL command execution
-            NpgsqlDataReader reader = await cmd1.ExecuteReaderAsync();
+            using NpgsqlDataReader reader = await cmd1.ExecuteReaderAsync();
             
             // Breaks if no user matches
-            if(!reader.HasRows) {
-                await reader.CloseAsync();
-                return (null, -1);
-            }
+            if(!reader.HasRows) return (null, -1);
 
             await reader.ReadAsync();
 
@@ -280,18 +278,17 @@ public class LoginController (NpgsqlConnection connection,
 
 
             // Breaks if the password doesn't match
-            if(passwordService.VerifyHashedPassword(new(), hashedPassword, credentials.Password) == PasswordVerificationResult.Failed){
-                await reader.CloseAsync();
+            if(passwordService.VerifyHashedPassword(new(), hashedPassword, credentials.Password) == PasswordVerificationResult.Failed)
                 return  (null, -1);
-            }
 
             // Success: Creates a UserData to return
             UserData user = new( reader.GetString(2), reader.GetString(3), reader.GetString(4) );
 
-            await reader.CloseAsync();
             return (user, id);
 
         } catch (Exception e) {
+            
+            Console.Write("Failed to authenticate.");
             throw new Exception(e.ToString());
         }
     }

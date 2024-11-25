@@ -46,7 +46,6 @@ builder.Services.AddSingleton<NpgsqlConnection>( provider => {
 builder.Services.AddMvc().
     AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
-
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");

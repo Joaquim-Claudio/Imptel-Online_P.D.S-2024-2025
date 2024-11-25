@@ -6,4 +6,4 @@
 "HMSET" "NEXT_HELPDESK_SUFIX" "absexp" "-1" "sldexp" "-1" "data" "0001"
 
 
-hget NEXT_SECRETARY_SUFIX data
+hget NEXT_HELPDESK_SUFIX data
