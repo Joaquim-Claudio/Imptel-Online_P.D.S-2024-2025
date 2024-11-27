@@ -60,6 +60,8 @@ public class CreateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+            if(!reader.HasRows) return NotFound();
+            
             await reader.ReadAsync();
 
 
@@ -129,6 +131,8 @@ public class CreateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+            if(!reader.HasRows) return NotFound();
+
             await reader.ReadAsync();
 
 
@@ -197,6 +201,8 @@ public class CreateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+            if(!reader.HasRows) return NotFound();
+
             await reader.ReadAsync();
 
             SecretaryModel newSecretary = new(
@@ -262,6 +268,8 @@ public class CreateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+            if(!reader.HasRows) return NotFound();
+
             await reader.ReadAsync();
 
 

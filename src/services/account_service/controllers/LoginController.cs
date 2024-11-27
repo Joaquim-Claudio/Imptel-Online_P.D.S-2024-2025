@@ -59,6 +59,7 @@ public class LoginController (NpgsqlConnection connection,
                     };
 
                     NpgsqlDataReader stdReader = await stdCmd.ExecuteReaderAsync();
+                    if(!stdReader.HasRows) return NotFound();
 
                     await stdReader.ReadAsync();
 
@@ -108,6 +109,7 @@ public class LoginController (NpgsqlConnection connection,
                     };
 
                     NpgsqlDataReader teaReader = await teaCmd.ExecuteReaderAsync();
+                    if(!teaReader.HasRows) return NotFound();
 
                     List<StudyPlanModel> classes = [];
 
@@ -158,7 +160,7 @@ public class LoginController (NpgsqlConnection connection,
                     };
 
                     NpgsqlDataReader secReader = await secCmd.ExecuteReaderAsync();
-
+                    if(!secReader.HasRows) return NotFound();
                     await secReader.ReadAsync();
 
                     SecretaryData secretaryData = new(user, new(
@@ -239,7 +241,8 @@ public class LoginController (NpgsqlConnection connection,
 
 
         } catch(Exception e) {
-            await _connection.CloseAsync();
+            _connection.Close();
+            await _connection.OpenAsync();
             throw new Exception(e.ToString());
         }
     }

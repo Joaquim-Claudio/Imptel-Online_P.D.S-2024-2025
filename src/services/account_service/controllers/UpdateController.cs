@@ -44,6 +44,8 @@ public class UpdateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+            if(!reader.HasRows) return NotFound();
+
             await reader.ReadAsync();
 
             UserModel updatedUser = new(
@@ -102,6 +104,8 @@ public class UpdateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+            if(!reader.HasRows) return NotFound();
+
             await reader.ReadAsync();
 
             StudentModel updatedStudent = new(
@@ -162,6 +166,8 @@ public class UpdateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+            if(!reader.HasRows) return NotFound();
+
             await reader.ReadAsync();
 
             TeacherModel updatedTeacher = new(
@@ -223,6 +229,8 @@ public class UpdateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+            if(!reader.HasRows) return NotFound();
+            
             await reader.ReadAsync();
 
             SecretaryModel updatedSecretary = new(
@@ -281,6 +289,8 @@ public class UpdateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+            if(!reader.HasRows) return NotFound();
+            
             await reader.ReadAsync();
 
             UserModel updatedHelpdesk = new(
