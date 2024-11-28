@@ -4,7 +4,6 @@ service creation:
  - dotnet add package Microsoft.EntityFrameworkCore --version 8.0.10
  - dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL --version 8.0.10
  - dotnet add package Microsoft.Extensions.Caching.StackExchangeRedis
- - dotnet add package Microsoft.AspNet.WebApi.Cors --version 5.3.0
 
 2) Add environment variables: 
   -> dotnet user-secrets init

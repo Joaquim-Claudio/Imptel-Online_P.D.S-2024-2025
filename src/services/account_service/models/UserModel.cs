@@ -40,3 +40,27 @@ public class UserModel(
     public string DocId {get; set;} = docId;
 
 }
+
+public class StudentModel(int? id, string? internId, string name, string? email, string? address,
+        string? phone, DateOnly birthDate, string? hashPassword, string role, string docId) 
+        : UserModel(id, internId,name, email, address, phone, birthDate, hashPassword, role, docId) 
+        { }
+
+public class TeacherModel(int? id, string? internId, string name, string? email, string? address, string? phone,
+        DateOnly birthDate, string? hashPassword, string role, string docId, string academicLevel, string course) 
+        : UserModel(id, internId, name, email, address, phone, birthDate, hashPassword, role, docId) 
+        
+        {
+        public string AcademicLevel{get; set;} = academicLevel;
+        public string Course{get; set;} = course;
+        }
+
+
+public class SecretaryModel (int? id, string? internId, string name, string? email, string? address, string? phone, 
+        DateOnly birthDate, string? hashPassword, string role, string docId, string position, int buildingId) 
+        : UserModel(id, internId, name, email, address, phone, birthDate, hashPassword, role, docId) 
+        
+        {
+        public string Position{get; set;} = position;
+        public int BuildingId{get; set;} = buildingId;
+        }
