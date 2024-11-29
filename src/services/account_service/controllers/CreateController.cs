@@ -43,8 +43,6 @@ public class CreateController(IDistributedCache session,
                             $"VALUES ( ($1), ($2), ($3), ($4), ($5), ($6), ($7), '{student.Role}', ($8) ) "+
                             "RETURNING id, internid, name, email, address, phone, birthdate, role, docid";
 
-            // FIXME: Remove 
-            Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {
@@ -112,8 +110,6 @@ public class CreateController(IDistributedCache session,
                             $"VALUES ( ($1), ($2), ($3), ($4), ($5), ($6), ($7), '{teacher.Role}', ($8), ($9), ($10)  ) "+
                             "RETURNING id, internid, name, email, address, phone, birthdate, role, docid, academicLevel, course";
 
-            // FIXME: Remove 
-            Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {
@@ -182,8 +178,6 @@ public class CreateController(IDistributedCache session,
                             $"VALUES ( ($1), ($2), ($3), ($4), ($5), ($6), ($7), '{secretary.Role}', ($8), ($9), ($10) ) "+
                             "RETURNING id, internid, name, email, address, phone, birthdate, role, docid, position, building_id";
 
-            // FIXME: Remove 
-            Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {
@@ -251,8 +245,6 @@ public class CreateController(IDistributedCache session,
                             $"VALUES ( ($1), ($2), ($3), ($4), ($5), ($6), ($7), '{helpdesk.Role}', ($8)) "+
                             "RETURNING id, internid, name, email, address, phone, birthdate, role, docId";
 
-            // FIXME: Remove 
-            Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {

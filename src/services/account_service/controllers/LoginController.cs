@@ -16,8 +16,7 @@ public class LoginController (NpgsqlConnection connection,
                                 IDistributedCache session,
                                 IDataProtectionProvider provider) : Controller {
     
-    // FIXME: fix expiration time
-    private readonly static double SESSION_EXPIRE_TIME_IN_HOURS = 0.16;
+    private readonly static double SESSION_EXPIRE_TIME_IN_HOURS = 12;
     public readonly static string DATA_PROTECTOR_NAME = "accounts.protector";
 
     private readonly NpgsqlConnection _connection = connection;
@@ -51,8 +50,6 @@ public class LoginController (NpgsqlConnection connection,
                                             "INNER JOIN course AS c1 ON e1.course_id = c1.id " +
                                             "WHERE r1.student_id = ($1) AND r1.status='Active';";
 
-                    // FIXME: Remove 
-                    Console.WriteLine(studentQuery + " id=" + id + "\n");
 
                     var stdCmd = new NpgsqlCommand(studentQuery, _connection) {
                         Parameters = {new() { Value=id }}
@@ -101,8 +98,6 @@ public class LoginController (NpgsqlConnection connection,
                                             "WHERE s1.teacher_id = ($1) "+
                                             "ORDER BY c1.name;";
 
-                    // FIXME: Remove 
-                    Console.WriteLine(teacherQuery + " id=" + id + "\n");
 
                     var teaCmd = new NpgsqlCommand(teacherQuery, _connection) {
                         Parameters = {new() {Value=id}}
@@ -152,8 +147,6 @@ public class LoginController (NpgsqlConnection connection,
                                         "INNER JOIN building AS b1 ON s1.building_id=b1.id "+
                                         "WHERE s1.id = ($1)";
 
-                    // FIXME: Remove 
-                    Console.WriteLine(secQuery + " id=" + id + "\n");
 
                     var secCmd = new NpgsqlCommand(secQuery, _connection) {
                         Parameters = {new() {Value=id}}
@@ -257,9 +250,6 @@ public class LoginController (NpgsqlConnection connection,
             string authenticationQuery = "SELECT u1.id, u1.hashpassword, u1.internid, u1.name, u1.role "+
                                             "FROM \"User\" AS u1 "+
                                             "WHERE u1.internid = ($1);";
-            
-            // Dev: Prints the query for debug
-            Console.WriteLine(authenticationQuery);
 
 
             using var cmd1 = new NpgsqlCommand(authenticationQuery, _connection) {

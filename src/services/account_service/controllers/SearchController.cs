@@ -25,17 +25,12 @@ public class SearchController(IDistributedCache session,
 
         string keywords = FormatQuery(query.Keywords);
 
-        //FIXME: Remove
-        Console.WriteLine(keywords);
-
         try {
 
             string sqlQuery = "SELECT id, internid, name, email, address, phone, birthdate, role, docid "+
                                 "FROM Student "+
                                 $"WHERE internid = ($1) or name ILIKE '%{keywords}%';";
 
-            // FIXME: Remove 
-            Console.WriteLine(sqlQuery + "\n");
 
             NpgsqlCommand cmd = new (sqlQuery, _connection){
                 Parameters = {
@@ -81,17 +76,12 @@ public class SearchController(IDistributedCache session,
 
         string keywords = FormatQuery(query.Keywords);
 
-        //FIXME: Remove
-        Console.WriteLine(keywords);
-
         try {
 
             string sqlQuery = "SELECT id, internid, name, email, address, phone, birthdate, role, docid, academicLevel, course "+
                                 "FROM Teacher "+
                                 $"WHERE internid = ($1) or name ILIKE '%{keywords}%';";
 
-            // FIXME: Remove 
-            Console.WriteLine(sqlQuery + "\n");
 
             NpgsqlCommand cmd = new (sqlQuery, _connection){
                 Parameters = {
@@ -139,8 +129,6 @@ public class SearchController(IDistributedCache session,
 
         string keywords = FormatQuery(query.Keywords);
 
-        //FIXME: Remove
-        Console.WriteLine(keywords);
 
         try {
 
@@ -148,8 +136,6 @@ public class SearchController(IDistributedCache session,
                                 "FROM Secretary "+
                                 $"WHERE internid = ($1) or name ILIKE '%{keywords}%';";
 
-            // FIXME: Remove 
-            Console.WriteLine(sqlQuery + "\n");
 
             NpgsqlCommand cmd = new (sqlQuery, _connection){
                 Parameters = {
@@ -196,17 +182,11 @@ public class SearchController(IDistributedCache session,
 
         string keywords = FormatQuery(query.Keywords);
 
-        //FIXME: Remove
-        Console.WriteLine(keywords);
-
         try {
 
             string sqlQuery = "SELECT id, internid, name, email, address, phone, birthdate, role, docid "+
                                 "FROM \"User\" "+
                                 $"WHERE internid = ($1) or name ILIKE '%{keywords}%';";
-
-            // FIXME: Remove 
-            Console.WriteLine(sqlQuery + "\n");
 
             NpgsqlCommand cmd = new (sqlQuery, _connection){
                 Parameters = {
@@ -292,7 +272,7 @@ public class SearchController(IDistributedCache session,
         
     }
 
-    //FIXME: implement validation to prevent SQL Inject attacks
+    //TODO: implement validation to prevent SQL Inject attacks
     private static bool ValidateQuery(string query) {
         if(string.IsNullOrWhiteSpace(query)) return false;
 

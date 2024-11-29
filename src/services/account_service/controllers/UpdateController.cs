@@ -31,8 +31,6 @@ public class UpdateController(IDistributedCache session,
                         "WHERE internId = ($4) "+
                         "RETURNING id, internid, name, email, address, phone, birthdate, role, docid";
 
-            // FIXME: Remove query
-            Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {
@@ -90,8 +88,6 @@ public class UpdateController(IDistributedCache session,
                         "WHERE internId = ($5) "+
                         "RETURNING id, internid, name, email, address, phone, birthdate, role, docid";
 
-            // FIXME: Remove query
-            Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {
@@ -149,9 +145,6 @@ public class UpdateController(IDistributedCache session,
                         "SET email = ($1), address = ($2), phone = ($3), docId = ($4), academicLevel = ($5), course = ($6) " +
                         "WHERE internId = ($7) "+
                         "RETURNING id, internid, name, email, address, phone, birthdate, role, docid, academicLevel, course";
-
-            // FIXME: Remove query
-            Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {
@@ -213,8 +206,6 @@ public class UpdateController(IDistributedCache session,
                         "WHERE internId = ($7) "+
                         "RETURNING id, internid, name, email, address, phone, birthdate, role, docid, position, building_id";
 
-            // FIXME: Remove query
-            Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {
@@ -275,9 +266,6 @@ public class UpdateController(IDistributedCache session,
                         "SET email = ($1), address = ($2), phone = ($3) " +
                         "WHERE internId = ($4) "+
                         "RETURNING id, internid, name, email, address, phone, birthdate, role, docid";
-
-            // FIXME: Remove query
-            Console.WriteLine(query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection) {
                 Parameters = {

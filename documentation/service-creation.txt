@@ -26,4 +26,8 @@ service creation:
 
 7) Set Database Connection (appsettings.json)
 
+8) Clean the code (remove FIXME, TODO, etc)
+
+9) Set ping route ("/ping")
+
 
