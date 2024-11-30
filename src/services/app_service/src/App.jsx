@@ -4,7 +4,7 @@ import SideBar from "./components/SideBar";
 import Toolbar from "./components/Toolbar";
 import Banner from "./components/BannerHome";
 import Student from "./pages/Student";
-import InputElement from "./components/InputElement";
+import StudentList from "./pages/StudentList";
 import Footer from "./components/Footer";
 
 
@@ -24,6 +24,7 @@ function App() {
                                 <Routes>
                                     <Route path="/" element={<Banner />} />
                                     <Route path="Student" element={<Student />} />
+                                    <Route path="StudentList" element={<StudentList/>}/>
                                 </Routes>
                                 
                             </main>

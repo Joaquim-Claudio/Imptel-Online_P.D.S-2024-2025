@@ -1,7 +1,4 @@
 import React from "react";
-import Banner from "../components/BannerHome";
-import SideBar from "../components/SideBar";
-import Header from "../components/Toolbar";
 import InputElement from "../components/InputElement";
 import searchIcon from "../assets/images/Frame34.svg";
 import ButtonNew from "../components/ButtonNew";
@@ -28,7 +25,7 @@ function Student(){
             <div className="row justify-content-center">
                 <div className="col-8">
 
-                        <header>
+                        <header className="text-center">
                             <h2  className="section-header ">Dados do Aluno</h2>
                         </header>
 

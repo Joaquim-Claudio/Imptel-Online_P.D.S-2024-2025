@@ -1,13 +1,13 @@
 import React from "react";
 
 
-function Header({name}){
+function Header({name, text}){
     return(
         <div className="toolbar bkg-white">
             <div className="container-fluid">
                 <div className="row tool-wrapper">
                     <div className="intro-text">
-                        <h1>Bem vindo(a),{name}</h1>
+                        <h1>{text}{name}</h1>
                     </div>
 
                     

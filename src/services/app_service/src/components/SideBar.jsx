@@ -2,7 +2,6 @@ import React from "react";
 import MenuItem from "./MenuItem";
 import ButtonLink from "./buttonLink";
 import { useState } from "react";
-import { createBrowserRouter } from 'react-router-dom';
 import chartPieIcon from "../assets/images/fi-br-chart-pie-alt.svg";
 import userAddIcon from "../assets/images/fi-br-user-add.svg";
 import studentListIcon from "../assets/images/fi-br-line-width.svg";
@@ -23,7 +22,7 @@ function SideBar(){
     const menuItems =[
         {id:1, icon: chartPieIcon, label: "Início", route: "/" },
         {id:2, icon: userAddIcon, label: "Alunos", route:"./Student"},
-        {id:3, icon: studentListIcon, label: "Lista de Alunos", route:"/"},
+        {id:3, icon: studentListIcon, label: "Lista de Alunos", route:"./StudentList"},
         {id:4, icon: enrollmentIcon, label: "Matrículas", route:"/"},
         {id:5, icon: paymentIcon, label:"Pagamentos", route:"/"},
         {id:6, icon: reportIcon, label:"Relatórios", route:"/"},
