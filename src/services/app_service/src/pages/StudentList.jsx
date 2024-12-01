@@ -29,9 +29,22 @@ function StudentList(){
         { id:20 , course:"Técnico de Electrónica e Telecomunicações", courseIn:"T", grade: "10", group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
         { id:21 , course:"Técnico de Electrónica e Telecomunicações", courseIn:"T", grade: "13", group:"A", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
         { id:22 , course:"Técnico de Electrónica e Telecomunicações", courseIn:"T", grade: "10", group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+        
     ]
 
-    const groupedCourses= students.reduce((acumulador, course))
+    const groupedByCourses= students.reduce((acumulador, student)=> {
+        if(!acumulador[student.course]){
+            acumulador[student.course]={};
+        }
+        const classKey= `${student.courseIn}-${student.grade}-${student.group}`;
+        if(!acumulador[student.course][classKey]){
+            acumulador[student.course][classKey]=[]
+        }
+        acumulador[student.course][classKey].push(student);
+        return acumulador;
+            
+
+    }, {});
 
 
 
@@ -45,27 +58,25 @@ function StudentList(){
                 
             </div>
             <div className="dropdown">
-                {students.map((item)=>
-                    <DropdownCourse
-                        key={item.id}
-                        course={item.course}
-                        grade={item.grade}
-                        group={item.group}
-                        courseIn={item.courseIn}
-                    />
+                {Object.keys(groupedByCourses).map((course)=>
+                { const [courseIn, grade, group ]= course.split('-');
+                    return(
+                        <DropdownCourse
+                        key={course}
+                        course={course}
+                        courseIn={courseIn}
+                        grade={grade}
+                        group={group}
+                        grades={groupedByCourses[course]}
+                        
+                        
+                        />
+
+                    );
+
+                }
                 
                 )}
-                {students.map((item)=>(
-                    <Dropdown
-                    key={item.id}
-                    course={item.course}
-                    grade={item.grade}
-                    group={item.group}
-                    name={item.name}
-                    internId={item.internId}                    
-                    />
-
-                ))}
 
                 
             </div>               
