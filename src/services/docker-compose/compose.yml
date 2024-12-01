@@ -31,12 +31,9 @@ services:
       - ./redis/redis.conf:/etc/redis/redis.conf
 
 
-  accounts:
+  account-service:
     image: account-service:1.0
-    container_name: account-service
     restart: always
-    ports:
-      - 8001:8080
     networks:
       - inner-link
     environment:
@@ -48,6 +45,9 @@ services:
       REDIS_HOST: database.imptel.session
       REDIS_PORT: 6379
       REDIS_PASSWORD: Imp7e1_db_session
+    deploy:
+      replicas: 2
+    
     
 
 volumes:
