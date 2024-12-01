@@ -14,6 +14,7 @@ services:
     volumes:
       - database-data:/var/lib/postgresql/data
       - ./sql:/docker-entrypoint-initdb.d
+
   
   session:
     image: redis:alpine3.19
@@ -23,10 +24,11 @@ services:
       - 7002:6379
     networks:
       - inner-link
-    command: redis-server --save 20 1 --loglevel warning --requirepass Imp7e1_db_session
+    command: ["sh", "-c", "redis-server /etc/redis/redis.conf --save 20 1 --loglevel warning --daemonize yes && /docker-entrypoint-initdb.d/10-initial.sh && tail -f /dev/null"]
     volumes:
       - session-data:/data
       - ./redis:/docker-entrypoint-initdb.d
+      - ./redis/redis.conf:/etc/redis/redis.conf
 
 
   accounts:
@@ -50,7 +52,9 @@ services:
 
 volumes:
   database-data:
+    name: database-data
   session-data:
+    name: session-data
 
 
 networks:
