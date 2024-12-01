@@ -151,3 +151,51 @@ CREATE TABLE TimeSlot (
     ends TIME,
     stuplan_id INTEGER REFERENCES StudyPlan (id)
 );
+
+
+
+-- ############################################################
+
+INSERT INTO  Building (name, address, phone, email)
+VALUES ('Imptel Viana', 'Rua Muito Longa', '+244 923 726 895', 'imptel.angola@gmail.com');
+
+INSERT INTO "User" (internid, name, email, address, phone, birthdate, hashpassword, role)
+VALUES ('mario.igreja', 'Mário André de Oliveira Igreja', 'mario.igreja@gmail.com',
+        'Rua Comandante Eurico', '+244 921 067 921', '1976-05-29',
+        'AQAAAAIAAYagAAAAEGu8ksVFSNNWDWcuVAv+tjJ8di3kJDDRJSoitHX+wuqh6VsMt/JcycoydDH60StSyg==', 'Admin');
+
+INSERT INTO Course (name, duration)
+VALUES ('Médio Técnico de Electrónica e Telecomunicações', 4);
+
+INSERT INTO "Class" (name, roomid)
+VALUES ('ET10A', 3),
+       ('ET10B', 5),
+       ('ET10C', 1),
+       ('I10A', 2),
+       ('I10B', 4);
+
+INSERT INTO Enrollment (class, course_id, acadyear, level)
+VALUES (1, 1, '2024/2025', '10');
+
+INSERT INTO Registry (date, status, student_id, building_id, enrollment_id)
+VALUES ('2024-11-14', 'Active', 1, 1, 1);
+
+INSERT INTO Unit (name)
+VALUES ('Matemática'),
+       ('Física'),
+       ('Electricidade e Eletrónica'),
+       ('Tecnologias de Informação e Comunicação'),
+       ('Desenho Técnico');
+
+
+INSERT INTO StudyPlan (acadyear, teacher_id, unit_id, class_id)
+VALUES ('2024/2025', 2, 1, 1),
+       ('2024/2025', 2, 2, 2),
+       ('2024/2025', 2, 4, 3),
+       ('2024/2025', 2, 1, 2);
+
+
+INSERT INTO "Module" (studyplan_id)
+VALUES (1),
+       (2),
+       (3);

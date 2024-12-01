@@ -1,0 +1,58 @@
+services:
+  database:
+    image: postgres:alpine3.19
+    container_name: database.imptel
+    restart: always
+    ports:
+      - 5432:5432
+    networks:
+      - inner-link
+    environment:
+      POSTGRES_USER: database.imptel
+      POSTGRES_PASSWORD: Imp7e1_db
+      POSTGRES_DATABASE: database.imptel
+    volumes:
+      - database-data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
+  
+  session:
+    image: redis:alpine3.19
+    container_name: database.imptel.session
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - inner-link
+    command: redis-server --save 20 1 --loglevel warning --requirepass Imp7e1_db_session
+    volumes:
+      - session-data:/data
+      - ./redis:/docker-entrypoint-initdb.d
+
+
+  accounts:
+    image: account-service:1.0
+    container_name: account-service
+    restart: always
+    ports:
+      - 5293:8080
+    networks:
+      - inner-link
+    environment:
+      DB_USER: database.imptel
+      DB_PASSWORD: Imp7e1_db
+      DB_HOST: database.imptel
+      DB_PORT: 5432
+      DB_NAME: database.imptel
+      REDIS_HOST: database.imptel.session
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: Imp7e1_db_session
+    
+
+volumes:
+  database-data:
+  session-data:
+
+
+networks:
+  inner-link:
+    name: inner-link

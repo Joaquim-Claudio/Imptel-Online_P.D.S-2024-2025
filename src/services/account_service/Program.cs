@@ -47,7 +47,7 @@ builder.Services.AddMvc().
 
 var app = builder.Build();
 
-app.MapGet("/ping", () => "Hello World!");
+app.MapGet("/ping", () => "Ok MARSHAL 01");
 
 app.UseSession();
 

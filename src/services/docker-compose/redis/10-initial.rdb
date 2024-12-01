@@ -1,0 +1,9 @@
+"HMSET" "CURRENT_ACAD_YEAR" "absexp" "-1" "sldexp" "-1" "data" "2024"
+"HMSET" "ACAD_YEAR_OPEN" "absexp" "-1" "sldexp" "-1" "data" "true"
+"HMSET" "NEXT_STUDENT_SUFIX" "absexp" "-1" "sldexp" "-1" "data" "0001"
+"HMSET" "NEXT_TEACHER_SUFIX" "absexp" "-1" "sldexp" "-1" "data" "0001"
+"HMSET" "NEXT_SECRETARY_SUFIX" "absexp" "-1" "sldexp" "-1" "data" "0001"
+"HMSET" "NEXT_HELPDESK_SUFIX" "absexp" "-1" "sldexp" "-1" "data" "0001"
+
+
+hget NEXT_HELPDESK_SUFIX data
