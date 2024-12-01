@@ -6,6 +6,8 @@ import Banner from "./components/BannerHome";
 import Student from "./pages/Student";
 import StudentList from "./pages/StudentList";
 import Footer from "./components/Footer";
+import Enrollment from "./pages/Enrollment";
+import Test from "./pages/Test";
 
 
 function App() {
@@ -25,10 +27,14 @@ function App() {
                                     <Route path="/" element={<Banner />} />
                                     <Route path="Student" element={<Student />} />
                                     <Route path="StudentList" element={<StudentList/>}/>
+                                    <Route path="Enrollment" element={<Enrollment/>}/>
+                                    <Route path="Test" element={<Test/>}/>
                                 </Routes>
-                                
+                                                                
                             </main>
-                            <Footer/>
+                            
+            <Footer/>
+                            
                         </div>
                         
                     </div>

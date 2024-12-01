@@ -23,9 +23,9 @@ function SideBar(){
         {id:1, icon: chartPieIcon, label: "Início", route: "/" },
         {id:2, icon: userAddIcon, label: "Alunos", route:"./Student"},
         {id:3, icon: studentListIcon, label: "Lista de Alunos", route:"./StudentList"},
-        {id:4, icon: enrollmentIcon, label: "Matrículas", route:"/"},
+        {id:4, icon: enrollmentIcon, label: "Matrículas", route:"./Enrollment"},
         {id:5, icon: paymentIcon, label:"Pagamentos", route:"/"},
-        {id:6, icon: reportIcon, label:"Relatórios", route:"/"},
+        {id:6, icon: reportIcon, label:"Relatórios", route:"./Test"},
         {id:7, icon: statisticsIcon, label:"Estatísticas", route:"/"},
         {id:8, icon: settingsIcon, label:"Definições", route:"/"}
     ];

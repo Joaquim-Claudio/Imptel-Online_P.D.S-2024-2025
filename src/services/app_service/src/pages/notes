@@ -1,103 +1,123 @@
 import React from "react";
-import Banner from "../components/BannerHome";
-import SideBar from "../components/SideBar";
-import Header from "../components/Toolbar";
 import InputElement from "../components/InputElement";
-import searchIcon from "../assets/images/searchIcon.svg"
+import searchIcon from "../assets/images/Frame34.svg";
+import ButtonNew from "../components/ButtonNew";
+import plusIcon from "../assets/images/fi-br-plus.svg"
+import Footer from "../components/Footer";
 
 function Student(){
    
     return(
         <div className=" container-fluid ">
-            <div className="col-12 ">
-                <InputElement 
-                    placeholder="Pesquisar: nome ou número de estudante" 
-                    icon={searchIcon} 
-                    forId={"search"} 
-                    classInput={"input-lg"}/>
+            <div className="row justify-content-center">
+                <div className="col-5 pe-3">
+                    <InputElement 
+                        placeholder="Pesquisar: nome ou número de estudante" 
+                        icon={searchIcon} 
+                        forId={"search"}/>
+                </div>
+                <div className="col-1">
+                    <button className=" btn-search">
+                        <img src={searchIcon}  alt="" />
+                    </button>
+                </div>
             </div>
-            <header>
-                <h2  className="section-header">Dados do Aluno</h2>
-            </header>
+            <div className="row justify-content-center">
+                <div className="col-8">
 
-            <form action="/" method="">
-                <div className="row">
-                    <div className="col-4" >
-                    <InputElement 
-                        placeholder="Exemplo: 20240022" 
-                        label={"Número de estudante"} 
-                        forId={"idNumber"}
-                        classInput={"input-sm"}
-                        type={"text"}
-                        />
-                    </div>
-                    <div className="col-6">
-                    <InputElement 
-                        placeholder="Nome completo" 
-                        label={"Nome"} 
-                        forId={"name"}
-                        classInput={"input-lg"}
-                        type={"text"}
-                        />
-                    </div>
+                        <header className="text-center">
+                            <h2  className="section-header ">Dados do Aluno</h2>
+                        </header>
 
+                    <form className="form-parent" action="/" method="">
+
+                        <div className="col-3 pe-2" >
+                        <InputElement 
+                            placeholder="Exemplo: 20240022" 
+                            label={"Número de estudante"} 
+                            forId={"idNumber"}
+                            type={"text"}
+                            />
+                        </div>
+                        <div className="col-9 ps-2">
+                        <InputElement 
+                            placeholder="Nome completo" 
+                            label={"Nome"} 
+                            forId={"name"}
+                            type={"text"}
+                            />
+                        </div>
+
+                        
+                        <div className="col-6 pe-2">
+                        <InputElement 
+                            placeholder="Exemplo: 004557777HO087" 
+                            label={"Número do documento de identificação"}  
+                            forId={"bi"}
+                            type={"text"}
+                            />
+                        </div>
+                        <div className="col-6 ps-2">
+                        <InputElement 
+                            placeholder="dd-mm-aaaa"  
+                            label={"Data de nascimento"} 
+                            forId={"birthdate"}
+                            type={"date"}
+                            />
+                        </div>
+
+
+                        <div className="col-12">
+                        <InputElement 
+                            placeholder="Morada completa" 
+                            label={"Morada completa"} 
+                            forId={"address"}
+                            type={"text"}
+                            />
+                        </div>
+
+                        
+                        
+                        <div className="col-6 pe-2">
+                        <InputElement 
+                            placeholder="exemplo@imptel.com" 
+                            label={"Email"} 
+                            forId={"mail"}
+                            type={"email"}
+                            />
+                        </div>
+                        <div className="col-6 ps-2">
+                        <InputElement 
+                            placeholder="900 000 000" 
+                            label={"Telefone"} 
+                            forId={"phone"}
+                            type={"number"}
+                            />
+                        </div>
+                        
+                    </form>
+                    
+                    
                 </div>
-                
-                <div className="row">
-                    <div className="col-5">
-                    <InputElement 
-                        placeholder="Exemplo: 004557777HO087" 
-                        label={"Número do documento de identificação"}  
-                        forId={"bi"}                    
-                        classInput={"input-md"}
-                        type={"text"}
-                        />
-                    </div>
-                    <div className="col-5">
-                    <InputElement 
-                        placeholder="dd-mm-aaaa"  
-                        label={"Data de nascimento"} 
-                        forId={"birthdate"}
-                        classInput={"input-md"}
-                        type={"date"}
-                        />
-                    </div>
-                </div>
-                    <div className="col-10">
-                    <InputElement 
-                        placeholder="Morada completa" 
-                        label={"Morada completa"} 
-                        forId={"address"}
-                        classInput={"input-xlg"}
-                        type={"text"}
-                        />
-                    </div>
 
-                
-                
-                <div className="row">
-                    <div className="col-3">
-                    <InputElement 
-                        placeholder="exemplo@imptel.com" 
-                        label={"Email"} 
-                        forId={"mail"}
-                        classInput={"input-md"}
-                        type={"email"}
-                        />
-                    </div>
-                    <div className="col-5">
-                    <InputElement 
-                        placeholder="900 000 000" 
-                        label={"Telefone"} 
-                        forId={"phone"}
-                        classInput={"input-md"}
-                        type={"number"}
-                        />
-                    </div>
 
+                {/* #######################################3333333############################33###################### */}
+                <div className="col-3 text-end ">
+                    <div className="action-group">
+                        <ButtonNew
+                        icon={plusIcon} 
+                        label={"Novo"}                   
+                        />
+                    </div>
+                        
                 </div>
-                
-            </form>
+
+
+            </div>            
+            <Footer/>
+
+    
+
 
         </div>
 
@@ -108,3 +128,115 @@ function Student(){
 }
 
 export default Student;
+
+
+
+    const students = [
+        { id:1 , course:"I", grade: 10 , group:"C", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:2 , course:"I", grade: 10, group:"A", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:3 , course:"T", grade: 11, group:"B", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:4 , course:"I", grade: 11, group:"C", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:5 , course:"I", grade: 12, group:"A", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:6 , course:"T", grade: 12, group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:7 , course:"E", grade: 13, group:"C", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:8 , course:"T", grade: 13, group:"A", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:9 , course:"R", grade: 10, group:"B", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:10 , course:"E", grade: 10, group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:11 , course:"E", grade: 11, group:"A", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:12 , course:"T", grade: 11, group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:13 , course:"I", grade: 10, group:"A", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:14 , course:"I", grade: 12, group:"C", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:15 , course:"T", grade: 13, group:"A", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:16 , course:"I", grade: 12, group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:17 , course:"I", grade: 11, group:"C", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:18 , course:"T", grade: 10, group:"A", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:19 , course:"T", grade: 12, group:"C", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:20 , course:"I", grade: 10, group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:21 , course:"I", grade: 13, group:"A", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:22 , course:"T", grade: 10, group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+    ]
+
+
+
+
+
+    import React from "react";
+import { useState } from "react";
+import Dropdown from "../components/Dropdown";
+
+
+
+function StudentList(){
+    const students = [
+        { id:1 , course:"I", grade: "10", group:"C", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:2 , course:"I", grade: "10", group:"A", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:3 , course:"T", grade: "11", group:"B", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:4 , course:"I", grade: "11", group:"C", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:5 , course:"I", grade: "12", group:"A", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:6 , course:"T", grade: "12", group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:7 , course:"E", grade: "13", group:"C", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:8 , course:"T", grade: "13", group:"A", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:9 , course:"R", grade: "10", group:"B", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:10 , course:"E", grade: "10", group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:11 , course:"E", grade: "11", group:"A", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:12 , course:"T", grade: "11", group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:13 , course:"I", grade: "10", group:"A", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:14 , course:"I", grade: "12", group:"C", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:15 , course:"T", grade: "13", group:"A", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:16 , course:"I", grade: "12", group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:17 , course:"I", grade: "11", group:"C", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:18 , course:"T", grade: "10", group:"A", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:19 , course:"T", grade: "12", group:"C", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:20 , course:"I", grade: "10", group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+        { id:21 , course:"I", grade: "13", group:"A", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
+        { id:22 , course:"T", grade: "10", group:"B", name: 'Érica Machado da Silva', internId: '202401001'},
+    ]
+
+
+    const groupedStudents= students.reduce((acumulador, student) => 
+        {const key= `${student.course}-${student.grade}-${student.group}`; 
+        if(!acumulador[key]){
+            acumulador[key]=[];
+        }
+        acumulador[key].push(student);
+        return acumulador;
+} )
+
+
+    const [isOpen, setIsOpen]=useState(false);
+    return(
+        <div className="container-fluid">
+            <header>
+            <h2 className="section-header">Cursos | Turmas</h2>
+            </header>
+            <div className="dropdown">
+                {Object.keys(groupedStudents).map((key)=>{
+                    const [course, grade, group]= key.split('-');
+                }
+                return
+                    (
+                    <Dropdown
+                    key={item.grade}
+                    course={item.course}
+                    grade={item.grade}
+                    group={item.group}
+                    name={item.name}
+                    internId={item.internId}
+
+                    
+                    />
+
+                ))}
+            </div>               
+                
+
+            
+        </div>
+
+    );
+}
+export default StudentList;
+
+
+
+
