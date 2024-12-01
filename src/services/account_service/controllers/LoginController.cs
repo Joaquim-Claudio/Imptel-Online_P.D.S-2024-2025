@@ -1,20 +1,27 @@
-using System.Data;
+using System.Text.Json;
 using account_service.models;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Npgsql;
-using Npgsql.Replication;
+
 
 namespace account_service.controllers;
 
+
 [ApiController]
 [Route("/api/accounts/")]
-public class AccountController (NpgsqlConnection connection, IDistributedCache session) : Controller {
+public class LoginController (NpgsqlConnection connection, 
+                                IDistributedCache session,
+                                IDataProtectionProvider provider) : Controller {
+    
+    private readonly static double SESSION_EXPIRE_TIME_IN_HOURS = 12;
+    public readonly static string DATA_PROTECTOR_NAME = "accounts.protector";
 
     private readonly NpgsqlConnection _connection = connection;
     private readonly IDistributedCache _session = session;
+    private readonly IDataProtector _protector = provider.CreateProtector(DATA_PROTECTOR_NAME);
     private static readonly PasswordHasher<Object> passwordService = new();
 
 
@@ -43,13 +50,13 @@ public class AccountController (NpgsqlConnection connection, IDistributedCache s
                                             "INNER JOIN course AS c1 ON e1.course_id = c1.id " +
                                             "WHERE r1.student_id = ($1) AND r1.status='Active';";
 
-                    Console.WriteLine(studentQuery + " id=" + id + "\n");
 
                     var stdCmd = new NpgsqlCommand(studentQuery, _connection) {
                         Parameters = {new() { Value=id }}
                     };
 
                     NpgsqlDataReader stdReader = await stdCmd.ExecuteReaderAsync();
+                    if(!stdReader.HasRows) return NotFound();
 
                     await stdReader.ReadAsync();
 
@@ -59,12 +66,27 @@ public class AccountController (NpgsqlConnection connection, IDistributedCache s
                             stdReader.GetString(1),
                             stdReader.GetString(2),
                             stdReader.GetString(3)),
-                        stdReader.GetString(4)
+                            stdReader.GetString(4)
                     );
 
                     await stdReader.CloseAsync();
+
+                    if (studentData.InternId == null) throw new Exception();
                     
-                    return Ok(studentData);
+                    string? std_sid = _protector.Protect(studentData.InternId);
+                    await _session.SetStringAsync(std_sid, 
+                        JsonSerializer.Serialize<StudentData>(studentData), 
+                        new DistributedCacheEntryOptions{
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(SESSION_EXPIRE_TIME_IN_HOURS)
+                        });
+
+                    HttpContext.Response.Cookies.Append("connect.sid", std_sid, 
+                        new CookieOptions{
+                            HttpOnly = true,
+                            Secure = true
+                        });
+
+                    return Ok();
 
 
                 // Case Role == 'Teacher'
@@ -75,45 +97,63 @@ public class AccountController (NpgsqlConnection connection, IDistributedCache s
                                             "INNER JOIN unit AS u1 ON s1.unit_id=u1.id "+
                                             "WHERE s1.teacher_id = ($1) "+
                                             "ORDER BY c1.name;";
- 
-                    Console.WriteLine(teacherQuery + " id=" + id + "\n");
+
 
                     var teaCmd = new NpgsqlCommand(teacherQuery, _connection) {
                         Parameters = {new() {Value=id}}
                     };
 
                     NpgsqlDataReader teaReader = await teaCmd.ExecuteReaderAsync();
+                    if(!teaReader.HasRows) return NotFound();
 
-                    List<StudyPlan> classes = [];
+                    List<StudyPlanModel> classes = [];
 
                     while(await teaReader.ReadAsync()) {
 
-                        Class clss = new (teaReader.GetInt32(0), teaReader.GetString(1), teaReader.GetString(2));
+                        ClassModel clss = new (teaReader.GetInt32(0), teaReader.GetString(1), teaReader.GetString(2));
                         string unit = teaReader.GetString(3);
                         string acadYear = teaReader.GetString(4);
 
-                        classes.Add(new StudyPlan(clss, unit, acadYear));
+                        classes.Add(new StudyPlanModel(clss, unit, acadYear));
                     }
 
                     TeacherData teacherData = new (user, classes);
 
                     await teaReader.CloseAsync();
-                    return Ok(teacherData);
+
+                    if (teacherData.InternId == null) throw new Exception();
+
+                    string? tea_sid = _protector.Protect(teacherData.InternId);
+
+                    await _session.SetStringAsync(tea_sid , 
+                    JsonSerializer.Serialize<TeacherData>(teacherData),
+                    new DistributedCacheEntryOptions{
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(SESSION_EXPIRE_TIME_IN_HOURS)
+                    });
+                    
+                    HttpContext.Response.Cookies.Append("connect.sid", tea_sid,
+                    new CookieOptions{
+                        HttpOnly = true,
+                        Secure = true
+                    });
+
+                    return Ok();
 
                 // Case Role == 'Secretary'
                 case "Secretary":
                     
                     string secQuery = "SELECT b1.name, b1.address, b1.phone, b1.email "+
-                                        "FROM secretary AS s1 "+
+                                        "FROM Secretary AS s1 "+
                                         "INNER JOIN building AS b1 ON s1.building_id=b1.id "+
                                         "WHERE s1.id = ($1)";
+
 
                     var secCmd = new NpgsqlCommand(secQuery, _connection) {
                         Parameters = {new() {Value=id}}
                     };
 
                     NpgsqlDataReader secReader = await secCmd.ExecuteReaderAsync();
-
+                    if(!secReader.HasRows) return NotFound();
                     await secReader.ReadAsync();
 
                     SecretaryData secretaryData = new(user, new(
@@ -125,7 +165,68 @@ public class AccountController (NpgsqlConnection connection, IDistributedCache s
                     );
 
                     await secReader.CloseAsync();
-                    return Ok(secretaryData);
+
+                    if (secretaryData.InternId == null) throw new Exception();
+
+                    string? sec_sid = _protector.Protect(secretaryData.InternId);
+
+                    await _session.SetStringAsync(sec_sid, 
+                    JsonSerializer.Serialize<SecretaryData>(secretaryData),
+                    new DistributedCacheEntryOptions{
+
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(SESSION_EXPIRE_TIME_IN_HOURS)
+                    });
+
+
+                    HttpContext.Response.Cookies.Append("connect.sid", sec_sid,
+                    new CookieOptions{
+                        HttpOnly = true,
+                        Secure = true
+                    });
+
+                    return Ok();
+
+
+                case "Helpdesk":
+                    
+                    if (user.InternId == null) throw new Exception();
+
+                    string? hp_sid = _protector.Protect(user.InternId);
+
+                    await _session.SetStringAsync(hp_sid , 
+                    JsonSerializer.Serialize<UserData>(user),
+                    new DistributedCacheEntryOptions{
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(SESSION_EXPIRE_TIME_IN_HOURS)
+                    });
+                    
+                    HttpContext.Response.Cookies.Append("connect.sid", hp_sid,
+                    new CookieOptions{
+                        HttpOnly = true,
+                        Secure = true
+                    });
+
+                    return Ok();
+
+                case "Admin":
+                    
+                    if (user.InternId == null) throw new Exception();
+
+                    string? adm_sid = _protector.Protect(user.InternId);
+
+                    await _session.SetStringAsync(adm_sid , 
+                    JsonSerializer.Serialize<UserData>(user),
+                    new DistributedCacheEntryOptions{
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(SESSION_EXPIRE_TIME_IN_HOURS)
+                    });
+                    
+                    HttpContext.Response.Cookies.Append("connect.sid", adm_sid,
+                    new CookieOptions{
+                        HttpOnly = true,
+                        Secure = true
+                    });
+
+                    return Ok();
+
 
                 default:
                     return NotFound();
@@ -133,6 +234,8 @@ public class AccountController (NpgsqlConnection connection, IDistributedCache s
 
 
         } catch(Exception e) {
+            _connection.Close();
+            await _connection.OpenAsync();
             throw new Exception(e.ToString());
         }
     }
@@ -147,9 +250,6 @@ public class AccountController (NpgsqlConnection connection, IDistributedCache s
             string authenticationQuery = "SELECT u1.id, u1.hashpassword, u1.internid, u1.name, u1.role "+
                                             "FROM \"User\" AS u1 "+
                                             "WHERE u1.internid = ($1);";
-            
-            // Dev: Prints the query for debug
-            Console.WriteLine(authenticationQuery);
 
 
             using var cmd1 = new NpgsqlCommand(authenticationQuery, _connection) {
@@ -159,13 +259,10 @@ public class AccountController (NpgsqlConnection connection, IDistributedCache s
             };
 
             // SQL command execution
-            NpgsqlDataReader reader = await cmd1.ExecuteReaderAsync();
+            using NpgsqlDataReader reader = await cmd1.ExecuteReaderAsync();
             
             // Breaks if no user matches
-            if(!reader.HasRows) {
-                await reader.CloseAsync();
-                return (null, -1);
-            }
+            if(!reader.HasRows) return (null, -1);
 
             await reader.ReadAsync();
 
@@ -174,72 +271,19 @@ public class AccountController (NpgsqlConnection connection, IDistributedCache s
 
 
             // Breaks if the password doesn't match
-            if(passwordService.VerifyHashedPassword(null, hashedPassword, credentials.Password) == PasswordVerificationResult.Failed){
-                await reader.CloseAsync();
+            if(passwordService.VerifyHashedPassword(new(), hashedPassword, credentials.Password) == PasswordVerificationResult.Failed)
                 return  (null, -1);
-            }
-            
 
             // Success: Creates a UserData to return
             UserData user = new( reader.GetString(2), reader.GetString(3), reader.GetString(4) );
 
-            await reader.CloseAsync();
-
-            //await HttpContext.Session.LoadAsync();
-            //HttpContext.Session.SetString("item2", "valor2");
-            await _session.SetStringAsync("item2", "valor2", new DistributedCacheEntryOptions{
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(48)
-            });
-
-            string? item1 = await _session.GetStringAsync("item2");
-            // var item1 = HttpContext.Session.GetString("item1");
-            Console.WriteLine("Item1: " + item1);
-
             return (user, id);
 
         } catch (Exception e) {
+            
+            Console.Write("Failed to authenticate.");
             throw new Exception(e.ToString());
         }
-    }
-
-
-
-    // Inner classes to match API requirements
-    public class UserCredentials (string username, string password) {
-        public string Username {get; set;} = username;
-        public string Password {get; set;} = password;
-    }
-
-
-    public class UserData {
-        public string InternId {get; set;}
-        public string Name {get; set;}
-        public string Role {get; set;}
-
-        public UserData (string internId, string name, string role) {
-            this.InternId = internId;
-            this.Name = name;
-            this.Role = role;
-        }
-
-        public UserData(UserData other) {
-            this.InternId = other.InternId;
-            this.Name = other.Name;
-            this.Role = other.Role;
-        }
-    }
-
-    public class StudentData(UserData userData, BuildingModel building, string course) : UserData(userData){
-        public BuildingModel Building {get; set;} = building;
-        public string Course {get; set;} = course;
-    }
-
-    public class TeacherData (UserData userData, List<StudyPlan> classes ) : UserData(userData){
-        public List<StudyPlan> Classes {get; set;} = classes;
-    }
-
-    public class SecretaryData (UserData userData, BuildingModel building) : UserData(userData){
-        public BuildingModel Building {get; set;} = building;
     }
 
 }

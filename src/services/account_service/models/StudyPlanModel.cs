@@ -1,11 +1,11 @@
 namespace account_service.models;
 
-public class StudyPlan(
-    Class clss, 
+public class StudyPlanModel(
+    ClassModel clss, 
     string unit, 
     string acadYear)
 {
-    public Class Clss {get; set;} = clss;
+    public ClassModel Clss {get; set;} = clss;
 
     public string Unit {get; set;} = unit;
 

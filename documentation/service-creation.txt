@@ -4,18 +4,17 @@ service creation:
  - dotnet add package Microsoft.EntityFrameworkCore --version 8.0.10
  - dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL --version 8.0.10
  - dotnet add package Microsoft.Extensions.Caching.StackExchangeRedis
- - dotnet add package Microsoft.AspNet.WebApi.Cors --version 5.3.0
 
 2) Add environment variables: 
   -> dotnet user-secrets init
   -> dotnet user-secrets set "DB_USER" "database.imptel"
   -> dotnet user-secrets set "DB_PASSWORD" "Imp7e1_db"
-  -> dotnet user-secrets set "DB_HOST" "localhost"
+  -> dotnet user-secrets set "DB_HOST" "database.imptel"
   -> dotnet user-secrets set "DB_PORT" "5432"
   -> dotnet user-secrets set "DB_NAME" "database.imptel"
-  -> dotnet user-secrets set "REDIS_HOST" "localhost"
+  -> dotnet user-secrets set "REDIS_HOST" "database.imptel.session"
   -> dotnet user-secrets set "REDIS_PORT" "6379"
-  -> dotnet user-secrets set "REDIS_PASSWORD" "Imp7e1_db_redis"
+  -> dotnet user-secrets set "REDIS_PASSWORD" "Imp7e1_db_session"
 
 3) Configure Json serialization
 
@@ -26,5 +25,9 @@ service creation:
 6) Create Controllers (/controllers)
 
 7) Set Database Connection (appsettings.json)
+
+8) Clean the code (remove FIXME, TODO, etc)
+
+9) Set ping route ("/ping")
 
 

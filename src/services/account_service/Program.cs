@@ -1,14 +1,25 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors();
+builder.Services.AddDataProtection();
 
-builder.Services.AddMvc().
-    AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+string? redis_host = builder.Configuration.GetValue<string>("REDIS_HOST");
+string? redis_port = builder.Configuration.GetValue<string>("REDIS_PORT");
+string? redis_password = builder.Configuration.GetValue<string>("REDIS_PASSWORD");
+
+string? redisConnectionString = builder.Configuration.GetConnectionString("SessionRedis")
+    ?.Replace("{HOST}", redis_host)
+    ?.Replace("{PORT}", redis_port)
+    ?.Replace("{PASSWORD}", redis_password);
+
+builder.Services.AddStackExchangeRedisCache(options => 
+    options.Configuration = redisConnectionString);
+
+builder.Services.AddSession();
+
 
 string? db_username = builder.Configuration.GetValue<string>("DB_USER");
 string? db_password = builder.Configuration.GetValue<string>("DB_PASSWORD");
@@ -31,42 +42,16 @@ builder.Services.AddSingleton<NpgsqlConnection>( provider => {
     return connection;
 });
 
-
-string? redis_host = builder.Configuration.GetValue<string>("REDIS_HOST");
-string? redis_port = builder.Configuration.GetValue<string>("REDIS_PORT");
-string? redis_password = builder.Configuration.GetValue<string>("REDIS_PASSWORD");
-
-string? redisConnectionString = builder.Configuration.GetConnectionString("SessionRedis")
-    ?.Replace("{HOST}", redis_host)
-    ?.Replace("{PORT}", redis_port)
-    ?.Replace("{PASSWORD}", redis_password);
-
-builder.Services.AddStackExchangeRedisCache(options => 
-    options.Configuration = redisConnectionString);
-
-builder.Services.AddSession(options => 
-{
-    options.IdleTimeout = TimeSpan.FromHours(48);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.Name = "connect.sid";
-    options.Cookie.IsEssential = true;
-});
-
+builder.Services.AddMvc().
+    AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
-
-
-app.UseRouting();
+app.MapGet("/api/accounts/ping", () => "Ok MARSHAL 01");
 
 app.UseSession();
 
-app.UseCors(builder => builder
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-);
+app.UseRouting();
 
 app.MapControllers();
 

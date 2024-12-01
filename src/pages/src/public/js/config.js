@@ -39,10 +39,10 @@ $(document).ready(function() {
                             throw new Error(response.statusText);
                         }
                         
-                        return response.json();
+                        return true;
                         
                     })
-                    .catch(error => {
+                    .catch( error => {
                         Swal.fire({
                             title: "Upsss!",
                             text: "Algo correu mal... Tente outra vez dentro de alguns minutos.",
@@ -62,8 +62,6 @@ $(document).ready(function() {
         
             }).then((result) => {
 
-                console.log(result);
-
                 if(result.value) {
                     if(!result.value.err_code) {
 
@@ -75,7 +73,7 @@ $(document).ready(function() {
                         });  
                             
                         setTimeout(() => {
-                            window.location.href = "https://google.com";
+                            //window.location.href = "https://google.com";
                         }, 2000);
                         
 
