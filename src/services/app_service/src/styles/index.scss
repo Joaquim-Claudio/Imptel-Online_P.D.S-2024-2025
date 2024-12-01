@@ -298,3 +298,23 @@ label{
     font-size: 10pt;
     font-weight: 600;
 }
+
+.dropdown-btn{
+    border:none;
+    background-color: var(--color-light);
+    color:#253653;
+    font-weight: 500;
+    font-size: 15pt;
+    padding: 10px 0;
+}
+
+.dropdownClassKey{
+    @extend .dropdown-btn;
+    font-weight: 400;
+    padding: 5px 50px;
+    
+}
+
+.dropdownClasskey-item{
+    padding: 5px 110px;
+}
