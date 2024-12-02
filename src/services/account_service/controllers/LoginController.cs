@@ -28,6 +28,8 @@ public class LoginController (NpgsqlConnection connection,
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserCredentials credentials)
     {
+        string protocol = HttpContext.Request.Protocol;
+        string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
 
         try {
             
@@ -35,8 +37,10 @@ public class LoginController (NpgsqlConnection connection,
             UserData? user = AuthData.Item1; int id = AuthData.Item2;
 
             // Return HTTP 401 Error if no user is matched 
-            if(user is null || id == -1) return Unauthorized();
-
+            if(user is null || id == -1) {
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 401");
+                return Unauthorized();
+            }
             
             switch (user.Role) {
 
@@ -56,7 +60,10 @@ public class LoginController (NpgsqlConnection connection,
                     };
 
                     NpgsqlDataReader stdReader = await stdCmd.ExecuteReaderAsync();
-                    if(!stdReader.HasRows) return NotFound();
+                    if(!stdReader.HasRows) {
+                        Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 404");
+                        return NotFound();
+                    } 
 
                     await stdReader.ReadAsync();
 
@@ -86,6 +93,8 @@ public class LoginController (NpgsqlConnection connection,
                             Secure = true
                         });
 
+
+                    Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 200");
                     return Ok();
 
 
@@ -104,7 +113,10 @@ public class LoginController (NpgsqlConnection connection,
                     };
 
                     NpgsqlDataReader teaReader = await teaCmd.ExecuteReaderAsync();
-                    if(!teaReader.HasRows) return NotFound();
+                    if(!teaReader.HasRows) {
+                        Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 404");
+                        return NotFound();
+                    }
 
                     List<StudyPlanModel> classes = [];
 
@@ -137,6 +149,8 @@ public class LoginController (NpgsqlConnection connection,
                         Secure = true
                     });
 
+
+                    Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 200");
                     return Ok();
 
                 // Case Role == 'Secretary'
@@ -153,7 +167,10 @@ public class LoginController (NpgsqlConnection connection,
                     };
 
                     NpgsqlDataReader secReader = await secCmd.ExecuteReaderAsync();
-                    if(!secReader.HasRows) return NotFound();
+                    if(!secReader.HasRows) {
+                        Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 404");
+                        return NotFound();
+                    } 
                     await secReader.ReadAsync();
 
                     SecretaryData secretaryData = new(user, new(
@@ -184,6 +201,8 @@ public class LoginController (NpgsqlConnection connection,
                         Secure = true
                     });
 
+
+                    Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 200");
                     return Ok();
 
 
@@ -205,6 +224,7 @@ public class LoginController (NpgsqlConnection connection,
                         Secure = true
                     });
 
+                    Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 200");
                     return Ok();
 
                 case "Admin":
@@ -225,10 +245,13 @@ public class LoginController (NpgsqlConnection connection,
                         Secure = true
                     });
 
+                    Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 200");
                     return Ok();
 
 
                 default:
+
+                    Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 404");
                     return NotFound();
             }
 

@@ -14,15 +14,25 @@ public class AuthController(IDistributedCache session) : Controller {
 
     [HttpGet("auth")]
     public async Task<IActionResult> Authenticate() {
+
+        string protocol = HttpContext.Request.Protocol;
+        string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+
         try {
             string? sid = HttpContext.Request.Cookies["connect.sid"];
 
-            if (string.IsNullOrWhiteSpace(sid)) return Unauthorized();
+            if (string.IsNullOrWhiteSpace(sid)) {
+
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/auth {protocol}\" 401");
+                return Unauthorized();
+            }
 
             string? jsonData = await _session.GetStringAsync(sid);
 
             if(string.IsNullOrWhiteSpace(jsonData)) {
+
                 HttpContext.Response.Cookies.Delete("connect.sid");
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/auth {protocol}\" 401");
                 return Unauthorized("Session expired");
             }
 
@@ -36,6 +46,7 @@ public class AuthController(IDistributedCache session) : Controller {
                 _ => JsonSerializer.Deserialize<UserData>(jsonData),
             };
 
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/auth {protocol}\" 200");
             return Ok(userData);
 
         } catch(Exception e) {

@@ -20,10 +20,22 @@ public class UpdateController(IDistributedCache session,
 
     [HttpPut("self/{internId}")]
     public async Task<IActionResult> Update([FromRoute] string internId ,[FromBody] UserModel user) {
+    
+        string protocol = HttpContext.Request.Protocol;
+        string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+    
         var result = await CheckSelfProfile(user.Role.ToString(), internId);
-        if(!result.Item1) return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        if(!result.Item1) {
 
-        if(!ValidateData(user)) return BadRequest();
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/self/{internId} {protocol}\" 401");
+            return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        }
+
+        if(!ValidateData(user)) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/self/{internId} {protocol}\" 400");
+            return BadRequest();
+        }
 
         try {
             string query = "UPDATE \"User\" "+
@@ -42,7 +54,11 @@ public class UpdateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-            if(!reader.HasRows) return NotFound();
+            if(!reader.HasRows) {
+
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/self/{internId} {protocol}\" 404");
+                return NotFound();
+            }
 
             await reader.ReadAsync();
 
@@ -59,6 +75,7 @@ public class UpdateController(IDistributedCache session,
                 reader.GetString(8)
             );
 
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/self/{internId} {protocol}\" 200");
             return Ok(updatedUser);
 
         }catch(Exception e) {
@@ -74,13 +91,28 @@ public class UpdateController(IDistributedCache session,
 
     [HttpPut("student/{internId}")]
     public async Task<IActionResult> UpdateStudent([FromRoute] string internId, [FromBody] StudentModel student) {
+        string protocol = HttpContext.Request.Protocol;
+        string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-        if(!string.Equals(student.Role.ToString(), "Student")) return BadRequest();
+
+        if(!string.Equals(student.Role.ToString(), "Student")) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/student/{internId} {protocol}\" 400");
+            return BadRequest();
+        }
 
         var result = await CheckProfile(student.Role.ToString());
-        if(!result.Item1) return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        if(!result.Item1) {
 
-        if(!ValidateData(student)) return BadRequest();
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/student/{internId} {protocol}\" 401");
+            return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        }
+
+        if(!ValidateData(student)) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/student/{internId} {protocol}\" 400");
+            return BadRequest();
+        }
 
         try {
             string query = "UPDATE Student "+
@@ -100,7 +132,11 @@ public class UpdateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-            if(!reader.HasRows) return NotFound();
+            if(!reader.HasRows) {
+
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/student/{internId} {protocol}\" 404");
+                return NotFound();
+            }
 
             await reader.ReadAsync();
 
@@ -117,6 +153,7 @@ public class UpdateController(IDistributedCache session,
                 reader.GetString(8)
             );
 
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/student/{internId} {protocol}\" 200");
             return Ok(updatedStudent);
 
         } catch(Exception e) {
@@ -132,13 +169,28 @@ public class UpdateController(IDistributedCache session,
 
     [HttpPut("teacher/{internId}")]
     public async Task<IActionResult> UpdateTeacher([FromRoute] string internId, [FromBody] TeacherModel teacher) {
+        string protocol = HttpContext.Request.Protocol;
+        string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-        if(!string.Equals(teacher.Role.ToString(), "Teacher")) return BadRequest();
+
+        if(!string.Equals(teacher.Role.ToString(), "Teacher")) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/teacher/{internId} {protocol}\" 400");
+            return BadRequest();
+        }
 
         var result = await CheckProfile(teacher.Role.ToString());
-        if(!result.Item1) return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        if(!result.Item1) {
 
-        if(!ValidateData(teacher)) return BadRequest();
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/teacher/{internId} {protocol}\" 401");
+            return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        }
+
+        if(!ValidateData(teacher)) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/teacher/{internId} {protocol}\" 400");
+            return BadRequest();
+        }
 
         try {
             string query = "UPDATE Teacher "+
@@ -159,7 +211,11 @@ public class UpdateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-            if(!reader.HasRows) return NotFound();
+            if(!reader.HasRows) {
+
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/teacher/{internId} {protocol}\" 404");
+                return NotFound();
+            }
 
             await reader.ReadAsync();
 
@@ -178,6 +234,7 @@ public class UpdateController(IDistributedCache session,
                 reader.GetString(10)
             );
 
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/teacher/{internId} {protocol}\" 200");
             return Ok(updatedTeacher);
 
         } catch(Exception e) {
@@ -192,13 +249,28 @@ public class UpdateController(IDistributedCache session,
 
     [HttpPut("secretary/{internId}")]
     public async Task<IActionResult> UpdateSecretary([FromRoute] string internId, [FromBody] SecretaryModel secretary) {
+        string protocol = HttpContext.Request.Protocol;
+        string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-        if(!string.Equals(secretary.Role.ToString(), "Secretary")) return BadRequest();
+
+        if(!string.Equals(secretary.Role.ToString(), "Secretary")) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/secretary/{internId} {protocol}\" 400");
+            return BadRequest();
+        }
 
         var result = await CheckProfile(secretary.Role.ToString());
-        if(!result.Item1) return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        if(!result.Item1) {
 
-        if(!ValidateData(secretary)) return BadRequest();
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/secretary/{internId} {protocol}\" 401");
+            return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        }
+
+        if(!ValidateData(secretary)) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/secretary/{internId} {protocol}\" 400");
+            return BadRequest();
+        }
 
         try {
             string query = "UPDATE Secretary "+
@@ -220,7 +292,11 @@ public class UpdateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-            if(!reader.HasRows) return NotFound();
+            if(!reader.HasRows) {
+
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/secretary/{internId} {protocol}\" 404");
+                return NotFound();
+            }
             
             await reader.ReadAsync();
 
@@ -239,6 +315,7 @@ public class UpdateController(IDistributedCache session,
                 reader.GetInt32(10)
             );
 
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/secretary/{internId} {protocol}\" 200");
             return Ok(updatedSecretary);
 
         } catch(Exception e) {
@@ -253,13 +330,28 @@ public class UpdateController(IDistributedCache session,
 
     [HttpPut("helpdesk/{internId}")]
     public async Task<IActionResult> UpdateHelpdesk([FromRoute] string internId, [FromBody] UserModel helpdesk) {
+        string protocol = HttpContext.Request.Protocol;
+        string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-        if(!string.Equals(helpdesk.Role.ToString(), "Helpdesk")) return BadRequest();
+
+        if(!string.Equals(helpdesk.Role.ToString(), "Helpdesk")) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/helpdesk/{internId} {protocol}\" 400");
+            return BadRequest();
+        }
 
         var result = await CheckProfile(helpdesk.Role.ToString());
-        if(!result.Item1) return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        if(!result.Item1) {
 
-        if(!ValidateData(helpdesk)) return BadRequest();
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/helpdesk/{internId} {protocol}\" 401");
+            return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        }
+
+        if(!ValidateData(helpdesk)) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/helpdesk/{internId} {protocol}\" 400");
+            return BadRequest();
+        }
 
         try {
             string query = "UPDATE \"User\" "+
@@ -277,7 +369,11 @@ public class UpdateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-            if(!reader.HasRows) return NotFound();
+            if(!reader.HasRows) {
+
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/helpdesk/{internId} {protocol}\" 404");
+                return NotFound();
+            }
             
             await reader.ReadAsync();
 
@@ -294,6 +390,7 @@ public class UpdateController(IDistributedCache session,
                 reader.GetString(8)
             );
 
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/helpdesk/{internId} {protocol}\" 200");
             return Ok(updatedHelpdesk);
 
         } catch (Exception e) {

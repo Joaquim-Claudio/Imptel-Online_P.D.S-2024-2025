@@ -24,12 +24,27 @@ public class CreateController(IDistributedCache session,
     [HttpPost("student")]
     public async Task<IActionResult> CreateStudent([FromBody] StudentModel student) {
 
-        if(!string.Equals(student.Role.ToString(), "Student")) return BadRequest();
+        string protocol = HttpContext.Request.Protocol;
+        string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        if(!string.Equals(student.Role.ToString(), "Student")) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/student {protocol}\" 400");
+            return BadRequest();
+        }
 
         var result = await CheckProfile(student.Role.ToString());
-        if(!result.Item1) return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        if(!result.Item1) {
 
-        if(!ValidateData(student)) return BadRequest();
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/student {protocol}\" 401");
+            return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        }
+
+        if(!ValidateData(student)) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/student {protocol}\" 400");
+            return BadRequest();
+        }
 
         try {
 
@@ -58,7 +73,11 @@ public class CreateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-            if(!reader.HasRows) return NotFound();
+            if(!reader.HasRows) {
+
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/student {protocol}\" 404");
+                return NotFound();
+            }
             
             await reader.ReadAsync();
 
@@ -76,6 +95,7 @@ public class CreateController(IDistributedCache session,
                 reader.GetString(8)
             );
 
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/student {protocol}\" 201");
             return Created("/", newStudent);
 
         } catch (Exception e) {
@@ -91,12 +111,27 @@ public class CreateController(IDistributedCache session,
     [HttpPost("teacher")]
     public async Task<IActionResult> CreateTeacher([FromBody] TeacherModel teacher) {
 
-        if(!string.Equals(teacher.Role.ToString(), "Teacher")) return BadRequest();
+        string protocol = HttpContext.Request.Protocol;
+        string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        if(!string.Equals(teacher.Role.ToString(), "Teacher")) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/teacher {protocol}\" 400");
+            return BadRequest();
+        }
 
         var result = await CheckProfile(teacher.Role.ToString());
-        if(!result.Item1) return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        if(!result.Item1) {
 
-        if(!ValidateData(teacher)) return BadRequest();
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/teacher {protocol}\" 401");
+            return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        }
+
+        if(!ValidateData(teacher)) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/teacher {protocol}\" 400");
+            return BadRequest();
+        }
 
         try {
 
@@ -127,7 +162,11 @@ public class CreateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-            if(!reader.HasRows) return NotFound();
+            if(!reader.HasRows) {
+
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/teacher {protocol}\" 404");
+                return NotFound();
+            }
 
             await reader.ReadAsync();
 
@@ -147,6 +186,7 @@ public class CreateController(IDistributedCache session,
                 reader.GetString(10)
             );
 
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/teacher {protocol}\" 201");
             return Created("/", newTeacher);
 
         } catch(Exception e) {
@@ -160,12 +200,27 @@ public class CreateController(IDistributedCache session,
     [HttpPost("secretary")]
     public async Task<IActionResult> CreateSecretary([FromBody] SecretaryModel secretary) {
 
-        if(!string.Equals(secretary.Role.ToString(), "Secretary")) return BadRequest();
+        string protocol = HttpContext.Request.Protocol;
+        string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        if(!string.Equals(secretary.Role.ToString(), "Secretary")) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/secretary {protocol}\" 400");
+            return BadRequest();
+        }
 
         var result = await CheckProfile(secretary.Role.ToString());
-        if(!result.Item1) return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        if(!result.Item1) {
 
-        if(!ValidateData(secretary)) return BadRequest();
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/secretary {protocol}\" 401");
+            return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        }
+
+        if(!ValidateData(secretary)){
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/secretary {protocol}\" 400");
+            return BadRequest();
+        }
 
         try {
             string? internId = await GenerateInternId(secretary.Role.ToString());
@@ -195,7 +250,11 @@ public class CreateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-            if(!reader.HasRows) return NotFound();
+            if(!reader.HasRows) {
+                
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/secretary {protocol}\" 404");
+                return NotFound();
+            }
 
             await reader.ReadAsync();
 
@@ -214,6 +273,7 @@ public class CreateController(IDistributedCache session,
                 reader.GetInt32(10)
             );
 
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/secretary {protocol}\" 201");
             return Created("/", newSecretary);
 
         } catch(Exception e) {
@@ -226,12 +286,27 @@ public class CreateController(IDistributedCache session,
     [HttpPost("helpdesk")]
     public async Task<IActionResult> CreateHelpdesk([FromBody] UserModel helpdesk) {
 
-        if(!string.Equals(helpdesk.Role.ToString(), "Helpdesk")) return BadRequest();
+        string protocol = HttpContext.Request.Protocol;
+        string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        if(!string.Equals(helpdesk.Role.ToString(), "Helpdesk")) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/helpdesk {protocol}\" 400");
+            return BadRequest();
+        }
 
         var result = await CheckProfile(helpdesk.Role.ToString());
-        if(!result.Item1) return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        if(!result.Item1) {
 
-        if(!ValidateData(helpdesk)) return BadRequest();
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/helpdesk {protocol}\" 401");
+            return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
+        }
+
+        if(!ValidateData(helpdesk)) {
+
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/helpdesk {protocol}\" 400");
+            return BadRequest();
+        }
 
         try {
 
@@ -260,7 +335,11 @@ public class CreateController(IDistributedCache session,
             };
 
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-            if(!reader.HasRows) return NotFound();
+            if(!reader.HasRows) {
+                
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/helpdesk {protocol}\" 404");
+                return NotFound();
+            }
 
             await reader.ReadAsync();
 
@@ -278,6 +357,7 @@ public class CreateController(IDistributedCache session,
                 reader.GetString(8)
             );
 
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/create/helpdesk {protocol}\" 201");
             return Created("/", newHelpdesk);
 
         } catch (Exception e) {

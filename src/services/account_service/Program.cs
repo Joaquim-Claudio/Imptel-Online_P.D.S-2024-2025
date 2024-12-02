@@ -42,16 +42,39 @@ builder.Services.AddSingleton<NpgsqlConnection>( provider => {
     return connection;
 });
 
+builder.Services.AddCors(options => {
+    options.AddDefaultPolicy(
+        builder => {
+            builder.WithOrigins("http://localhost:3000");
+    });
+});
+
+
+
 builder.Services.AddMvc().
     AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 var app = builder.Build();
 
-app.MapGet("/api/accounts/ping", () => "Ok MARSHAL 01");
+if (!app.Environment.IsDevelopment()) {
+
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+    app.UseHttpsRedirection();
+}
+
+
+app.MapGet("/api/accounts/ping", () => {
+
+    Console.WriteLine($"[{DateTime.Now}] PING \"GET /api/accounts/ping \" 200");
+    return "Ok MARSHAL 01";
+});
 
 app.UseSession();
 
 app.UseRouting();
+
+app.UseCors();
 
 app.MapControllers();
 
