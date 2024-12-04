@@ -20,6 +20,8 @@ service creation:
 
 4) Configure Data Source connection
 
+5) Configure CORS
+
 5) Create EntityModel (/models)
 
 6) Create Controllers (/controllers)
