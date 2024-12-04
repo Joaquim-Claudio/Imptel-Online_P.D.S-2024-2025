@@ -5,6 +5,7 @@ import ButtonNew from "../components/ButtonNew";
 import plusIcon from "../assets/images/fi-br-plus.svg"
 import Footer from "../components/Footer";
 
+
 function Student(){
    
     return(

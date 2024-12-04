@@ -8,7 +8,6 @@ function MenuItem({icon, label, isActive, route, onClick}){
     return(
         <button className={`menu-item   ${isActive?"active":"" }`} 
             onClick={() => {
-                onClick(); // Atualiza o estado do botão ativo
                 navigate(route); // Navega para a rota
             }}>
             <img src={icon}  alt={label} className="menu-item-icon "  />

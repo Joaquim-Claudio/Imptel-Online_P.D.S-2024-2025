@@ -1,46 +1,69 @@
 import React from "react";
-import { BrowserRouter , Routes, Route } from "react-router-dom";
-import SideBar from "./components/SideBar";
-import Toolbar from "./components/Toolbar";
-import Banner from "./components/BannerHome";
+import { BrowserRouter , Routes, Route, Navigate } from "react-router-dom";
+import Alert from "./components/Alert";
+import Homepage from "./pages/Homepage";
 import Student from "./pages/Student";
 import StudentList from "./pages/StudentList";
-import Footer from "./components/Footer";
 import Enrollment from "./pages/Enrollment";
 import Test from "./pages/Test";
+import Login from "./pages/Login";
 
+import axios from "axios"
+
+const http = axios.create({
+    baseURL: "http://localhost:5293/api/accounts",
+    withCredentials: true
+})
 
 function App() {
+    const [user, setUser] = React.useState();
+    const [isLoading, setLoading] = React.useState(true);
+
+    React.useEffect(function() {
+        try {
+            http.get("/auth")
+                .then( (response) => {
+                    console.log(response.data)
+                    setUser(response.data)
+                    setLoading(false)
+                })
+        
+                .catch( (error) => {
+                    if(!error.response) console.error("No server response");
+                    else if (error.response?.status == 401) console.error("Response: " + error.response.status + " \"Unauthorized\"");
+                    else console.error("Authentication failed");
+           
+                    setLoading(false)
+                });
+                
+        } catch(err) {
+            console.error(err)
+        }
+
+        
+    }, [])
+
+    if(isLoading) {
+        return (
+            <Alert 
+                text="A carregar a página..."
+                icon="loader" 
+            />
+        )
+    }
+
     return (
         <BrowserRouter>
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-2 col-md-3 col-xl-25 px-4 bkg-white">
-                        <SideBar />
-                    </div>
-                    <div className="col-10 col-md-9 col-xl-95">
-                        <div className="container-fluid">
-                            <Toolbar />
-                            
-                            <main>
-                                <Routes>
-                                    <Route path="/" element={<Banner />} />
-                                    <Route path="Student" element={<Student />} />
-                                    <Route path="StudentList" element={<StudentList/>}/>
-                                    <Route path="Enrollment" element={<Enrollment/>}/>
-                                    <Route path="Test" element={<Test/>}/>
-                                </Routes>
-                                                                
-                            </main>
-                            
-            <Footer/>
-                            
-                        </div>
-                        
-                    </div>
-                </div>
-                
-            </div>
+
+            <Routes>
+                <Route path="/" element={user ? <Homepage user={user} /> : <Navigate to="/login" replace/>} />
+                <Route path="/student" element={user ? <Student /> : <Navigate to="/login" replace/>} />
+                <Route path="/student_list" element={user ? <StudentList /> : <Navigate to="/login" replace/>} />
+                <Route path="/enrollment" element={user ? <Enrollment /> : <Navigate to="/login" replace/>} />
+                <Route path="/test" element={user ? <Test /> : <Navigate to="/login" replace/>} />
+                <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace/>} />
+            </Routes>
+            
         </BrowserRouter>
     );
 }

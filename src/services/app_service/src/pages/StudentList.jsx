@@ -1,11 +1,13 @@
 import React from "react";
-import { useState } from "react";
-import Dropdown from "../components/Dropdown";
 import DropdownCourse from "../components/DropdownCourse";
+import SideBar from "../components/SideBar"
+import Toolbar from "../components/Toolbar"
+import Footer from "../components/Footer"
+
+import { PAGE } from "../assets/utils/PageIdMap";
 
 
-
-function StudentList(){
+function StudentList({user}) {
     const students = [
         { id:1 , course:"Técnico de Informática", courseIn:"I", grade: "10", group:"C", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
         { id:2 , course:"Técnico de Informática", courseIn:"I", grade: "10", group:"A", name: 'Érica Machado da Silva', internId: '202401001'},
@@ -49,46 +51,57 @@ function StudentList(){
 
 
     
-    return(
+    return (
         <div className="container-fluid">
-            <header>
-            <h2 className="section-header">Cursos | Turmas</h2>
-            </header>
-            <div>
-                
+            <div className="row">
+                <div className="col-2 col-md-3 col-xl-25 px-4 bkg-white">
+                    <SideBar activeId={PAGE.STUDENT_LIST} />
+                </div>
+                <div className="col-10 col-md-9 col-xl-95">
+                    <div className="container-fluid">
+                        <Toolbar header={"Lista de alunos"} />
+
+                        <main>
+                            <div className="container-fluid">
+                                <header>
+                                <h2 className="section-header">Cursos | Turmas</h2>
+                                </header>
+                                <div>
+                                    
+                                </div>
+                                <div className="dropdown">
+                                    {Object.keys(groupedByCourses).map((course)=>
+                                    { const [courseIn, grade, group ]= course.split('-');
+                                        return(
+                                            <DropdownCourse
+                                            key={course}
+                                            course={course}
+                                            courseIn={courseIn}
+                                            grade={grade}
+                                            group={group}
+                                            grades={groupedByCourses[course]}
+                                            
+                                            
+                                            />
+
+                                        );
+
+                                    }
+                                    
+                                    )}
+
+                                    
+                                </div>               
+                            </div>
+
+                        </main>
+                    </div>
+                </div>
             </div>
-            <div className="dropdown">
-                {Object.keys(groupedByCourses).map((course)=>
-                { const [courseIn, grade, group ]= course.split('-');
-                    return(
-                        <DropdownCourse
-                        key={course}
-                        course={course}
-                        courseIn={courseIn}
-                        grade={grade}
-                        group={group}
-                        grades={groupedByCourses[course]}
-                        
-                        
-                        />
-
-                    );
-
-                }
-                
-                )}
-
-                
-            </div>               
-                
-
-            
+            <Footer/>
         </div>
 
     );
 }
+
 export default StudentList;
-
-
-
-

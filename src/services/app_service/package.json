@@ -7,9 +7,11 @@
     "dev": "vite --open --port 3000",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "npm run dev"
   },
   "dependencies": {
+    "axios": "^1.7.8",
     "nodemon": "^3.1.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

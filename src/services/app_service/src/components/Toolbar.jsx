@@ -1,16 +1,15 @@
 import React from "react";
 
 
-function Header({name, text}){
+function Header({header}){
     return(
         <div className="toolbar bkg-white">
             <div className="container-fluid">
                 <div className="row tool-wrapper">
                     <div className="intro-text">
-                        <h1>{text}{name}</h1>
+                        <h1>{header}</h1>
                     </div>
 
-                    
                     <div className="nav-badge">
                         Imptel-Online
                     </div>

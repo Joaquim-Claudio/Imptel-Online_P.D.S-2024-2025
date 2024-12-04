@@ -1,0 +1,69 @@
+:root{
+    --box-shadow-color: rgba(161, 161, 161, 0.85);
+}
+
+
+@media (max-width:992px) { 
+    .login-container{
+        display: flex;
+
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.login-container{   
+
+    .img-logo{
+        width: 70%;
+        padding-bottom: 5rem;      
+        
+    }
+
+    .img-left{
+        max-height: 100vh;
+      
+    }
+    
+    button{
+        background-color: #0d365c;
+        font-size: 12pt;
+        
+        
+    }
+    a{
+        color:#005FB5;
+        
+        
+        
+        
+    }
+
+    .img-blur{
+        filter:blur(3px);
+    }
+    
+    .text-login{
+        font-weight: normal;
+        font-size: smaller;
+        padding-bottom: 0.7rem;
+    }
+    
+    .box-login-size{
+        width:100%;
+        height: 40px;
+    }
+
+    .red-border {
+        border-color: red;
+    }
+    
+    .red-msg {
+        color: red;
+        display: none;
+    }
+
+    .red-msg.show {
+        display: block;
+    }
+}
