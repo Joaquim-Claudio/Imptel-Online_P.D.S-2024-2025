@@ -16,7 +16,7 @@ public class SearchController(IDistributedCache session,
     private readonly IDistributedCache _session = session;
     private readonly NpgsqlConnection _connection = connection;
 
-    [HttpGet("student")]
+    [HttpPost("student")]
     public async Task<IActionResult> FindStudent([FromBody] Query query) {
 
         string protocol = HttpContext.Request.Protocol;
@@ -25,13 +25,13 @@ public class SearchController(IDistributedCache session,
         var result = await CheckProfile(Role.Student.ToString());
         if(!result.Item1){
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/student {protocol}\" 401");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/student {protocol}\" 401");
             return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
         }
 
         if(!ValidateQuery(query.Keywords)){
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/student {protocol}\" 400");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/student {protocol}\" 400");
             return BadRequest();
         }
         
@@ -54,7 +54,7 @@ public class SearchController(IDistributedCache session,
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
             if(!reader.HasRows){
 
-                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/student {protocol}\" 404");
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/student {protocol}\" 404");
                 return NotFound();
             }
 
@@ -76,12 +76,12 @@ public class SearchController(IDistributedCache session,
 
             if(reader.ReadAsync().Result){
 
-                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/student {protocol}\" 409");
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/student {protocol}\" 409");
                 return Conflict();
             }
 
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/student {protocol}\" 200");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/student {protocol}\" 200");
             return Ok(student);
 
         } catch(Exception e) {
@@ -91,7 +91,7 @@ public class SearchController(IDistributedCache session,
     }
 
 
-    [HttpGet("teacher")]
+    [HttpPost("teacher")]
     public async Task<IActionResult> FindTeacher([FromBody] Query query) {
 
         string protocol = HttpContext.Request.Protocol;
@@ -100,13 +100,13 @@ public class SearchController(IDistributedCache session,
         var result = await CheckProfile(Role.Teacher.ToString());
         if(!result.Item1) {
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/teacher {protocol}\" 401");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/teacher {protocol}\" 401");
             return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
         } 
 
         if(!ValidateQuery(query.Keywords)) {
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/teacher {protocol}\" 400");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/teacher {protocol}\" 400");
             return BadRequest();
         }
         
@@ -129,7 +129,7 @@ public class SearchController(IDistributedCache session,
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
             if(!reader.HasRows) {
 
-                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/teacher {protocol}\" 404");
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/teacher {protocol}\" 404");
                 return NotFound();
             } 
 
@@ -152,11 +152,11 @@ public class SearchController(IDistributedCache session,
 
             if(reader.ReadAsync().Result) {
 
-                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/teacher {protocol}\" 409");
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/teacher {protocol}\" 409");
                 return Conflict();
             } 
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/teacher {protocol}\" 200");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/teacher {protocol}\" 200");
             return Ok(teacher);
 
         } catch(Exception e) {
@@ -166,7 +166,7 @@ public class SearchController(IDistributedCache session,
     }
 
 
-    [HttpGet("secretary")]
+    [HttpPost("secretary")]
     public async Task<IActionResult> FindSecretary([FromBody] Query query) {
 
         string protocol = HttpContext.Request.Protocol;
@@ -175,13 +175,13 @@ public class SearchController(IDistributedCache session,
         var result = await CheckProfile(Role.Secretary.ToString());
         if(!result.Item1) {
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/secretary {protocol}\" 401");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/secretary {protocol}\" 401");
             return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
         } 
 
         if(!ValidateQuery(query.Keywords)) {
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/secretary {protocol}\" 400");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/secretary {protocol}\" 400");
             return BadRequest();
         }
         
@@ -205,7 +205,7 @@ public class SearchController(IDistributedCache session,
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
             if(!reader.HasRows) {
 
-                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/secretary {protocol}\" 404");
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/secretary {protocol}\" 404");
                 return NotFound();
             }
 
@@ -228,11 +228,11 @@ public class SearchController(IDistributedCache session,
 
             if(reader.ReadAsync().Result) {
 
-                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/secretary {protocol}\" 409");
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/secretary {protocol}\" 409");
                 return Conflict();
             } 
             
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/secretary {protocol}\" 200");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/secretary {protocol}\" 200");
             return Ok(secretary);
 
         } catch(Exception e) {
@@ -241,7 +241,7 @@ public class SearchController(IDistributedCache session,
         }
     }
 
-    [HttpGet("helpdesk")]
+    [HttpPost("helpdesk")]
     public async Task<IActionResult> FindHelpdesk([FromBody] Query query) {
 
         string protocol = HttpContext.Request.Protocol;
@@ -250,13 +250,13 @@ public class SearchController(IDistributedCache session,
         var result = await CheckProfile(Role.Helpdesk.ToString());
         if(!result.Item1) {
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/helpdesk {protocol}\" 401");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/helpdesk {protocol}\" 401");
             return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
         } 
 
         if(!ValidateQuery(query.Keywords)) {
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/helpdesk {protocol}\" 400");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/helpdesk {protocol}\" 400");
             return BadRequest();
         }
         
@@ -278,7 +278,7 @@ public class SearchController(IDistributedCache session,
             using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
             if(!reader.HasRows) {
 
-                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/helpdesk {protocol}\" 404");
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/helpdesk {protocol}\" 404");
                 return NotFound();
             }
 
@@ -299,11 +299,11 @@ public class SearchController(IDistributedCache session,
 
             if(reader.ReadAsync().Result) {
                 
-                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/helpdesk {protocol}\" 409");
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/helpdesk {protocol}\" 409");
                 return Conflict();
             }
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/accounts/find/helpdesk {protocol}\" 200");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/find/helpdesk {protocol}\" 200");
             return Ok(helpdesk);
 
         } catch(Exception e) {
