@@ -35,17 +35,23 @@ function SideBar({activeId}){
 
     const buttonLink=[ {id: menuItems.length +1, icon: signOutIcon, label:"Terminar sessão", route:"/"}]
 
-    const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
-    const [isLoading, setLoading] = React.useState(false);
+    const [inConfirm, setInConfirm] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
 
-    function logout() {
-        setLoading(true)
+    function handleClose() {
+        setInConfirm(false);
+    }
+
+    function handleConfirm() {
+
+        setInConfirm(false)
+        setIsLoading(true)
         
         http.get("logout")
             .then((response) => {
                 if(response.status == 200) {
-                    setLoading(false)
+                    setIsLoading(false)
                     window.location.replace("/login")
                 }
             })
@@ -61,9 +67,10 @@ function SideBar({activeId}){
                 else if (error.response?.status == 401) console.error("Response: " + error.response.status + " \"Unauthorized\"");
                 else console.error("Logout failed");
         
-                setLoading(false)
+                setIsLoading(false)
 
             });
+
     }
 
 
@@ -71,22 +78,33 @@ function SideBar({activeId}){
 
         <nav className="sidebar">
 
-            {isLoading ? 
-                <Alert 
-                    text="A terminar sessão..."
-                    icon="loader"
-                />
-                : <></>
-            }
+            <Alert 
+                fireOn={inConfirm}
+                title="Terminar sessão"
+                text="Está prestes a terminar a sessão."
+                icon="warning"
+                showCancelButton={true}
+                showConfirmButton={true}
+                confirmButtonColor="danger"
+                onClose={handleClose}
+                onConfirm={handleConfirm}
+            />
 
-            {error ? 
-                <Alert 
-                    title="Upsss!"
-                    text="Algo correu mal... Tente outra vez dentro de alguns minutos."
-                    icon="warning"
-                />
-                : <></>
-            }
+            <Alert 
+                fireOn={isLoading}
+                text="A terminar sessão..."
+                icon="loader"
+                showBadge={true}
+            />
+
+
+            <Alert 
+                fireOn={error}
+                title="Upsss!"
+                text="Algo correu mal... Tente outra vez dentro de alguns minutos."
+                icon="warning"
+                showBadge={true}
+            />
 
             <img className="logo-sidebar" src={logo} alt="Logótipo Imptel" />
             
@@ -108,7 +126,7 @@ function SideBar({activeId}){
                     icon={link.icon}
                     label={link.label}
                     route={link.route}
-                    handleClick={logout}
+                    handleClick={() => setInConfirm(true)}
                 />
 
             ))}                  

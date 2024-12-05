@@ -13,7 +13,7 @@ const http = axios.create({
 function Login () {
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
-    const [isLoading, setLoading] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
 
@@ -52,7 +52,6 @@ function Login () {
 
     function handleSubmit(event) {
         event.preventDefault();
-        console.log("Submit button pressed...")
 
         if(!regex.test(username) || !regex.test(password)) {
             showPatternError();
@@ -60,13 +59,13 @@ function Login () {
         }
 
         try {
-            setLoading(true);
+            setIsLoading(true);
 
             http.post("login", {
                 username,
                 password
             }) .then( (response) => {
-                setLoading(false);
+                setIsLoading(false);
 
                 setSuccess(true);
 
@@ -92,7 +91,7 @@ function Login () {
                     }
                     else console.error("Login failed");
            
-                    setLoading(false)
+                    setIsLoading(false)
                 });
 
         } catch(err) {
@@ -105,32 +104,31 @@ function Login () {
     return (
         <div className="container-fluid login-container">
 
-            {isLoading ? 
-                <Alert 
-                    title="Autenticação em curso..."
-                    text="A verificar as tuas credenciais."
-                    icon="loader"
-                />
-                : <></>
-            }
+            <Alert 
+                fireOn={isLoading}
+                title="Autenticação em curso..."
+                text="A verificar as suas credenciais."
+                icon="loader"
+                showBadge={true}
+            />
 
-            {error ? 
-                <Alert 
-                    title="Upsss!"
-                    text="Algo correu mal... Tente outra vez dentro de alguns minutos."
-                    icon="warning"
-                />
-                : <></>
-            }
 
-            {success ? 
-                <Alert 
-                    title="Bem-vindo"
-                    text="Autenticado com sucesso."
-                    icon="success"
-                />
-                : <></>
-            }
+            <Alert 
+                fireOn={error}
+                title="Upsss!"
+                text="Algo correu mal... Tente outra vez dentro de alguns minutos."
+                icon="warning"
+                showBadge={true}
+            />
+
+            <Alert 
+                fireOn={success}
+                title="Bem-vindo"
+                text="Autenticado com sucesso."
+                icon="success"
+                showBadge={true}
+            />
+
 
             <div className="row">
                 <div className="col-lg-7 d-none d-lg-block px-lg-0 py-lg-0 img-left ">
@@ -184,7 +182,7 @@ function Login () {
                             </span>
 
                             <div className="text-center mt-3">
-                                <button type="submit" className="btn box-login-size btn-secondary">
+                                <button type="submit" className="btn box-login-size btn-primary">
                                     Login
                                 </button>
                             </div>

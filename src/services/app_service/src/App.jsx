@@ -17,15 +17,14 @@ const http = axios.create({
 
 function App() {
     const [user, setUser] = React.useState();
-    const [isLoading, setLoading] = React.useState(true);
+    const [isLoading, setIsLoading] = React.useState(true);
 
     React.useEffect(function() {
         try {
             http.get("/auth")
                 .then( (response) => {
-                    console.log(response.data)
                     setUser(response.data)
-                    setLoading(false)
+                    setIsLoading(false)
                 })
         
                 .catch( (error) => {
@@ -33,7 +32,7 @@ function App() {
                     else if (error.response?.status == 401) console.error("Response: " + error.response.status + " \"Unauthorized\"");
                     else console.error("Authentication failed");
            
-                    setLoading(false)
+                    setIsLoading(false)
                 });
                 
         } catch(err) {
@@ -48,6 +47,7 @@ function App() {
             <Alert 
                 text="A carregar a página..."
                 icon="loader" 
+                showBadge={true}
             />
         )
     }

@@ -348,14 +348,18 @@ label{
 }
 
 
-.alert-header {
+.alert-badge {
     font-size: 12pt;
     font-weight: 500;
     color:white ;
     background-color: #003565;
     border-radius: 8px;
     padding: 4px 16px;
-    
+    margin-bottom: 1.5rem;
+}
+
+.alert-btn {
+    width: fit-content;
 }
 
 .loader {

@@ -1,6 +1,18 @@
 import React from "react";
 
-function Alert({title, text, icon}) {
+function Alert({fireOn=true, title, text, icon, 
+                showBadge, 
+                showConfirmButton, 
+                confirmButtonText,
+                confirmButtonColor,
+                showCancelButton,
+                canceButtonText,
+                onClose,
+                onConfirm}) {
+    
+    if(!fireOn) {
+        return null;
+    }
 
     return (
         <div className="alert-container">
@@ -8,9 +20,35 @@ function Alert({title, text, icon}) {
                 {title ? <h2>{title}</h2> : <></>}
                 {text ? <p>{text}</p> : <></>}
                 <div className={icon}></div>
-                <div className="alert-header">
-                    Imptel-Online
+                {showBadge ? 
+                    (<div className="alert-badge">
+                        Imptel-Online
+                    </div>)
+                    : <></>
+                }
+                <div className="container">
+                    <div className="row justify-content-center">
+                        {showCancelButton ?
+                            <button type="button" 
+                                className={"alert-btn btn btn-secondary me-3"}
+                                onClick={onClose}>
+                                {canceButtonText || "Cancelar"}
+                            </button>
+                            : <></>
+                        }
+
+                        {showConfirmButton ?
+                            <button type="button" 
+                                className={`alert-btn btn btn-${confirmButtonColor || "success"}`}
+                                onClick={onConfirm}>
+                                {confirmButtonText || "Confirmar"}
+                            </button>
+                            : <></>
+                        }
+
+                    </div>
                 </div>
+
             </div>
         </div>
     )
