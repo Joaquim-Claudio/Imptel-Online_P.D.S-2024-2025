@@ -23,7 +23,7 @@ function Homepage ({user}) {
                                 <div className="banner-content">
                                     <p className="banner-title">Imptel-Online <img style={{width: '35px'}} src={globeIcone}  /></p>
                                     <p className="banner-description">
-                                    A plataforma integrada do <span className="fw-bold"> Instituto Médio Privado de Tecnologias - IMPTEL </span>, projectada para melhorar a interação entre alunos, professores e as secretarias.
+                                    A plataforma integrada do <span className="fw-bold"> Instituto Médio Privado de Tecnologias - IMPTEL</span>, projectada para melhorar a interação entre alunos, professores e as secretarias.
                                     </p>
                                     <p className="banner-description">
                                     Esta plataforma é parte de uma iniciativa tecnológica do IMPTEL, iniciada em 2024, com o objectivo de integrar e concentrar as informações académicas e administrativas essenciais para as actividades lectivas no IMPTEL.

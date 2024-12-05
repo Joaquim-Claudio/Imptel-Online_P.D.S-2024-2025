@@ -28,7 +28,7 @@ function App() {
                 })
         
                 .catch( (error) => {
-                    if(!error.response) console.error("No server response");
+                    if(!error.response) console.error("No error response");
                     else if (error.response?.status == 401) console.error("Response: " + error.response.status + " \"Unauthorized\"");
                     else console.error("Authentication failed");
            

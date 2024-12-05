@@ -86,6 +86,8 @@ function SideBar({activeId}){
                 showCancelButton={true}
                 showConfirmButton={true}
                 confirmButtonColor="danger"
+                confirmButtonText="Confirmar"
+                cancelButtonText="Cancelar"
                 onClose={handleClose}
                 onConfirm={handleConfirm}
             />

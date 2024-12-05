@@ -6,7 +6,7 @@ function Alert({fireOn=true, title, text, icon,
                 confirmButtonText,
                 confirmButtonColor,
                 showCancelButton,
-                canceButtonText,
+                cancelButtonText,
                 onClose,
                 onConfirm}) {
     
@@ -32,7 +32,7 @@ function Alert({fireOn=true, title, text, icon,
                             <button type="button" 
                                 className={"alert-btn btn btn-secondary me-3"}
                                 onClick={onClose}>
-                                {canceButtonText || "Cancelar"}
+                                {cancelButtonText || "Cancel"}
                             </button>
                             : <></>
                         }
@@ -41,7 +41,7 @@ function Alert({fireOn=true, title, text, icon,
                             <button type="button" 
                                 className={`alert-btn btn btn-${confirmButtonColor || "success"}`}
                                 onClick={onConfirm}>
-                                {confirmButtonText || "Confirmar"}
+                                {confirmButtonText || "Confirm"}
                             </button>
                             : <></>
                         }

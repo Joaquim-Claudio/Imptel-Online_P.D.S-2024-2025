@@ -2,11 +2,29 @@ import React from "react";
 
 
 
-function InputElement({placeholder , icon, label, forId, classInput, type}){ 
+function InputElement({forId, type, placeholder, 
+                        aria_label, 
+                        autoComplete, 
+                        value, 
+                        onChange,
+                        disabled, 
+                        icon, 
+                        label, 
+                        classInput}){ 
+
+
     return(
     <div className={classInput || "form-item"}>
         {label != null ? <label className="d-block" htmlFor={forId} >{label}</label> : ""}
-        <input type={type}  id={forId}   placeholder={placeholder}/>
+        <input id={forId}
+            type={type} 
+            placeholder={placeholder}
+            aria-label={aria_label}
+            autoComplete={autoComplete}
+            value={value}
+            onChange={onChange}
+            disabled={disabled}
+        />
     </div>    
 
     );

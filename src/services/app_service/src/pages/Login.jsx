@@ -1,9 +1,9 @@
 import React from "react";
+import Alert from "../components/Alert";
 import banner from "../assets/images/imgExemploIA.png"
 import logo from "../assets/images/logo.svg"
 
 import axios from "axios"
-import Alert from "../components/Alert";
 
 const http = axios.create({
     baseURL: "http://localhost:5293/api/accounts",
@@ -77,7 +77,7 @@ function Login () {
 
             }).catch( (error) => {
                     if(!error.response){
-                        console.error("No server response");
+                        console.error("No error response");
 
                         setError(true)
 
