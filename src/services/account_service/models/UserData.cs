@@ -4,19 +4,23 @@ public class UserData {
     public string? InternId {get; set;}
     public string? Name {get; set;}
     public string? Role {get; set;}
+    public string? AcadYear {get; set;}
 
     public UserData() {}
 
-    public UserData (string internId, string name, string role) {
+    public UserData (string internId, string name, string role, string? acadYear) {
         this.InternId = internId;
         this.Name = name;
         this.Role = role;
+        this.AcadYear = acadYear;
+
     }
 
     public UserData(UserData other) {
         this.InternId = other.InternId;
         this.Name = other.Name;
         this.Role = other.Role;
+        this.AcadYear = other.AcadYear;
     }
 }
 

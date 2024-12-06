@@ -57,9 +57,9 @@ function App() {
 
             <Routes>
                 <Route path="/" element={user ? <Homepage user={user} /> : <Navigate to="/login" replace/>} />
-                <Route path="/student" element={user ? <Student /> : <Navigate to="/login" replace/>} />
-                <Route path="/student_list" element={user ? <StudentList /> : <Navigate to="/login" replace/>} />
-                <Route path="/enrollment" element={user ? <Enrollment /> : <Navigate to="/login" replace/>} />
+                <Route path="/student" element={user ? <Student user={user} /> : <Navigate to="/login" replace/>} />
+                <Route path="/student_list" element={user ? <StudentList user={user}  /> : <Navigate to="/login" replace/>} />
+                <Route path="/enrollment" element={user ? <Enrollment user={user}  /> : <Navigate to="/login" replace/>} />
                 <Route path="/test" element={user ? <Test /> : <Navigate to="/login" replace/>} />
                 <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace/>} />
             </Routes>

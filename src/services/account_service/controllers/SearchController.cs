@@ -19,6 +19,7 @@ public class SearchController(IDistributedCache session,
     [HttpPost("student")]
     public async Task<IActionResult> FindStudent([FromBody] Query query) {
 
+        // Log parameters
         string protocol = HttpContext.Request.Protocol;
         string? remote_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
 

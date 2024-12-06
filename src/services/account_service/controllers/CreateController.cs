@@ -450,7 +450,7 @@ public class CreateController(IDistributedCache session,
                 string stdNextId = (int.Parse(nextId) + 1).ToString().PadLeft(4, '0');
                 await _session.SetStringAsync("NEXT_STUDENT_SUFIX", stdNextId);
 
-                internId = currentYear + nextId;
+                internId = currentYear?.Split("/")[0] + nextId;
                 break;
 
             case "Teacher":

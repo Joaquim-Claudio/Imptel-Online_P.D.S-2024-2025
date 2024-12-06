@@ -135,7 +135,7 @@ function Enrollment({user}) {
                 </div>
             </div>
 
-            <Footer/>
+            <Footer acadYear={user.acadYear}/>
             
         </div>
 

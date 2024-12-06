@@ -58,7 +58,7 @@ CREATE TABLE "Class" (
 
 CREATE TABLE Enrollment (
     id SERIAL PRIMARY KEY,
-    class INTEGER REFERENCES "Class" (id) ON DELETE SET NULL,
+    class_id INTEGER REFERENCES "Class" (id) ON DELETE SET NULL,
     course_id INTEGER REFERENCES Course (id) ON DELETE SET NULL,
     acadYear TEXT,
     level Level

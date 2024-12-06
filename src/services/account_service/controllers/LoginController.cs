@@ -61,6 +61,7 @@ public class LoginController (NpgsqlConnection connection,
 
                     NpgsqlDataReader stdReader = await stdCmd.ExecuteReaderAsync();
                     if(!stdReader.HasRows) {
+                        await stdReader.CloseAsync();
                         Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 404");
                         return NotFound();
                     } 
@@ -114,6 +115,7 @@ public class LoginController (NpgsqlConnection connection,
 
                     NpgsqlDataReader teaReader = await teaCmd.ExecuteReaderAsync();
                     if(!teaReader.HasRows) {
+                        await teaReader.CloseAsync();
                         Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 404");
                         return NotFound();
                     }
@@ -168,6 +170,7 @@ public class LoginController (NpgsqlConnection connection,
 
                     NpgsqlDataReader secReader = await secCmd.ExecuteReaderAsync();
                     if(!secReader.HasRows) {
+                        await secReader.CloseAsync();
                         Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/accounts/login {protocol}\" 404");
                         return NotFound();
                     } 
@@ -297,8 +300,9 @@ public class LoginController (NpgsqlConnection connection,
             if(passwordService.VerifyHashedPassword(new(), hashedPassword, credentials.Password) == PasswordVerificationResult.Failed)
                 return  (null, -1);
 
+            string? acadYear = await _session.GetStringAsync("CURRENT_ACAD_YEAR");
             // Success: Creates a UserData to return
-            UserData user = new( reader.GetString(2), reader.GetString(3), reader.GetString(4) );
+            UserData user = new( reader.GetString(2), reader.GetString(3), reader.GetString(4), acadYear );
 
             return (user, id);
 

@@ -98,7 +98,8 @@ function StudentList({user}) {
                     </div>
                 </div>
             </div>
-            <Footer/>
+
+            <Footer acadYear={user.acadYear}/>
         </div>
 
     );

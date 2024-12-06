@@ -58,7 +58,7 @@ CREATE TABLE "Class" (
 
 CREATE TABLE Enrollment (
     id SERIAL PRIMARY KEY,
-    class INTEGER REFERENCES "Class" (id) ON DELETE SET NULL,
+    class_id INTEGER REFERENCES "Class" (id) ON DELETE SET NULL,
     course_id INTEGER REFERENCES Course (id) ON DELETE SET NULL,
     acadYear TEXT,
     level Level
@@ -174,11 +174,11 @@ VALUES ('ET10A', 3),
        ('I10A', 2),
        ('I10B', 4);
 
-INSERT INTO Enrollment (class, course_id, acadyear, level)
+INSERT INTO Enrollment (class_id, course_id, acadyear, level)
 VALUES (1, 1, '2024/2025', '10');
 
 INSERT INTO Registry (date, status, student_id, building_id, enrollment_id)
-VALUES ('2024-11-14', 'Active', 1, 1, 1);
+VALUES ('2024-11-14', 'Active', 2, 1, 1);
 
 INSERT INTO Unit (name)
 VALUES ('Matemática'),

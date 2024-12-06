@@ -36,7 +36,8 @@ function Homepage ({user}) {
                     </div>
                 </div>
             </div>
-            <Footer/> 
+            
+            <Footer acadYear={user.acadYear}/>
         </div>
 
     );

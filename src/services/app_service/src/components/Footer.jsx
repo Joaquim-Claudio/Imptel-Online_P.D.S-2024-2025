@@ -1,9 +1,9 @@
 import React from "react";
 
-function Footer(){
+function Footer({acadYear}){
     return(
         
-        <h5 className="footer-text">Ano Lectivo 2024/2025</h5>
+        <h5 className="footer-text">Ano Lectivo {acadYear}</h5>
        
     );
 }
