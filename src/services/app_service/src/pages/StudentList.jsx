@@ -5,10 +5,18 @@ import Toolbar from "../components/Toolbar"
 import Footer from "../components/Footer"
 
 import { PAGE } from "../assets/utils/PageIdMap";
+import Alert from "../components/Alert";
 
+import axios from "axios"
+
+const http = axios.create({
+    baseURL: "http://localhost:5297/api/registries",
+    withCredentials: true
+})
 
 function StudentList({user}) {
-    const students = [
+
+    const studentList = [
         { id:1 , course:"Técnico de Informática", courseIn:"I", grade: "10", group:"C", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
         { id:2 , course:"Técnico de Informática", courseIn:"I", grade: "10", group:"A", name: 'Érica Machado da Silva', internId: '202401001'},
         { id:3 , course:"Técnico de Informática", courseIn:"I", grade: "11", group:"B", name: 'Matias Rocha Paulo Miguel', internId: '20240201'},
@@ -34,25 +42,58 @@ function StudentList({user}) {
         
     ]
 
-    const groupedByCourses= students.reduce((acumulador, student)=> {
-        if(!acumulador[student.course]){
-            acumulador[student.course]={};
+    const groupedByCourses= studentList.reduce((acumulator, student)=> {
+        if(!acumulator[student.course]){
+            acumulator[student.course]={};
         }
         const classKey= `${student.courseIn}-${student.grade}-${student.group}`;
-        if(!acumulador[student.course][classKey]){
-            acumulador[student.course][classKey]=[]
+        if(!acumulator[student.course][classKey]){
+            acumulator[student.course][classKey]=[]
         }
-        acumulador[student.course][classKey].push(student);
-        return acumulador;
+        acumulator[student.course][classKey].push(student);
+        return acumulator;
             
 
     }, {});
 
 
+    const [students, setStudents] = React.useState();
+    const [isLoading, setIsLoading] = React.useState(true);
+
+    React.useEffect(function(){
+        try {
+            http.get("active")
+            .then( (respose) => {
+                setStudents(respose.data);
+                setIsLoading(false);
+            })
+            .catch( (error) => {
+                if(!error.response) console.error("No error response");
+                else if (error.response?.status == 401) console.error("Response: " + error.response.status + " \"Unauthorized\"");
+                else console.error("Failed loading students");
+       
+                setIsLoading(false)
+            });
+
+        } catch(err) {
+            console.error(err)
+        }
+
+
+    }, [])
+
 
     
     return (
         <div className="container-fluid">
+
+            <Alert
+                fireOn={isLoading}
+                text="A carregar lista de alunos..."
+                icon="loader" 
+                showBadge={true}
+            />
+
             <div className="row">
                 <div className="col-2 col-md-3 col-xl-25 px-4 bkg-white">
                     <SideBar activeId={PAGE.STUDENT_LIST} />
