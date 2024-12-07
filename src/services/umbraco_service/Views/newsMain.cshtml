@@ -1,0 +1,132 @@
+﻿
+@using Umbraco.Cms.Core.Models;
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+	Layout = "master.cshtml";
+	var selection = Umbraco.Content(Guid.Parse("d0438d4d-b8c2-4369-ae5d-813f41b8055a"))
+    .ChildrenOfType("newsItem")
+    .Where(x => x.IsVisible())
+    .OrderByDescending(x => x.CreateDate);
+}
+
+
+<main class="main-pad">
+
+	<div class="container-fluid pt-4">
+		<div class="row ">
+			<div class="col-12 ">
+				<div class="text-right pb-3  " >
+					<img class="" src="../images/fi-rr-home-blue.svg" alt=""> <img src="../images/fi-rr-angle-small-right-blue.svg" alt=""> 
+					Notícias 
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid py-4">
+		<div class="row ">
+		
+			<header class="col-6  ">
+				<h1 class="fw-bold">NOTÍCIAS</h1>
+			</header>
+			<div class="col-6 text-end">
+				<a href=""><button type="button" class="btn btn-secondary btn-filter-main btn-sm ">Filtros  <img src="../images/fi-rr-settings-sliders.svg"  alt=""> </button></a>
+			</div>             
+		</div>
+
+		<!--card -->
+		<div class="row py-5 ">
+
+			@foreach(var item in selection){
+                var image = item.Value<MediaWithCrops<Image>>("image");
+                var groupName = item.Value("groupName");
+                var title = item.Value("title");
+                var description = item.Value("description");
+                var dateAndDepartment = item.Value("dateAndDepartment");
+
+				<div class="col-12 col-lg-4 pb-5">
+					<div class="card  mb-5 rounded-3  " style="width: 100%; "  >
+						<img  src="@image.Url()" class="card-img-top card-img-home rounded-top-3 " alt="...">
+						<div class="card-body">
+							<div class="row px-3 py-4">
+								<div class="col-12 text-start fs-">
+									<div class="card-title  ">@groupName</div>
+								</div>
+								<div class="col-12 text-start">
+									<div class="card-subtitle  ">@title</div>
+								</div>
+								<div class="col-12 text-start">
+									<div class="card-context py-4  ">@description</div>
+								</div>
+								<div class="col-12 text-start">
+									<div class="card-end  pb-4 ">@dateAndDepartment</div>
+								</div>                                                                                        
+							</div>                            
+						</div>
+					</div>
+				</div>
+			}
+
+			<!--card end-->
+
+			<!--card -->
+		@*
+			<div class="col-12 col-lg-4 pb-5 ">
+				<div class="card  mb-5 rounded-3  " style="width: 100%; "  >
+					<img  src="../images/img.png" class="card-img-top card-img-home rounded-top-3 " alt="...">
+					<div class="card-body">
+						<div class="row px-3 py-4">
+							<div class="col-12 text-start fs-">
+								<div class="card-title  ">Ensino médio técnico</div>
+							</div>
+							<div class="col-12 text-start">
+								<div class="card-subtitle  ">Defesa final da PAP (Prova de Aptidão Profissional)</div>
+							</div>
+							<div class="col-12 text-start">
+								<div class="card-context py-4  ">Começará a decorrer, na próxima semana, a 11ª edição das defesas finais da Prova de Aptidão Profissional do ensino médio técnico, para os polos Camama e Viana.</div>
+							</div>
+							<div class="col-12 text-start">
+								<div class="card-end  pb-4 ">Seg, 05/06/2024 - Coordenação geral</div>
+							</div>                                                                                        
+						</div>                            
+					</div>
+				</div>
+			</div>
+	
+
+			<!--card end-->
+
+			<!--card -->
+		
+			<div class="col-12 col-lg-4 pb-5 ">
+				<div class="card  mb-5 rounded-3  " style="width: 100%; "  >
+					<img  src="../images/img.png" class="card-img-top card-img-home rounded-top-3 " alt="...">
+					<div class="card-body">
+						<div class="row px-3 py-4">
+							<div class="col-12 text-start fs-">
+								<div class="card-title  ">Ensino médio técnico</div>
+							</div>
+							<div class="col-12 text-start">
+								<div class="card-subtitle  ">Defesa final da PAP (Prova de Aptidão Profissional)</div>
+							</div>
+							<div class="col-12 text-start">
+								<div class="card-context py-4  ">Começará a decorrer, na próxima semana, a 11ª edição das defesas finais da Prova de Aptidão Profissional do ensino médio técnico, para os polos Camama e Viana.</div>
+							</div>
+							<div class="col-12 text-start ">
+								<div class="card-end  pb-4  ">Seg, 05/06/2024 - Coordenação geral</div>
+							</div>                                                                                        
+						</div>                            
+					</div>
+				</div>
+			</div>
+		</div>
+		*@
+		
+		<!--card end-->
+
+	</div>
+	<!--main fim-->
+
+</main>

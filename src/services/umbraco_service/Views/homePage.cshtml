@@ -1,0 +1,99 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+	Layout = "master.cshtml";
+}
+
+
+
+
+    <header id="top">
+        @{ Html.RenderPartial("Carousel"); }
+    </header>
+
+
+    <!--main ínicio--> 
+    <main>
+        <section>
+            <div class="container-fluid main-pad">
+
+                <!-- Sobre o IMPTEL -->
+                <div class="row pb-5 justify-content-center">
+                    <div class="col-12 text-title-main color-gold">
+                        SOBRE O IMPTEL
+                        <div class="divider-vertical"></div>
+                        <span class="text-s">SABER MAIS</span>
+                    </div>
+
+                    <div class="col-12 text-body-main">
+                        O IMPTEL é a principal escola secundária de tecnologia de Angola, onde a inovação e a educação encontram-se criando o ambiente perfeito para a sua formação.
+                    </div>
+                    <div class="col-12 text-body-main">
+                        Um modelo académico único com aprendizado baseado em projetos do mundo real realizados todos os anos e em todas as classes, permitindo que os alunos desenvolvam competências sociais e profissionais diversas, capazes de garantir a sua inserção no mercado de trabalho.
+                    </div>
+
+                    <div class="col-12 text-body-main">
+                        Todos os anos, mais de <span class="fw-semibold">1.000</span> alunos experimentam a oferta educativa do IMPTEL, e cerca de <span class="fw-semibold">150</span> técnicos médios são formados todos os anos, prontos para ingressar o mercado de trabalho ou o ensino superior.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+            <!-- Notícias -->
+        <section>
+            @{ Html.RenderPartial("NewsSection"); }
+        </section>
+
+            <!-- O IMPTEL em Angola -->
+        <section id="school">
+            <div class="container-fluid main-pad">
+                <div class="row py-5 justify-content-center">
+                    <div class="col-12 text-title-main pb-5">
+                        O IMPTEL EM ANGOLA
+                    </div>
+
+                    <!-- Camama - Sede -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card mb-5 rounded-3" style="width: 100%;">
+                            <img src="../images/imptel1.png" class="card-img-top rounded-top-3" alt="...">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6 text-start">
+                                        <div class="card-text fw-medium">Camama - Sede</div>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <div class="card-text fw-semibold"><a href="">Localização <img class="pb-1" src="../images/fi-rr-map-marker.svg" alt=""></a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vila de Viana -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card mb-5 rounded-3" style="width: 100%;">
+                            <img src="../images/imptel2.png" class="card-img-top rounded-top-3" alt="...">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6 text-start">
+                                        <div class="card-text fw-medium">Vila de Viana</div>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <div class="card-text fw-semibold"><a href="">Localização <img class="pb-1" src="../images/fi-rr-map-marker.svg" alt=""></a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    
+     <!--main fim-->
+
+
+    
+
+</html>

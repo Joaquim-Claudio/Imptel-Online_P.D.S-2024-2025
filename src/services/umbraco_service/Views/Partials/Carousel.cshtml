@@ -1,0 +1,84 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@inject Umbraco.Cms.Core.Services.IMediaService MediaService
+@inject Umbraco.Cms.Web.Common.UmbracoHelper UmbracoHelper
+@using Newtonsoft.Json.Linq
+
+@{
+    var folderName = "CarouselItems";
+
+    // Busca a pasta pelo nome no root da mídia
+    var rootMedia = MediaService.GetRootMedia();
+    var folder = rootMedia.FirstOrDefault(m => m.Name == folderName);
+    var folderId = -1;
+
+    if (folder != null){
+        folderId = folder.Id;
+    } 
+
+    var mediaTypeAlias = "carouselItem";
+    var children = MediaService.GetPagedChildren(folderId, 0, int.MaxValue, out var total);
+    var carouselItems = children.Where(m => m.ContentType.Alias == mediaTypeAlias);
+
+
+}
+
+
+<div id="mainCarousel"
+    class="carousel slide carousel-fade"
+    data-bs-ride="carousel">
+    <div class="carousel-indicators">
+
+        @for(int i = 0; i < total; i++) {
+            <button type="button"
+            data-bs-target="#mainCarousel"
+            data-bs-slide-to="@i" class="active"
+            aria-current="true"
+            aria-label="Slide @i+1"></button>
+        }
+        
+    </div>
+    <div class="carousel-inner">
+
+        @foreach(var item in carouselItems) {
+            var title = item.GetValue<string>("title");
+            var imgValue = item.GetValue<string>("image");
+            var imgUid = JArray.Parse(imgValue).First?["mediaKey"]?.ToString();
+            var imgUrl = UmbracoHelper.Media(new Guid(imgUid))?.Url();
+
+            <div class="carousel-item" >
+
+                <div class="overlay-img"
+                    style="background-image: url(@imgUrl);"></div>
+                <div class="carousel-body">
+                    <a href="">
+                        <p class="intro-text">@title</p>
+                    </a>                        
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <button class="carousel-control-prev" type="button"
+        data-bs-target="#mainCarousel"
+        data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"
+            aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+
+    <button class="carousel-control-next" type="button"
+        data-bs-target="#mainCarousel"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon"
+            aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+<div class=" text-end pe-5 pt-4">
+    <a href="">
+        <button id="mainCta" type="button" class="btn btn-secondary btn-apply-main btn-sm">
+            Saber mais <img src="../images/fi-rr-arrow-right.svg" alt="">
+        </button>
+    </a>
+</div>
