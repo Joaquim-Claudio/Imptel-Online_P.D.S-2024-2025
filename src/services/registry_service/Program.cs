@@ -45,7 +45,7 @@ builder.Services.AddSingleton<NpgsqlConnection>( provider => {
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(
         builder => {
-            builder.WithOrigins("http://localhost:3000")
+            builder.WithOrigins("http://nginx-service:80", "http://localhost")
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader();
@@ -70,7 +70,7 @@ if (!app.Environment.IsDevelopment()) {
 app.MapGet("/api/regisries/ping", () => {
 
     Console.WriteLine($"[{DateTime.Now}] PING \"GET /api/registries/ping \" 200");
-    return "Ok PHOENIX 01";
+    return "OK PHOENIX 01";
 });
 
 app.UseSession();

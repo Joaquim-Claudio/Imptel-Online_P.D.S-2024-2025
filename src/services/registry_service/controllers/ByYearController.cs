@@ -109,10 +109,4 @@ public class ByYearController(NpgsqlConnection connection,
         
     }
 
-    private async Task<string> GetCurrentYear() {
-
-        return await _session.GetStringAsync("CURRENT_ACAD_YEAR") ?? throw new Exception("Failed to retrieve session data.");
-    }
-
-
 }
