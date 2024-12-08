@@ -8,15 +8,15 @@ namespace registry_service.controllers;
 
 [ApiController]
 [Route("/api/registries/")]
-public class ActiveController(NpgsqlConnection connection,
+public class ByYearController(NpgsqlConnection connection,
                                 IDistributedCache session) : Controller {
     private readonly int SESSION_EXPIRED_CODE = 0;
     private readonly int SUCCESS_CODE = 1;
     private readonly IDistributedCache _session = session;
     private readonly NpgsqlConnection _connection = connection;
 
-    [HttpGet("active")]
-    public async Task<IActionResult> FindAll() {
+    [HttpGet("all")]
+    public async Task<IActionResult> FindAll([FromQuery(Name = "acadyear")] string acadYear) {
 
         // Log parameters
         string protocol = HttpContext.Request.Protocol;
@@ -25,27 +25,26 @@ public class ActiveController(NpgsqlConnection connection,
         var result = await CheckProfile();
         if(!result.Item1){
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/active {protocol}\" 401");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/all/?acadyear={acadYear} {protocol}\" 401");
             return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired.") : Unauthorized();
         }
 
         try {
-            string? _current_year = GetCurrentYear().Result;
-            string query = "SELECT r1.id, c2.name, c1.name, s1.name, s1.internid "+
+            string query = "SELECT r1.id, c2.name, c1.id, c1.name, c1.roomid, s1.id, s1.internid, s1.name "+
                             "FROM Registry AS r1 "+
                             "INNER JOIN Student AS s1 ON r1.student_id = s1.id "+
                             "INNER JOIN Enrollment AS e1 ON r1.enrollment_id = e1.id "+
                             "INNER JOIN \"Class\" AS c1 ON e1.class_id = c1.id "+
                             "INNER JOIN Course AS c2 ON e1.course_id = c2.id "+
                             "WHERE e1.acadyear = ($1) "+
-                            "GROUP BY r1.id, c2.name, c1.name, s1.name, s1.internid "+
+                            "GROUP BY r1.id, c2.name, c1.id, c1.name, c1.roomid, s1.id, s1.internid, s1.name "+
                             "ORDER BY c2.name, c1.name, s1.name";
             //FIXME: Remove
             Console.WriteLine("\n" + query + "\n");
 
             NpgsqlCommand cmd = new(query, _connection){
                 Parameters = {
-                    new() {Value = _current_year}
+                    new() {Value = acadYear}
                 }
             };
 
@@ -53,24 +52,21 @@ public class ActiveController(NpgsqlConnection connection,
 
             if(!reader.HasRows) {
 
-                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/active {protocol}\" 404");
+                Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/all/?acadyear={acadYear} {protocol}\" 404");
                 return NotFound();
             }
 
-            List<SimpleRegistryData> registries = [];
+            List<RegistryData> registries = [];
 
             while (reader.ReadAsync().Result) {
-                SimpleRegistryData row = new(
-                    reader.GetInt32(0),
-                    reader.GetString(1),
-                    reader.GetString(2),
-                    reader.GetString(3),
-                    reader.GetString(4));
+                ClassModel _class = new(reader.GetInt32(2), reader.GetString(3), reader.GetString(4));
+                StudentModel student = new(reader.GetInt32(5), reader.GetString(6), reader.GetString(7));
+                RegistryData row = new(reader.GetInt32(0), reader.GetString(1), _class, student);
 
                 registries.Add(row);
             }
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/active {protocol}\" 200");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/all/?acadyear={acadYear} {protocol}\" 200");
             return Ok(registries);
 
 
