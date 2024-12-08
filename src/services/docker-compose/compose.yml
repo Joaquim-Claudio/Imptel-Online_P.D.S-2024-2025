@@ -45,8 +45,79 @@ services:
       REDIS_HOST: database.imptel.session
       REDIS_PORT: 6379
       REDIS_PASSWORD: Imp7e1_db_session
+    depends_on:
+      - session
+      - database
     deploy:
       replicas: 2
+
+
+  registry-service:
+    image: registry-service:1.0
+    restart: always
+    networks:
+      - inner-link
+    environment:
+      DB_USER: database.imptel
+      DB_PASSWORD: Imp7e1_db
+      DB_HOST: database.imptel
+      DB_PORT: 5432
+      DB_NAME: database.imptel
+      REDIS_HOST: database.imptel.session
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: Imp7e1_db_session
+    depends_on:
+      - session
+      - database
+    deploy:
+      replicas: 2
+      
+  
+  auxiliar-service:
+    image: auxiliar-service:1.0
+    restart: always
+    networks:
+      - inner-link
+    environment:
+      DB_USER: database.imptel
+      DB_PASSWORD: Imp7e1_db
+      DB_HOST: database.imptel
+      DB_PORT: 5432
+      DB_NAME: database.imptel
+      REDIS_HOST: database.imptel.session
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: Imp7e1_db_session
+    depends_on:
+      - session
+      - database
+    deploy:
+      replicas: 2
+    
+
+  app-service:
+    image: app-service:1.0
+    restart: always
+    networks:
+      - inner-link
+    depends_on:
+      - account-service
+      - registry-service
+      - auxiliar-service
+    deploy:
+      replicas: 2
+
+
+  nginx-service:
+    image: nginx-service:1.0
+    ports:
+      - 80:80
+    networks:
+      - inner-link
+    depends_on:
+      - account-service
+      - registry-service
+      - auxiliar-service
+      - app-service
     
     
 
