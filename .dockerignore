@@ -10,6 +10,7 @@ node_modules/
 project.lock.json
 .DS_Store
 *.pyc
+*.env
 
 # Visual Studio Code
 .vscode
@@ -63,3 +64,26 @@ dist-ssr
 *.sw?
 
 *.code-workspace
+
+
+# Ignorar artefatos de build e temporários
+bin/
+obj/
+*.user
+*.suo
+*.log
+*.vs/
+.vscode/
+
+# Ignorar arquivos de dependência e cache
+*.pdb
+*.cache
+*.tmp
+
+# Ignorar arquivos desnecessários para o container
+docker-compose.*
+*.md
+*.yaml
+*.yml
+.git/
+.gitignore
