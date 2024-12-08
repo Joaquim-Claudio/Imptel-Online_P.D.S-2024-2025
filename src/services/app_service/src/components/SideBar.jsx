@@ -16,7 +16,7 @@ import logo from "../assets/images/logo.svg"
 import axios from "axios";
 
 const http = axios.create({
-    baseURL: "http://localhost:5293/api/accounts",
+    baseURL: import.meta.env.VITE_ACCOUNT_SERVICE_URL,
     withCredentials: true
 })
 

@@ -11,28 +11,82 @@ import { PAGE } from "../assets/utils/PageIdMap";
 import axios from "axios"
 
 const registries = axios.create({
-    baseURL: "http://localhost:5297/api/registries",
+    baseURL: import.meta.env.VITE_REGISTRY_SERVICE_URL,
     withCredentials: true
-})
+});
+
+const auxiliar = axios.create({
+    baseURL: import.meta.env.VITE_AUXILIAR_SERVICE_URL,
+    withCredentials: true
+});
 
 
 function StudentList({user}) {
 
     const [result, setResult] = React.useState();
+    const [yearList, setYearsList] = React.useState();
+
     const [netError, setNetError] = React.useState(false);
     const [acadYear, setAcadYear] = React.useState(user.acadYear);
     const [sessionExpired, setSessionExpired] = React.useState(false);
     const [notFoundError, setNotFoundError] = React.useState(false);
+
     const [isLoading, setIsLoading] = React.useState(true);
 
     function handleSelection(event) {
         setAcadYear(event.target.value);
     }
 
+    // Fetch a list of all academic years
+    React.useEffect(function() {
+
+        setIsLoading(true);
+
+        try {
+            auxiliar.get("acadyears")
+            .then( (respose) => {
+                setYearsList(respose.data.$values);
+                setIsLoading(false);
+            })
+            .catch( (error) => {
+                if(!error.response){
+                    console.error("No error response");
+
+                    setNetError(true)
+
+                    setTimeout(function() {
+                        setNetError(false);
+                    }, 3000)
+                }
+                else if (error.response?.status == 401) {
+                    console.error("Response: " + error.response.status + " \"Unauthorized\"");
+                    setSessionExpired(true)
+
+                    setTimeout(function(){
+                        setSessionExpired(false)
+                    }, 3000)
+                }
+                else if (error.response?.status == 404) {
+                    console.error("Response: " + error.response.status + " \"Not found\"");
+                }
+       
+                setIsLoading(false)
+            });
+
+        } catch(err) {
+            console.error(err)
+        }
+
+
+    }, []);
+
+
+    // Fetch all the students based on given academic year
     React.useEffect(function(){
 
         setNotFoundError(false);
         setIsLoading(true);
+        
 
         try {
             registries.get("all/", { params: { acadYear } })
@@ -71,7 +125,8 @@ function StudentList({user}) {
         }
 
         
-    }, [acadYear])
+    }, [acadYear]);
+
 
 
     if(result) {
@@ -87,8 +142,6 @@ function StudentList({user}) {
         }, {})
 
     }
-
-    console.log(acadYear);
     
     
     return (
@@ -132,18 +185,16 @@ function StudentList({user}) {
                                 </header>
 
                                 <div className="filter" onChange={handleSelection}>
-                                    <RadioInput value="2022/2023" name="acadyear"
-                                        defaultChecked={"2022/2023" === user.acadYear}/>
+                                     
+                                    {yearList && yearList.map( (year) => (
+                                        <RadioInput key={year.id} value={year.name} name="acadyear"
+                                            defaultChecked={year.name === user.acadYear}/>
+                                    ))}
 
-                                    <RadioInput value="2023/2024" name="acadyear"
-                                        defaultChecked={"2023/2024" === user.acadYear}/>
-
-                                    <RadioInput value="2024/2025" name="acadyear"
-                                        defaultChecked={"2024/2025" === user.acadYear}/>
                                 </div>
 
                                 <div>
-                                    {notFoundError || !result ? 
+                                    {notFoundError || !result || !yearList? 
                                     (
                                         <div className="not-found-msg">
                                             <p>Não foram encontrados alunos matriculados no ano lectivo {acadYear}.</p>

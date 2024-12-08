@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter , Routes, Route, Navigate } from "react-router-dom";
+
 import Alert from "./components/Alert";
+
 import Homepage from "./pages/Homepage";
 import Student from "./pages/Student";
 import StudentList from "./pages/StudentList";
@@ -11,7 +13,7 @@ import Login from "./pages/Login";
 import axios from "axios"
 
 const accounts = axios.create({
-    baseURL: "http://localhost:5293/api/accounts",
+    baseURL: import.meta.env.VITE_ACCOUNT_SERVICE_URL,
     withCredentials: true
 })
 

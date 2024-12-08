@@ -1,19 +1,20 @@
 import React from "react";
+
 import InputElement from "../components/InputElement";
 import ButtonNew from "../components/ButtonNew";
 import SideBar from "../components/SideBar"
 import Toolbar from "../components/Toolbar"
 import Footer from "../components/Footer"
 import Alert from "../components/Alert";
+
 import plusIcon from "../assets/images/fi-br-plus.svg"
 import searchIcon from "../assets/images/Frame34.svg";
-
 import { PAGE } from "../assets/utils/PageIdMap";
 
-import axios from "axios";
+import axios from "axios"
 
 const accounts = axios.create({
-    baseURL: "http://localhost:5293/api/accounts",
+    baseURL: import.meta.env.VITE_ACCOUNT_SERVICE_URL,
     withCredentials: true
 })
 
@@ -123,11 +124,6 @@ function Student({user}) {
         } catch(err) {
             console.error(err)
         }
-
-        setTimeout(function(){
-            setStudent("Bom dia")
-            console.log(student);
-        }, 3000)
     }
 
    

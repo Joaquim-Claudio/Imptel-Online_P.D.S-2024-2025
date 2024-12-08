@@ -1,12 +1,14 @@
 import React from "react";
+
 import Alert from "../components/Alert";
+
 import banner from "../assets/images/imgExemploIA.png"
 import logo from "../assets/images/logo.svg"
 
 import axios from "axios"
 
 const accounts = axios.create({
-    baseURL: "http://localhost:5293/api/accounts",
+    baseURL: import.meta.env.VITE_ACCOUNT_SERVICE_URL,
     withCredentials: true
 })
 
