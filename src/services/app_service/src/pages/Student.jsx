@@ -12,7 +12,7 @@ import { PAGE } from "../assets/utils/PageIdMap";
 
 import axios from "axios";
 
-const http = axios.create({
+const accounts = axios.create({
     baseURL: "http://localhost:5293/api/accounts",
     withCredentials: true
 })
@@ -78,7 +78,7 @@ function Student({user}) {
         setIsLoading(true);
 
         try {
-            http.post("find/student", {keywords})
+            accounts.post("find/student", {keywords})
 
             .then( (response) => {
                 setStudent(response.data);
@@ -153,7 +153,7 @@ function Student({user}) {
             <Alert 
                 fireOn={sessionExpired}
                 title="Sessão expirada"
-                text="Dentro de instantes será redirecionado para a página inicial."
+                text="Utilize as suas credenciais para inciar uma nova sessão."
                 icon="error"
                 showBadge={true}
             />

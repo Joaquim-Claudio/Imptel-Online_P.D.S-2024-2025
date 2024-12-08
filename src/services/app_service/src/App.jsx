@@ -10,27 +10,46 @@ import Login from "./pages/Login";
 
 import axios from "axios"
 
-const http = axios.create({
+const accounts = axios.create({
     baseURL: "http://localhost:5293/api/accounts",
     withCredentials: true
 })
 
 function App() {
     const [user, setUser] = React.useState();
+    const [netError, setNetError] = React.useState(false);
+    const [sessionExpired, setSessionExpired] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
 
     React.useEffect(function() {
         try {
-            http.get("/auth")
+            accounts.get("/auth")
                 .then( (response) => {
                     setUser(response.data)
                     setIsLoading(false)
                 })
         
                 .catch( (error) => {
-                    if(!error.response) console.error("No error response");
-                    else if (error.response?.status == 401) console.error("Response: " + error.response.status + " \"Unauthorized\"");
-                    else console.error("Authentication failed");
+                    if(!error.response){
+                        console.error("No error response");
+    
+                        setNetError(true)
+    
+                        setTimeout(function() {
+                            setNetError(false);
+                        }, 3000)
+                    }
+                    else if (error.response?.status == 401) {
+                        console.error("Response: " + error.response.status + " \"Unauthorized\"");
+                        setSessionExpired(true)
+    
+                        setTimeout(function(){
+                            setSessionExpired(false)
+                        }, 3000)
+                    }
+                    else if (error.response?.status == 404) {
+                        console.error("Response: " + error.response.status + " \"Not found\"");
+                    }
            
                     setIsLoading(false)
                 });
@@ -44,11 +63,30 @@ function App() {
 
     if(isLoading) {
         return (
-            <Alert 
-                text="A carregar a página..."
-                icon="loader" 
-                showBadge={true}
-            />
+            <div className="container-fluid">
+                <Alert 
+                    fireOn={isLoading}
+                    text="A carregar a página..."
+                    icon="loader" 
+                    showBadge={true}
+                />
+                <Alert 
+                    fireOn={netError}
+                    title="Upsss!"
+                    text="Algo correu mal... Tente outra vez dentro de alguns minutos."
+                    icon="warning"
+                    showBadge={true}
+                />
+
+                <Alert 
+                    fireOn={sessionExpired}
+                    title="Sessão expirada"
+                    text="Utilize as suas credenciais para inciar uma nova sessão."
+                    icon="error"
+                    showBadge={true}
+                />
+
+            </div>
         )
     }
 

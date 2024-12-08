@@ -211,7 +211,6 @@ input{
     font-size: 10pt;
     outline: 0;
     color: #253653;
-    box-shadow: 0 0 3px var(--box-shadow-color);
     border:0px ; 
     width: 100%;
     border-radius: 9px;
@@ -226,6 +225,13 @@ input::placeholder{
     color:#B4B4B4 ;
 }
 
+input[type="radio"] {
+    box-shadow: none;
+    border: none;
+    width: fit-content;
+    height: fit-content;
+
+}
 
 .section-header{
     margin-top: 3rem;
@@ -312,18 +318,18 @@ label{
     background-color: var(--color-light);
     color:#253653;
     font-weight: 500;
-    font-size: 15pt;
+    font-size: 14pt;
     padding: 10px 0;
 }
 
-.dropdownClassKey{
+.dropdownClass{
     @extend .dropdown-btn;
     font-weight: 400;
     padding: 5px 50px;
     
 }
 
-.dropdownClasskey-item{
+.dropdownClass-item{
     padding: 5px 110px;
 }
 
@@ -400,15 +406,26 @@ label{
     background-image: url(../assets/images/error.png);
 }
 
-
-
   /* Safari */
 @-webkit-keyframes spin {
     0% { -webkit-transform: rotate(0deg); }
     100% { -webkit-transform: rotate(360deg); }
   }
   
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+
+.not-found-msg {
+    padding: 4rem;
+    color: #888888;
+}
+
+.filter {
+    float: right;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+}

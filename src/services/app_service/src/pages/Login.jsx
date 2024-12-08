@@ -5,7 +5,7 @@ import logo from "../assets/images/logo.svg"
 
 import axios from "axios"
 
-const http = axios.create({
+const accounts = axios.create({
     baseURL: "http://localhost:5293/api/accounts",
     withCredentials: true
 })
@@ -61,7 +61,7 @@ function Login () {
         try {
             setIsLoading(true);
 
-            http.post("login", {
+            accounts.post("login", {
                 username,
                 password
             }) .then( (response) => {
