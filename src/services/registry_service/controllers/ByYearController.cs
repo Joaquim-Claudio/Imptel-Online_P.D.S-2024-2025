@@ -42,7 +42,7 @@ public class ByYearController(NpgsqlConnection connection,
             //FIXME: Remove
             Console.WriteLine("\n" + query + "\n");
 
-            NpgsqlCommand cmd = new(query, _connection){
+            var cmd = new NpgsqlCommand(query, _connection){
                 Parameters = {
                     new() {Value = acadYear}
                 }
