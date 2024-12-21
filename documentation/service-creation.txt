@@ -9,11 +9,12 @@ dotnet add package Microsoft.Extensions.Caching.StackExchangeRedis
 dotnet user-secrets init
 dotnet user-secrets set "DB_USER" "database.imptel"
 dotnet user-secrets set "DB_PASSWORD" "Imp7e1_db"
-dotnet user-secrets set "DB_HOST" "database.imptel"
+dotnet user-secrets set "DB_HOST" "localhost"
 dotnet user-secrets set "DB_PORT" "7001"
 dotnet user-secrets set "DB_NAME" "database.imptel"
-dotnet user-secrets set "REDIS_HOST" "database.imptel.session"
-dotnet user-secrets set "REDIS_PORT" "7002"
+
+dotnet user-secrets set "REDIS_HOST" "localhost"
+dotnet user-secrets set "REDIS_PORT" "7012"
 dotnet user-secrets set "REDIS_PASSWORD" "Imp7e1_db_session"
 
 3) Configure Json serialization
