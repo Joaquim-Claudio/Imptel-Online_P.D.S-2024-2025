@@ -1,5 +1,3 @@
--- Updated
-
 CREATE TYPE Role AS ENUM ('Secretary', 'Teacher', 'Student', 'Helpdesk', 'Admin');
 CREATE TYPE Level AS ENUM ('10', '11', '12', '13');
 CREATE TYPE FeeRole AS ENUM ('Tuition', 'Subscription', 'Renewal', 'Late');
@@ -170,6 +168,11 @@ INSERT INTO "User" (internid, name, email, address, phone, birthdate, hashpasswo
 VALUES ('mario.igreja', 'Mário André de Oliveira Igreja', 'mario.igreja@gmail.com',
         'Rua Comandante Eurico', '+244 921 067 921', '1976-05-29',
         'AQAAAAIAAYagAAAAEGu8ksVFSNNWDWcuVAv+tjJ8di3kJDDRJSoitHX+wuqh6VsMt/JcycoydDH60StSyg==', 'Admin');
+
+INSERT INTO Student (internid, name, email, address, phone, birthdate, hashpassword, role, docId)
+VALUES ('20240001', 'Joaquim Manuel Igreja Cláudio', 'jclaudio223@gmail.com',
+        'Rua Doutor João 10 1 FRT 1500-435, Odivelas', '+244 935 328 921', '2001-11-13',
+        'AQAAAAIAAYagAAAAEGu8ksVFSNNWDWcuVAv+tjJ8di3kJDDRJSoitHX+wuqh6VsMt/JcycoydDH60StSyg==', 'Student', '295698745');
 
 INSERT INTO Course (name, duration)
 VALUES ('Médio Técnico de Electrónica e Telecomunicações', 4);

@@ -42,10 +42,13 @@ builder.Services.AddSingleton<NpgsqlConnection>( provider => {
     return connection;
 });
 
+
+
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(
         builder => {
-            builder.WithOrigins("http://nginx-service:80", "http://localhost")
+            // FIXME: remove localhost:3000 cors 
+            builder.WithOrigins("http://nginx-service:80", "http://localhost", "http://localhost:3000")
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader();
@@ -67,10 +70,10 @@ if (!app.Environment.IsDevelopment()) {
 }
 
 
-app.MapGet("/api/regisries/ping", () => {
+app.MapGet("/api/accounts/ping", () => {
 
-    Console.WriteLine($"[{DateTime.Now}] PING \"GET /api/registries/ping \" 200");
-    return "OK PHOENIX 01";
+    Console.WriteLine($"[{DateTime.Now}] PING \"GET /api/accounts/ping \" 200");
+    return "OK MARSHAL 01";
 });
 
 app.UseSession();

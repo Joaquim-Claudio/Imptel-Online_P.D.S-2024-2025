@@ -31,6 +31,9 @@ public class GetAcadYears(NpgsqlConnection connection,
 
         try {
             string query = "SELECT * FROM Acadyear ORDER BY name DESC";
+            
+            //FIXME: Remove
+            Console.WriteLine("\n" + query + "\n");
 
             var cmd = new NpgsqlCommand(query, _connection);
 
