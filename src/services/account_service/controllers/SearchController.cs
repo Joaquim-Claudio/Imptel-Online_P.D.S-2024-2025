@@ -43,12 +43,13 @@ public class SearchController(IDistributedCache session,
 
             string sqlQuery = "SELECT id, internid, name, email, address, phone, birthdate, role, docid "+
                                 "FROM Student "+
-                                $"WHERE internid = ($1) or name ILIKE '%{keywords}%';";
+                                $"WHERE internid = ($1) or name ILIKE ($2);";
 
 
             NpgsqlCommand cmd = new (sqlQuery, _connection){
                 Parameters = {
-                    new() {Value = keywords}
+                    new() {Value = keywords},
+                    new() {Value = $"%{keywords}%"}
                 }
             };
 
@@ -118,12 +119,13 @@ public class SearchController(IDistributedCache session,
 
             string sqlQuery = "SELECT id, internid, name, email, address, phone, birthdate, role, docid, academicLevel, course "+
                                 "FROM Teacher "+
-                                $"WHERE internid = ($1) or name ILIKE '%{keywords}%';";
+                                $"WHERE internid = ($1) or name ILIKE ($2);";
 
 
             NpgsqlCommand cmd = new (sqlQuery, _connection){
                 Parameters = {
-                    new() {Value = keywords}
+                    new() {Value = keywords},
+                    new() {Value = $"%{keywords}%"}
                 }
             };
 
@@ -194,12 +196,13 @@ public class SearchController(IDistributedCache session,
 
             string sqlQuery = "SELECT id, internid, name, email, address, phone, birthdate, role, docid, position, building_id "+
                                 "FROM Secretary "+
-                                $"WHERE internid = ($1) or name ILIKE '%{keywords}%';";
+                                $"WHERE internid = ($1) or name ILIKE ($2);";
 
 
             NpgsqlCommand cmd = new (sqlQuery, _connection){
                 Parameters = {
-                    new() {Value = keywords}
+                    new() {Value = keywords},
+                    new() {Value = $"%{keywords}%"}
                 }
             };
 
@@ -268,11 +271,13 @@ public class SearchController(IDistributedCache session,
 
             string sqlQuery = "SELECT id, internid, name, email, address, phone, birthdate, role, docid "+
                                 "FROM \"User\" "+
-                                $"WHERE internid = ($1) or name ILIKE '%{keywords}%';";
+                                $"WHERE internid = ($1) or name ILIKE ($2);";
+
 
             NpgsqlCommand cmd = new (sqlQuery, _connection){
                 Parameters = {
-                    new() {Value = keywords}
+                    new() {Value = keywords},
+                    new() {Value = $"%{keywords}%"}
                 }
             };
 
