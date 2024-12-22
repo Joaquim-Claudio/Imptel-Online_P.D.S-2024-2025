@@ -7,6 +7,6 @@ public class EnrollmentModel (int id, string level, string acadYear, ClassModel 
     public int Id {get; set;} = id;
     public string Level {get; set;} = level;
     public string AcadYear {get; set;} = acadYear;
-    public ClassModel Class {get; set;} = _class;
+    public ClassModel _Class {get; set;} = _class;
     public CourseModel Course {get; set;} = course;
 }

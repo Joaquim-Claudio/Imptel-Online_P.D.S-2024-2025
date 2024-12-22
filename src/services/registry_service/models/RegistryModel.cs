@@ -9,16 +9,14 @@ public class RegistryModel (
             int? id, 
             DateOnly date, 
             string status, 
-            bool? approved, 
-            StudentModel student, 
+            bool? approved,
             EnrollmentModel? enrollment,
-            BuildingModel building )
+            BuildingModel? building )
 {
     public int? Id {get; set;} = id;
     public DateOnly Date {get; set;} = date; 
     public string Status {get; set;} = status; 
     public bool? Approved {get; set;} = approved; 
-    public StudentModel Student {get; set;} = student; 
     public EnrollmentModel? Enrollment {get; set;} = enrollment;
-    public BuildingModel Building {get; set;} = building;
+    public BuildingModel? Building {get; set;} = building;
 }

@@ -16,3 +16,10 @@ public class UserData {
 
     }
 }
+
+
+
+
+public class Query (string keywords) {
+    public string Keywords {get; set;} = keywords;
+}

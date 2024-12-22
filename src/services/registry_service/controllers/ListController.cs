@@ -8,7 +8,7 @@ namespace registry_service.controllers;
 
 [ApiController]
 [Route("/api/registries/")]
-public class ByYearController(NpgsqlConnection connection,
+public class ListController(NpgsqlConnection connection,
                                 IDistributedCache session) : Controller {
     private readonly int SESSION_EXPIRED_CODE = 0;
     private readonly int SUCCESS_CODE = 1;
