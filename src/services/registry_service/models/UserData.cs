@@ -17,7 +17,13 @@ public class UserData {
     }
 }
 
-
+public class RegistryData(int studentId, int enrollmentId, int buildingId, DateOnly date, string status) {
+    public int StudentId {get; set;} = studentId;
+    public int EnrollmentId {get; set;} = enrollmentId;
+    public int BuildingId {get; set;} = buildingId;
+    public DateOnly Date {get; set;} = date;
+    public string Status {get; set;} = status;
+}
 
 
 public class Query (string keywords) {

@@ -56,12 +56,12 @@ public class ListController(NpgsqlConnection connection,
                 return NotFound();
             }
 
-            List<RegistryData> registries = [];
+            List<ListRegistryData> registries = [];
 
             while (reader.ReadAsync().Result) {
                 ClassModel _class = new(reader.GetInt32(2), reader.GetString(3), reader.GetString(4));
                 StudentModel student = new(reader.GetInt32(5), reader.GetString(6), reader.GetString(7));
-                RegistryData row = new(reader.GetInt32(0), reader.GetString(1), _class, student);
+                ListRegistryData row = new(reader.GetInt32(0), reader.GetString(1), _class, student);
 
                 registries.Add(row);
             }
