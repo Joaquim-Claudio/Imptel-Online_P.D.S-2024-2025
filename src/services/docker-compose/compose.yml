@@ -75,7 +75,7 @@ services:
       REDIS_PORT: 6379
       REDIS_PASSWORD: Imp7e1_db_session
     depends_on:
-      - session
+      - session-database
       - primary-database
     # deploy:
     #   replicas: 2
@@ -103,7 +103,7 @@ services:
       REDIS_PORT: 6379
       REDIS_PASSWORD: Imp7e1_db_session
     depends_on:
-      - session
+      - session-database
       - primary-database
     # deploy:
     #   replicas: 2
@@ -131,7 +131,7 @@ services:
       REDIS_PORT: 6379
       REDIS_PASSWORD: Imp7e1_db_session
     depends_on:
-      - session
+      - session-database
       - primary-database
     # deploy:
     #   replicas: 2
