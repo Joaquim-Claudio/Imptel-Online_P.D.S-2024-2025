@@ -421,11 +421,11 @@ public class CreateController(IDistributedCache session,
         if(user.Id != null) return false;
         if(!string.IsNullOrWhiteSpace(user.InternId)) return false;
         if(!string.IsNullOrWhiteSpace(user.HashPassword)) return false;
-        if(string.IsNullOrWhiteSpace(user.Name)) return false;
-        if(string.IsNullOrWhiteSpace(user.DocId)) return false;
-        if(string.IsNullOrWhiteSpace(user.Email)) user.Email = "";
-        if(string.IsNullOrWhiteSpace(user.Address)) user.Address = "";
-        if(string.IsNullOrWhiteSpace(user.Phone)) user.Phone = "";
+        if(user.Name.GetType() != typeof(string) || string.IsNullOrWhiteSpace(user.Name)) return false;
+        if(user.DocId.GetType() != typeof(string) || string.IsNullOrWhiteSpace(user.DocId)) return false;
+        if(user.Email?.GetType() != typeof(string)) return false;
+        if(user.Address?.GetType() != typeof(string)) return false;
+        if(user.Phone?.GetType() != typeof(string)) return false;
 
         return true;
     }
