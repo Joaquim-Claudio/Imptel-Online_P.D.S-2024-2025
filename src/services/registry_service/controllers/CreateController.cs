@@ -37,7 +37,7 @@ public class CreateController(NpgsqlConnection connection,
 
         try {
             string query =  "INSERT INTO Registry (date, status, student_id, building_id, enrollment_id) "+
-                            $"VALUES ( ($1), '{registry.Status}', ($2), ($3), ($4) )";
+                            $"VALUES ( ($1), '{registry.Status}', ($2), ($3), ($4))";
             
             //FIXME: Remove
             Console.WriteLine("\n" + query + "\n");

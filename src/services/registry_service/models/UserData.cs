@@ -17,12 +17,16 @@ public class UserData {
     }
 }
 
-public class RegistryData(int studentId, int enrollmentId, int buildingId, DateOnly date, string status) {
+public class RegistryData(int? id, int studentId, int enrollmentId, int buildingId, 
+                            DateOnly date, DateOnly? updateDate, string status, bool? approved) {
+    public int? Id {get; set;} = id;
     public int StudentId {get; set;} = studentId;
     public int EnrollmentId {get; set;} = enrollmentId;
     public int BuildingId {get; set;} = buildingId;
     public DateOnly Date {get; set;} = date;
+    public DateOnly? UpdateDate {get; set;} = updateDate;
     public string Status {get; set;} = status;
+    public bool? Approved {get; set;} = approved;
 }
 
 

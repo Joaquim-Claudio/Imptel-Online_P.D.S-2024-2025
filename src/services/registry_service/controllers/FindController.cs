@@ -45,7 +45,7 @@ public class FindController(NpgsqlConnection connection,
         }
 
         try {
-            string sqlQuery =   "SELECT r1.id, r1.date, r1.status, r1.approved, "+
+            string sqlQuery =   "SELECT r1.id, r1.date, r1.update_date, r1.status, r1.approved, "+
                                     "c1.id, c1.name, c1.duration, c2.id, c2.name, c2.roomid, "+
                                     "e1.id, e1.level, e1.acadyear "+
                                 "FROM registry as r1 "+
@@ -70,16 +70,17 @@ public class FindController(NpgsqlConnection connection,
             List<RegistryModel> registries = [];
 
             while(reader.ReadAsync().Result) { 
-                CourseModel course = new(reader.GetInt32(4), reader.GetString(5), reader.GetInt32(6));
+                CourseModel course = new(reader.GetInt32(5), reader.GetString(6), reader.GetInt32(7));
 
-                ClassModel _class = new(reader.GetInt32(7), reader.GetString(8), reader.GetString(9));
-                EnrollmentModel enrollment = new(reader.GetInt32(10), reader.GetString(11), reader.GetString(12), _class, course);
+                ClassModel _class = new(reader.GetInt32(8), reader.GetString(9), reader.GetString(10));
+                EnrollmentModel enrollment = new(reader.GetInt32(11), reader.GetString(12), reader.GetString(13), _class, course);
 
                 RegistryModel registry = new(
                     reader.GetInt32(0),
                     reader.GetFieldValue<DateOnly>(1),
-                    reader.GetString(2),
-                    !reader.IsDBNull(3) ? reader.GetBoolean(3) : null,
+                    reader.GetFieldValue<DateOnly>(2),
+                    reader.GetString(3),
+                    !reader.IsDBNull(4) ? reader.GetBoolean(4) : null,
                     enrollment,
                     null
                 );
