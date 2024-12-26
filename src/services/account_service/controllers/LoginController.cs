@@ -47,12 +47,12 @@ public class LoginController (NpgsqlConnection connection,
                 // Case Role == 'Student'
                 case "Student":
 
-                    string studentQuery = "SELECT b1.name, b1.address, b1.phone, b1.email, c1.name "+
+                    string studentQuery =   "SELECT b1.name, b1.address, b1.phone, b1.email, c1.name "+
                                             "FROM registry AS r1 "+
                                             "INNER JOIN building AS b1 ON r1.building_id=b1.id "+
                                             "INNER JOIN enrollment AS e1 ON r1.enrollment_id=e1.id "+
                                             "INNER JOIN course AS c1 ON e1.course_id = c1.id " +
-                                            "WHERE r1.student_id = ($1) AND r1.status='Active';";
+                                            "WHERE r1.student_id = ($1) AND (r1.status='Active' or r1.status='Finished');";
 
 
                     var stdCmd = new NpgsqlCommand(studentQuery, _connection) {

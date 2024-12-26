@@ -75,8 +75,8 @@ public class UpdateController(IDistributedCache session,
                 reader.GetString(8)
             );
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/self/{internId} {protocol}\" 200");
-            return Ok(updatedUser);
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/self/{internId} {protocol}\" 201");
+            return Created("/", updatedUser);
 
         }catch(Exception e) {
 
@@ -153,8 +153,8 @@ public class UpdateController(IDistributedCache session,
                 reader.GetString(8)
             );
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/student/{internId} {protocol}\" 200");
-            return Ok(updatedStudent);
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/student/{internId} {protocol}\" 201");
+            return Created("/", updatedStudent);
 
         } catch(Exception e) {
 
@@ -234,8 +234,8 @@ public class UpdateController(IDistributedCache session,
                 reader.GetString(10)
             );
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/teacher/{internId} {protocol}\" 200");
-            return Ok(updatedTeacher);
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/teacher/{internId} {protocol}\" 201");
+            return Created("/", updatedTeacher);
 
         } catch(Exception e) {
 
@@ -315,8 +315,8 @@ public class UpdateController(IDistributedCache session,
                 reader.GetInt32(10)
             );
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/secretary/{internId} {protocol}\" 200");
-            return Ok(updatedSecretary);
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/secretary/{internId} {protocol}\" 201");
+            return Created("/", updatedSecretary);
 
         } catch(Exception e) {
 
@@ -390,8 +390,8 @@ public class UpdateController(IDistributedCache session,
                 reader.GetString(8)
             );
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/helpdesk/{internId} {protocol}\" 200");
-            return Ok(updatedHelpdesk);
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"PUT /api/accounts/update/helpdesk/{internId} {protocol}\" 201");
+            return Created("/", updatedHelpdesk);
 
         } catch (Exception e) {
             
@@ -483,11 +483,11 @@ public class UpdateController(IDistributedCache session,
         if(user.Id != null) return false;
         if(!string.IsNullOrWhiteSpace(user.InternId)) return false;
         if(!string.IsNullOrWhiteSpace(user.HashPassword)) return false;
-        if(string.IsNullOrWhiteSpace(user.Name)) return false;
-        if(string.IsNullOrWhiteSpace(user.DocId)) return false;
-        if(string.IsNullOrWhiteSpace(user.Email)) user.Email = "";
-        if(string.IsNullOrWhiteSpace(user.Address)) user.Address = "";
-        if(string.IsNullOrWhiteSpace(user.Phone)) user.Phone = "";
+        if(user.Name.GetType() != typeof(string) || string.IsNullOrWhiteSpace(user.Name)) return false;
+        if(user.DocId.GetType() != typeof(string) || string.IsNullOrWhiteSpace(user.DocId)) return false;
+        if(user.Email?.GetType() != typeof(string)) return false;
+        if(user.Address?.GetType() != typeof(string)) return false;
+        if(user.Phone?.GetType() != typeof(string)) return false;
 
         return true;
     }
