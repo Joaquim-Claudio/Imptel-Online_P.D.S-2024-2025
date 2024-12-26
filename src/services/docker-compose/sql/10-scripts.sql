@@ -66,6 +66,7 @@ CREATE TABLE Enrollment (
 CREATE TABLE Registry (
     id SERIAL PRIMARY KEY,
     date DATE,
+    update_date DATE DEFAULT CURRENT_DATE,
     status Status,
     approved bool,
     student_id INTEGER,
