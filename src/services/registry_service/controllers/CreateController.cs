@@ -24,14 +24,14 @@ public class CreateController(NpgsqlConnection connection,
         var result = await CheckProfile();
         if(!result.Item1) {
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/create {protocol}\" 401");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/registries/create {protocol}\" 401");
             return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired") : Unauthorized();
         }
 
         if(!ValidateData(registry)) {
             
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/create {protocol}\" 400");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/registries/create {protocol}\" 400");
             return BadRequest();
         }
 
@@ -53,7 +53,7 @@ public class CreateController(NpgsqlConnection connection,
 
             await cmd.ExecuteNonQueryAsync();
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/create {protocol}\" 201");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/registries/create {protocol}\" 201");
             return Created("/", null);
 
         } catch (Exception e) {

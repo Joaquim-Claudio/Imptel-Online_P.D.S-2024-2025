@@ -25,13 +25,13 @@ public class FindController(NpgsqlConnection connection,
         var result = await CheckProfile();
         if(!result.Item1){
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/find {protocol}\" 401");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/registries/find {protocol}\" 401");
             return result.Item2 == SESSION_EXPIRED_CODE ? Unauthorized("Session expired.") : Unauthorized();
         }
 
         if(!ValidateQuery(query.Keywords)){
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/find {protocol}\" 400");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/registries/find {protocol}\" 400");
             return BadRequest();
         }
 
@@ -40,7 +40,7 @@ public class FindController(NpgsqlConnection connection,
 
         if(student == null) {
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/find {protocol}\" 404");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/registries/find {protocol}\" 404");
             return NotFound("Student not found.");
         }
 
@@ -96,7 +96,7 @@ public class FindController(NpgsqlConnection connection,
                 registries
             );
 
-            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"GET /api/registries/find {protocol}\" 200");
+            Console.WriteLine($"[{DateTime.Now}] From: {remote_ip} \"POST /api/registries/find {protocol}\" 200");
             return Ok(studentRegistries);
 
         } catch(Exception e) {
