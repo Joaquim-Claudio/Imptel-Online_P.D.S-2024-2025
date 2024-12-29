@@ -1,3 +1,8 @@
+# sudo chown -R 1001:1001 ./sql
+# sudo chmod -R 755 ./sql
+# dos2unix ./redis/10-initial.sh
+
+
 services:
   primary-database:
     image: bitnami/postgresql:latest
@@ -53,114 +58,114 @@ services:
       - ./redis/redis.conf:/etc/redis/redis.conf
 
 
-  account-service:
-    image: account-service:1.0
-    restart: always
-    networks:
-      - inner-link
-    environment:
-      DB_USER: database.imptel
-      DB_PASSWORD: Imp7e1_db
-      DB_HOST: primary-database
-      DB_PORT: 5432
-      DB_NAME: database.imptel
-      # --
-      DB_READONLY_USER: database.imptel
-      DB_READONLY_PASSWORD: Imp7e1_db
-      DB_READONLY_HOST: replica-database
-      DB_READONLY_PORT: 5432
-      DB_READONLY_NAME: database.imptel
-      # --
-      REDIS_HOST: session-database
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: Imp7e1_db_session
-    depends_on:
-      - session-database
-      - primary-database
-    # deploy:
-    #   replicas: 2
+  # account-service:
+  #   image: account-service:1.0
+  #   restart: always
+  #   networks:
+  #     - inner-link
+  #   environment:
+  #     DB_USER: database.imptel
+  #     DB_PASSWORD: Imp7e1_db
+  #     DB_HOST: primary-database
+  #     DB_PORT: 5432
+  #     DB_NAME: database.imptel
+  #     # --
+  #     DB_READONLY_USER: database.imptel
+  #     DB_READONLY_PASSWORD: Imp7e1_db
+  #     DB_READONLY_HOST: replica-database
+  #     DB_READONLY_PORT: 5432
+  #     DB_READONLY_NAME: database.imptel
+  #     # --
+  #     REDIS_HOST: session-database
+  #     REDIS_PORT: 6379
+  #     REDIS_PASSWORD: Imp7e1_db_session
+  #   depends_on:
+  #     - session-database
+  #     - primary-database
+  #   # deploy:
+  #   #   replicas: 2
 
 
-  registry-service:
-    image: registry-service:1.0
-    restart: always
-    networks:
-      - inner-link
-    environment:
-      DB_USER: database.imptel
-      DB_PASSWORD: Imp7e1_db
-      DB_HOST: primary-database
-      DB_PORT: 5432
-      DB_NAME: database.imptel
-      # --
-      DB_READONLY_USER: database.imptel
-      DB_READONLY_PASSWORD: Imp7e1_db
-      DB_READONLY_HOST: replica-database
-      DB_READONLY_PORT: 5432
-      DB_READONLY_NAME: database.imptel
-      # --
-      REDIS_HOST: session-database
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: Imp7e1_db_session
-    depends_on:
-      - session-database
-      - primary-database
-    # deploy:
-    #   replicas: 2
+  # registry-service:
+  #   image: registry-service:1.0
+  #   restart: always
+  #   networks:
+  #     - inner-link
+  #   environment:
+  #     DB_USER: database.imptel
+  #     DB_PASSWORD: Imp7e1_db
+  #     DB_HOST: primary-database
+  #     DB_PORT: 5432
+  #     DB_NAME: database.imptel
+  #     # --
+  #     DB_READONLY_USER: database.imptel
+  #     DB_READONLY_PASSWORD: Imp7e1_db
+  #     DB_READONLY_HOST: replica-database
+  #     DB_READONLY_PORT: 5432
+  #     DB_READONLY_NAME: database.imptel
+  #     # --
+  #     REDIS_HOST: session-database
+  #     REDIS_PORT: 6379
+  #     REDIS_PASSWORD: Imp7e1_db_session
+  #   depends_on:
+  #     - session-database
+  #     - primary-database
+  #   # deploy:
+  #   #   replicas: 2
       
   
-  auxiliar-service:
-    image: auxiliar-service:1.0
-    restart: always
-    networks:
-      - inner-link
-    environment:
-      DB_USER: database.imptel
-      DB_PASSWORD: Imp7e1_db
-      DB_HOST: primary-database
-      DB_PORT: 5432
-      DB_NAME: database.imptel
-      # --
-      DB_READONLY_USER: database.imptel
-      DB_READONLY_PASSWORD: Imp7e1_db
-      DB_READONLY_HOST: replica-database
-      DB_READONLY_PORT: 5432
-      DB_READONLY_NAME: database.imptel
-      # --
-      REDIS_HOST: session-database
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: Imp7e1_db_session
-    depends_on:
-      - session-database
-      - primary-database
-    # deploy:
-    #   replicas: 2
+  # auxiliar-service:
+  #   image: auxiliar-service:1.0
+  #   restart: always
+  #   networks:
+  #     - inner-link
+  #   environment:
+  #     DB_USER: database.imptel
+  #     DB_PASSWORD: Imp7e1_db
+  #     DB_HOST: primary-database
+  #     DB_PORT: 5432
+  #     DB_NAME: database.imptel
+  #     # --
+  #     DB_READONLY_USER: database.imptel
+  #     DB_READONLY_PASSWORD: Imp7e1_db
+  #     DB_READONLY_HOST: replica-database
+  #     DB_READONLY_PORT: 5432
+  #     DB_READONLY_NAME: database.imptel
+  #     # --
+  #     REDIS_HOST: session-database
+  #     REDIS_PORT: 6379
+  #     REDIS_PASSWORD: Imp7e1_db_session
+  #   depends_on:
+  #     - session-database
+  #     - primary-database
+  #   # deploy:
+  #   #   replicas: 2
     
 
-  app-service:
-    image: app-service:1.0
-    restart: always
-    networks:
-      - inner-link
-    depends_on:
-      - account-service
-      - registry-service
-      - auxiliar-service
-    # deploy:
-    #   replicas: 2
+  # app-service:
+  #   image: app-service:1.0
+  #   restart: always
+  #   networks:
+  #     - inner-link
+  #   depends_on:
+  #     - account-service
+  #     - registry-service
+  #     - auxiliar-service
+  #   # deploy:
+  #   #   replicas: 2
 
 
-  nginx-service:
-    image: nginx-service:1.0
-    ports:
-      - 80:80
-    networks:
-      - inner-link
-    depends_on:
-      - account-service
-      - registry-service
-      - auxiliar-service
-      - app-service
+  # nginx-service:
+  #   image: nginx-service:1.0
+  #   ports:
+  #     - 80:80
+  #   networks:
+  #     - inner-link
+  #   depends_on:
+  #     - account-service
+  #     - registry-service
+  #     - auxiliar-service
+  #     - app-service
     
     
 
