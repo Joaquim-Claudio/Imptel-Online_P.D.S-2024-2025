@@ -173,7 +173,7 @@ VALUES ('mario.igreja', 'Mário André de Oliveira Igreja', 'mario.igreja@gmail.
 INSERT INTO Student (internid, name, email, address, phone, birthdate, hashpassword, role, docId)
 VALUES ('20240001', 'Joaquim Manuel Igreja Cláudio', 'jclaudio223@gmail.com',
         'Rua Doutor João 10 1 FRT 1500-435, Odivelas', '+244 935 328 921', '2001-11-13',
-        'AQAAAAIAAYagAAAAEGu8ksVFSNNWDWcuVAv+tjJ8di3kJDDRJSoitHX+wuqh6VsMt/JcycoydDH60StSyg==', 'Student', '295698745');
+        'AQAAAAEAACcQAAAAEOwHiHt9nBz9dIWXmtLZt3wNPbJS+onmHR1pwdHMrBM094ztTjJ5OzH/9i+m3D2TSA==', 'Student', '295698745');
 
 INSERT INTO Course (name, duration)
 VALUES ('Médio Técnico de Electrónica e Telecomunicações', 4);
