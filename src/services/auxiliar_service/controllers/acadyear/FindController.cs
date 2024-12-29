@@ -8,7 +8,7 @@ namespace auxiliar_service.controllers;
 
 [ApiController]
 [Route("/api/auxiliar/")]
-public class GetAcadYears(NpgsqlConnection connection,
+public class FindController(NpgsqlConnection connection,
                             IDistributedCache session) : Controller {
     private readonly int SESSION_EXPIRED_CODE = 0;
     private readonly int SUCCESS_CODE = 1;
