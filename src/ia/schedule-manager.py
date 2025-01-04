@@ -1,79 +1,76 @@
-class GestorAlocacao:
-    def __init__(self, turmas, horarios_disponiveis, capacidade_salas):
-        self.turmas = turmas
-        self.horarios_disponiveis = horarios_disponiveis
-        self.capacidade_salas = capacidade_salas
-        self.alocacao = {}  
 
-    def verificar_capacidade(self, sala, num_alunos):
-        return self.capacidade_salas[sala] >= num_alunos
+#Dados de Entrada: Horários de professores, disponibilidade de salas, restrições (e.g., uma sala para cada aula, tempos de intervalo).
+#Pré-processamento: Estruturar os dados como variáveis, domínios (possíveis horários/salas) e restrições binárias.
+#Implementação em Python: Usar a biblioteca constraint para modelar e resolver o problema.
 
-    def verificar_disponibilidade(self, horario, sala):
-        for turma, aloc in self.alocacao.items():
-            if aloc == (horario, sala):
-                return False
-        return True
+#Variáveis:
+#Cada aula (matéria + turma + professor) é uma variável.
+#Por exemplo: Matemática_TurmaA, Português_TurmaB.
 
-    def tentar_alocar_turma(self, turma, num_alunos, disciplina):
-        print(f"Tentando alocar turma '{turma}' ({disciplina}) com {num_alunos} alunos.")
-        for horario, sala in self.horarios_disponiveis[disciplina]:
-            if self.verificar_capacidade(sala, num_alunos) and self.verificar_disponibilidade(horario, sala):
-                print(f"Alocando {horario}, {sala} para turma '{turma}' ({disciplina})")
-                self.alocacao[turma] = (horario, sala)
-                return True
-            else:
-                if not self.verificar_capacidade(sala, num_alunos):
-                    print(f"Sala {sala} não suporta {num_alunos} alunos.")
-                if not self.verificar_disponibilidade(horario, sala):
-                    print(f"Sala {sala} já ocupada em {horario}.")
-        print(f"Falha ao alocar turma '{turma}' ({disciplina})")
-        return False
+#Domínio:
+#Cada variável pode assumir valores de pares (sala, horário).
+#Exemplo de domínio para Matemática_TurmaA:
+#{(Sala1, 9h00), (Sala2, 10h00), ..., (SalaN, 15h00)}.
 
-    def desalocar_turma(self, turma):
-        if turma in self.alocacao:
-            horario, sala = self.alocacao[turma]
-            print(f"Desfazendo alocação de {horario}, {sala} para turma '{turma}'")
-            del self.alocacao[turma]
+#Restrições:
+#Horários dos professores: Um professor não pode dar duas aulas ao mesmo tempo.
+#Horários das turmas: Uma turma não pode ter duas aulas ao mesmo tempo.
+#Capacidade das salas: As turmas só podem ser atribuídas a salas com capacidade suficiente.
+#Preferências (opcional): Professores ou turmas podem preferir certos horários ou salas.
 
-    def backtracking(self):
-        for turma, (disciplina, num_alunos) in self.turmas.items():
-            if not self.tentar_alocar_turma(turma, num_alunos, disciplina):
-                print(f"Tentando realocação para resolver conflitos da turma '{turma}'")
-                if not self.relocate_turmas(turma, disciplina, num_alunos):
-                    print(f"Todas as tentativas falharam para a turma '{turma}'")
-                    return False
-        return True
+#https://pypi.org/project/constraint/ -> tem esta biblioteca mas para nota final valoriza-se a implementação de algoritmos.
 
-    def relocate_turmas(self, turma_falha, disciplina, num_alunos):
-        """Tenta realocar turmas já alocadas para abrir espaço."""
-        for turma, (horario, sala) in list(self.alocacao.items()):
-            # Verifique se a realocação da turma original libera espaço para a turma_falha
-            if self.tentar_alocar_turma(turma_falha, num_alunos, disciplina):
-                print(f"Realocando '{turma_falha}' para permitir alocação")
-                return True
-        print(f"Impossível realocar '{turma_falha}' devido a limitações de capacidade e horários")
-        return False
+from itertools import product
 
-    def imprimir_solucao(self):
-        if self.backtracking():
-            print("Alocação concluída com sucesso:")
-            for turma, (horario, sala) in self.alocacao.items():
-                print(f"Turma '{turma}' alocada em {horario}, {sala}")
-        else:
-            print("Não foi possível encontrar uma solução válida.")
+# Representação das variáveis e domínios
+turmas = ["TurmaA", "TurmaB"]
+disciplinas = ["Matemática", "Português"]
+professores = {"Matemática": "Prof1", "Português": "Prof2"}
+salas = {"Sala1": 30, "Sala2": 25}  # Capacidade das salas
+horarios = ["9h00", "10h00", "11h00"]
+dominio = list(product(salas.keys(), horarios))  # Combinação de salas e horários
 
-# Exemplo de uso:
-turmas = {
-    'turma1': ('matematica', 25),
-    'turma2': ('matematica', 35),
-    'turma3': ('fisica', 20),
-}
-horarios_disponiveis = {
-    'matematica': [('segunda', 'S1'), ('terça', 'S2')],
-    'fisica': [('quarta', 'S3')]
-}
-capacidade_salas = {'S1': 50, 'S2': 50, 'S3': 50}
+# Inicializar as variáveis com os seus domínios
+variaveis = {f"{disciplina}_{turma}": dominio for turma in turmas for disciplina in disciplinas}
+print(variaveis)
 
-gestor = GestorAlocacao(turmas, horarios_disponiveis, capacidade_salas)
-gestor.imprimir_solucao()
+# Função para verificar se uma alocação é válida
+def verifica_restricoes(alocacao, variavel, valor):
+    sala, horario = valor
+    disciplina, turma = variavel.split("_")
+    professor = professores[disciplina]
+
+    # Restrições: um professor por horário
+    for var, val in alocacao.items():
+        if val[1] == horario and professores[var.split("_")[0]] == professor:
+            return False
+        # Restrições: uma turma por horário
+        if val[1] == horario and var.split("_")[1] == turma:
+            return False
+        # Restrições: capacidade da sala
+        if salas[sala] < 30:  # Exemplo: turmas com pelo menos 30 alunos
+            return False
+    return True
+
+# Backtracking para resolver o problema
+def backtracking(alocacao):
+    if len(alocacao) == len(variaveis):
+        return alocacao  # Todas as variáveis estão atribuídas
+
+    # Selecionar a próxima variável
+    variavel = next(var for var in variaveis if var not in alocacao)
+
+    for valor in variaveis[variavel]:
+        if verifica_restricoes(alocacao, variavel, valor):
+            alocacao[variavel] = valor
+            resultado = backtracking(alocacao)
+            if resultado:
+                return resultado
+            del alocacao[variavel]  # Retroceder
+
+    return None
+
+# Resolver o CSP
+solucao = backtracking({})
+print("Solução encontrada:", solucao)
 
