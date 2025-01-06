@@ -78,14 +78,23 @@ CREATE TABLE Registry (
 CREATE TABLE Fee (
     id SERIAL PRIMARY KEY,
     description TEXT,
-    price DECIMAL
+    price DECIMAL,
+    limitDate DATE
 );
 
 
 CREATE TABLE EnrollmentFee (
     role FeeRole,
-    limitDate DATE
+    enrollment_id INTEGER REFERENCES Enrollment (id)
 ) inherits (Fee);
+
+
+CREATE TABLE Payment (
+    id SERIAL PRIMARY KEY,
+    reference TEXT,
+    payed BOOLEAN,
+    fee INTEGER REFERENCES Fee (id)
+);
 
 
 CREATE TABLE Invoice (
@@ -93,14 +102,21 @@ CREATE TABLE Invoice (
     date DATE,
     reference TEXT,
     value DECIMAL,
-    fee_id INTEGER REFERENCES Fee (id)
+    payment_id INTEGER REFERENCES Payment (id)
+);
+
+
+CREATE TABLE Tuition (
+    ord INTEGER,
+    payment_id INTEGER REFERENCES Payment (id),
+    registry_id INTEGER REFERENCES Registry (id)
 );
 
 
 CREATE TABLE Classification (
     id SERIAL PRIMARY KEY,
     finalGrade DECIMAL,
-    retaked BOOLEAN,
+    retaken BOOLEAN,
     retakeGrade DECIMAL
 );
 
@@ -133,7 +149,7 @@ CREATE TABLE StudyPlan (
 CREATE TABLE "Module" (
     id SERIAL PRIMARY KEY,
     classification_id INTEGER REFERENCES Classification (id),
-    studyPlan_id INTEGER REFERENCES StudyPlan (id) ON DELETE SET NULL
+    studyplan_id INTEGER REFERENCES StudyPlan (id) ON DELETE SET NULL
 );
 
 
@@ -148,7 +164,7 @@ CREATE TABLE TimeSlot (
     id SERIAL PRIMARY KEY,
     starts TIME,
     ends TIME,
-    stuplan_id INTEGER REFERENCES StudyPlan (id)
+    studyplan_id INTEGER REFERENCES StudyPlan (id)
 );
 
 
@@ -225,3 +241,6 @@ VALUES ('2013', '2013-01-01', '2013-12-20'),
        ('2022/2023', '2022-09-01', '2023-07-20'),
        ('2023/2024', '2023-09-01', '2024-07-20'),
        ('2024/2025', '2024-09-01', null);
+
+
+INSERT INTO 
