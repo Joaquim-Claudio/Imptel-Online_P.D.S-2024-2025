@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 
 import InputElement from "../components/InputElement";
 import ButtonNew from "../components/ButtonNew";
@@ -7,9 +7,13 @@ import Toolbar from "../components/Toolbar"
 import Footer from "../components/Footer"
 import Alert from "../components/Alert";
 
+
 import plusIcon from "../assets/images/fi-br-plus.svg"
+import trashIcon from "../assets/images/fi-br-trash.svg"
+import chIcon from "../assets/images/fi-br-change.svg"
 import searchIcon from "../assets/images/Frame34.svg";
 import { PAGE } from "../assets/utils/PageIdMap";
+
 
 import axios from "axios"
 
@@ -18,7 +22,60 @@ const accounts = axios.create({
     withCredentials: true
 })
 
+
 function Student({user}) {
+
+//Botão novo
+
+const [isCreating, setIsCreating]= React.useState(false);
+const handleNewStudent =() =>{
+    setIsCreating(true);
+    setInternId('');
+    setName('');
+    setDocId('');
+    setBirthDate('');
+    setAddress('');
+    setEmail('');
+    setPhone('');
+};
+
+const handleSaveStudent =()=>{
+    //setIsCreating(false);
+    setIsCreating(false);
+    setIsEditing(false);
+};
+
+const handleCancel=()=>{
+    //setIsCancel(false);
+    setIsCreating(false);
+    setIsEditing(false);
+    setStudent(null);
+    setInternId('');
+    setName('');
+    setDocId('');
+    setBirthDate('');
+    setAddress('');
+    setEmail('');
+    setPhone(''); 
+};
+
+
+
+/////////////////////////////////////////////////////////////////////
+
+//Boão editar 
+const [isEditing, setIsEditing] = React.useState(false);
+
+const handleEditStudent =() =>{
+    setIsEditing(true);
+};
+
+
+////////////
+
+
+
+
     const [isLoading, setIsLoading] = React.useState(false);
     const [netError, setNetError] = React.useState(false);
     const [sessionExpired, setSessionExpired] = React.useState(false);
@@ -86,6 +143,9 @@ function Student({user}) {
                 populate(response.data);
                 setKeywords("");
                 setIsLoading(false);
+
+                setIsEditing(false);
+                setIsCreating(false);
 
             }).catch( (error) => {
                 if(!error.response){
@@ -214,7 +274,8 @@ function Student({user}) {
                                                 autoComplete={"off"}
                                                 value={internId}
                                                 onChange={handleInternIdChange}
-                                                disabled={true}
+                                                disabled={!isCreating && !isEditing}
+
                                             />
                                             </div>
                                             <div className="col-9 ps-2">
@@ -227,7 +288,8 @@ function Student({user}) {
                                                 autoComplete={"off"}
                                                 value={name}
                                                 onChange={handleNameChange}
-                                                disabled={true}
+                                                disabled={!isCreating && !isEditing}
+
                                             />
                                             </div>
 
@@ -242,7 +304,8 @@ function Student({user}) {
                                                 autoComplete={"off"}
                                                 value={docId}
                                                 onChange={handleDocIdChange}
-                                                disabled={true}
+                                                disabled={!isCreating && !isEditing}
+
                                             />
                                             </div>
                                             <div className="col-6 ps-2">
@@ -255,7 +318,8 @@ function Student({user}) {
                                                 autoComplete={"off"}
                                                 value={birthDate}
                                                 onChange={handleBirthDateChange}
-                                                disabled={true}
+                                                disabled={!isCreating && !isEditing}
+
                                             />
                                             </div>
 
@@ -270,7 +334,8 @@ function Student({user}) {
                                                 autoComplete={"off"}
                                                 value={address}
                                                 onChange={handleAddressChange}
-                                                disabled={true}
+                                                disabled={!isCreating && !isEditing}
+
                                             />
                                             </div>
 
@@ -286,7 +351,8 @@ function Student({user}) {
                                                 autoComplete={"off"}
                                                 value={email}
                                                 onChange={handleEmailChange}
-                                                disabled={true}
+                                                disabled={!isCreating && !isEditing}
+
                                             />
                                             </div>
                                             <div className="col-6 ps-2">
@@ -299,7 +365,8 @@ function Student({user}) {
                                                 autoComplete={"off"}
                                                 value={phone}
                                                 onChange={handlePhoneChange}
-                                                disabled={true}
+                                                disabled={!isCreating && !isEditing}
+
                                             />
                                             </div>
                                             
@@ -310,15 +377,36 @@ function Student({user}) {
 
 
                                     {/* #######################################3333333############################33###################### */}
-                                    <div className="col-3 text-end ">
+                                    <div className="col-3 text-end">
                                         <div className="action-group">
-                                            <ButtonNew
-                                            icon={plusIcon} 
-                                            label={"Novo"}                   
-                                            />
+                                            {!isCreating && !isEditing && !student  &&(
+                                                <ButtonNew icon={plusIcon} label={"Novo"} onClick={handleNewStudent} />
+                                            )}
+                                            {(student && !isCreating && !isEditing) &&(
+                                                <>
+                                                    <ButtonNew className="btn-editar" icon={chIcon} label={"Editar"} onClick={handleEditStudent} />
+                                                    <ButtonNew className="btn-cancel" icon={trashIcon} label={"Cancelar"} onClick={handleCancel} />
+                                                </>
+                                            )}
+                                            {(student && isEditing) && (
+                                                <>
+                                                    <ButtonNew className="btn-save" icon={plusIcon} label={"Guardar"} onClick={handleSaveStudent} />                                                    
+                                                    <ButtonNew className="btn-cancel" icon={trashIcon} label={"Cancelar"} onClick={handleCancel} />
+                                                </>
+                                            )}
+                                            {(isCreating) &&(
+                                                <>
+                                                    <ButtonNew className="btn-save" icon={plusIcon} label={"Guardar"} onClick={handleSaveStudent} />                                                    
+                                                    <ButtonNew className="btn-cancel" icon={trashIcon} label={"Cancelar"} onClick={handleCancel} />
+                                                </>
+
+                                            )}                                        
                                         </div>
-                                            
                                     </div>
+
+
+
+
 
 
                                 </div>

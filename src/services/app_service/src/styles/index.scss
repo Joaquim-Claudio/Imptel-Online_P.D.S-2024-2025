@@ -274,10 +274,11 @@ label{
         margin: 0 0.5rem;    
         
     }
+    
 }
 
 .button-item:hover, .button-item:focus {
-    background-color: #40ab57;
+    background-color: #888888;
     box-shadow: none;
 }
 
@@ -429,3 +430,18 @@ label{
     position: relative;
     z-index: 1;
 }
+
+.btn-save{
+    background-color: #003565;
+}
+
+.btn-cancel{
+    background-color: #EB3D3D;
+}
+
+.btn-editar{
+    background-color: #DA7510;
+}
+
+
+
