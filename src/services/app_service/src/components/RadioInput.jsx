@@ -4,7 +4,7 @@ function RadioInput({value, name, defaultChecked}) {
 
 
     return (
-        <div>
+        <div className="radio-box">
             <input type="radio" id={value} name={name} value={value} defaultChecked={defaultChecked}/>
             <label htmlFor={value}>{value}</label>
         </div>

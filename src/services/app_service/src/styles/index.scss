@@ -225,12 +225,47 @@ input::placeholder{
     color:#B4B4B4 ;
 }
 
-input[type="radio"] {
-    box-shadow: none;
-    border: none;
-    width: fit-content;
-    height: fit-content;
+.radio-box{
+    display: flex;
+    align-items: center;
+    width: 180px;
+    margin-bottom: 5px;
+}
 
+
+input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 1px solid white;
+    border-radius: 4px;
+    color:white;
+    box-shadow: none;
+    cursor:pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    margin-left: 30px; 
+    position: relative;
+}
+
+input[type="radio"]:checked::after {
+    content: '✔';              
+    font-size: 16px;            
+    color:#003565;         
+    position: absolute;
+    text-align: center;
+    justify-content: center;
+    background-color: white;
+    width: 20px;
+    height: 20px;
+    border: 1px solid white;
+    border-radius: 4px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+ 
 }
 
 .section-header{
@@ -425,11 +460,35 @@ label{
 }
 
 .filter {
+    color: white;
+    border-radius: 10px;
+    background-color: #003565;
     float: right;
-    padding: 0 2rem;
+    padding: 1 2rem;
     position: relative;
     z-index: 1;
+    
+    .dropdown-icon{
+        
+        filter: brightness(0) invert(1);
+    }
+    
+    .btn-dp {
+        color: white;
+        border-radius: 10px;
+        background-color: #003565;
+        width: 180px;
+        height: 45px;
+        justify-content: space-between;
+        border: none;
+        
+    }
+
+    
 }
+
+
+
 
 .btn-save{
     background-color: #003565;
