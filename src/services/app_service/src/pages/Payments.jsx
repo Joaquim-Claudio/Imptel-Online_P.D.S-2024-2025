@@ -6,7 +6,8 @@ import { PAGE } from "../assets/utils/PageIdMap";
 import CardPayment from "../components/CardPayment";
 import InputElement from "../components/InputElement";
 import searchIcon from "../assets/images/Frame34.svg";
-import Dropdown from "../components/Dropdown";
+import ButtonNew from "../components/ButtonNew";
+import chIcon from "../assets/images/fi-br-change.svg"
 
 import ImageCard from "../assets/images/thumb-cartao-credito-loja-maquina.jpg"
 
@@ -110,6 +111,11 @@ function Payments({user}){
                                                         <h2  className="section-header ">Recibos</h2>
                                                     </header>
                                             </div>
+                                        <div className="col-3 text-end">
+                                            <div className="action-group">
+                                                <ButtonNew className="btn-editar" icon={chIcon} label={"Registar"} onClick={() => setActiveSection("valores")} />
+                                            </div>
+                                        </div>
                                         </div>
                                     </div>
                                     </>
