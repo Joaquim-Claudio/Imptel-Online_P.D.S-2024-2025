@@ -488,8 +488,6 @@ label{
 }
 
 
-
-
 .btn-save{
     background-color: #003565;
 }
@@ -502,5 +500,35 @@ label{
     background-color: #DA7510;
 }
 
+.card-payments{
+    display: inline-block;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .card-text{
+        color: #003565;
+        background-color: #E1E6EB;
+        font-size: 16pt;
+        font-weight: 800;
+        text-align: center;
+        padding: 20px 0;
+    }
+}
+
+.card-img-top{
+    width: 380px;
+    height: 260px;
+    border-bottom: 3px solid #003565;
+}
+
+.cards{
+    padding: 0 70px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.payment-header{
+    padding: 0 70px;
+}
 
 

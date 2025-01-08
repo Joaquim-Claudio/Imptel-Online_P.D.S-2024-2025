@@ -27,7 +27,7 @@ function SideBar({activeId}){
         {id:2, icon: userAddIcon, label: "Alunos", route:"/student"},
         {id:3, icon: studentListIcon, label: "Lista de Alunos", route:"/student_list"},
         {id:4, icon: enrollmentIcon, label: "Matrículas", route:"/enrollment"},
-        {id:5, icon: paymentIcon, label:"Pagamentos", route:"/"},
+        {id:5, icon: paymentIcon, label:"Pagamentos", route:"/payments"},
         {id:6, icon: reportIcon, label:"Relatórios", route:"/test"},
         {id:7, icon: statisticsIcon, label:"Estatísticas", route:"/"},
         {id:8, icon: settingsIcon, label:"Definições", route:"/"}

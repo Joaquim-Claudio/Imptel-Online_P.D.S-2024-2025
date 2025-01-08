@@ -7,6 +7,7 @@ import Homepage from "./pages/Homepage";
 import Student from "./pages/Student";
 import StudentList from "./pages/StudentList";
 import Enrollment from "./pages/Enrollment";
+import Payments from "./pages/Payments";
 import Test from "./pages/Test";
 import Login from "./pages/Login";
 
@@ -100,6 +101,7 @@ function App() {
                 <Route path="/student" element={user ? <Student user={user} /> : <Navigate to="/login" replace/>} />
                 <Route path="/student_list" element={user ? <StudentList user={user}  /> : <Navigate to="/login" replace/>} />
                 <Route path="/enrollment" element={user ? <Enrollment user={user}  /> : <Navigate to="/login" replace/>} />
+                <Route path="/payments" element={user ? <Payments user={user} /> : <Navigate to="/login" replace/> } />
                 <Route path="/test" element={user ? <Test /> : <Navigate to="/login" replace/>} />
                 <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace/>} />
             </Routes>
