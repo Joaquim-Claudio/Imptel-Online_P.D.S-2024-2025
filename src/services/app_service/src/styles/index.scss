@@ -17,7 +17,7 @@
 body{
     font-family: "Montserrat", sans-serif; 
     background-color: var(--color-light);
-    /*overflow: hidden;*/
+    overflow: hidden;
     color: #253653;
 }
 
@@ -100,7 +100,6 @@ main{
 
 
 .sidebar{
-    position: fixed;
     flex-direction: column;    
     height: 100vh;
 }
