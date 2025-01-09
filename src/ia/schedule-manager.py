@@ -1,22 +1,30 @@
 
-#Dados de Entrada: Horários de professores, disponibilidade de salas, restrições (e.g., uma sala para cada aula, tempos de intervalo).
-#Pré-processamento: Estruturar os dados como variáveis, domínios (possíveis horários/salas) e restrições binárias.
-#Implementação em Python: Usar a biblioteca constraint para modelar e resolver o problema.
+#Dados de Entrada: 
+#  - Turmas & Aulas;
+#  - Turmas & Aalas;
+#  - Professores & Disciplinas;
+#  - Turnos Manhã/Tarde;
+#  - Slots de tempo & Dias da semana;
+#  - Pré-processamento: Estruturar os dados como variáveis, domínios (possíveis combinações sala/professor/hora/dia_da_semana).
 
 #Variáveis:
-#Cada aula (matéria + turma + professor) é uma variável.
-#Por exemplo: Matemática_TurmaA, Português_TurmaB.
+#Cada aula (sala + professor + horário + dia_da_semana) é uma variável.
+#Por exemplo: Matemática_ET10A, Português_I10B.
 
 #Domínio:
-#Cada variável pode assumir valores de pares (sala, horário).
-#Exemplo de domínio para Matemática_TurmaA:
-#{(Sala1, 9h00), (Sala2, 10h00), ..., (SalaN, 15h00)}.
+#Cada variável pode assumir valores de combinação (sala + professor + horário + dia_da_semana).
+#Exemplo de domínio para a variável Matemática_ET10A:
+#{
+# ('SALA1', 'Lula Kreiger', '07:00-07:50', 'Segunda-feira'),
+# ('SALA1', 'Lula Kreiger', '12:00-12:50', 'Quinta-feira'), ...,
+# ('SALA1', 'Lula Kreiger', '10:00-10:50', 'Quinta-feira')
+#}.
 
 #Restrições:
 #Horários dos professores: Um professor não pode dar duas aulas ao mesmo tempo.
 #Horários das turmas: Uma turma não pode ter duas aulas ao mesmo tempo.
-#Capacidade das salas: As turmas só podem ser atribuídas a salas com capacidade suficiente.
-#Preferências (opcional): Professores ou turmas podem preferir certos horários ou salas.
+#Turmas com salas fixas: As turmas têm sempre aulas na mesma sala, com exceção das aulas de laboratório.
+#Turnos: Um conjunto de turmas específicas têm aulas de manhã, enquanto outras têm aulas à tarde
 
 from collections import deque
 from typing import List, Dict, Tuple, Any
@@ -28,13 +36,13 @@ class SchedulerCSP:
     def __init__(self, variables: List[str], domains: Dict[str, List[Any]], 
         constraints: List[Tuple[str, str, callable]], max_restarts: int = 5, cutoff: float = None):
 
-        self.variables = variables  # Lista de variáveis (ex.: aulas, turmas, professores)
-        self.domains = domains  # Domínios possíveis para cada variável
-        self.constraints = constraints  # Lista de restrições
-        self.assignments = {}  # Alocação atual das variáveis
-        self.cutoff = cutoff  # O cutoff em segundos (pode ser definido por você)
+        self.variables = variables 
+        self.domains = domains
+        self.constraints = constraints
+        self.assignments = {} 
+        self.cutoff = cutoff
         self.max_restarts = max_restarts
-        self.restarts = 0  # Contador de reinícios
+        self.restarts = 0
 
     def is_consistent(self, var, value):
         # Verifica se a atribuição é consistente com as restrições
@@ -65,18 +73,18 @@ class SchedulerCSP:
         return local_domains
 
     def select_unassigned_variable(self):
-        # Heurística de "Menor Domínio Primeiro" (MRV - Minimum Remaining Values)
+
         unassigned = [var for var in self.variables if var not in self.assignments]
         
+        # Heurística de "Valores Remanescentes Mínimos" (MRV - Minimum Remaining Values)
         # Filtra as variáveis com o menor número de valores no seu domínio (MRV)
         min_remaining_values = min(len(self.domains[var]) for var in unassigned)
         candidates = [var for var in unassigned if len(self.domains[var]) == min_remaining_values]
         
-        # Se houver empate, aplica a heurística de "Degree" (máximo de restrições pendentes)
+        # Se houver empate, aplica a heurística de "Maior Grau" (MCV - Minimum Constraint Variable)
         if len(candidates) > 1:
             return max(candidates, key=lambda var: len([c for c in self.constraints if (c[0] == var or c[1] == var) and (c[0] not in self.assignments and c[1] not in self.assignments)]))
         
-        # Caso contrário, retorna a variável com MRV
         return candidates[0]
 
 
@@ -84,11 +92,12 @@ class SchedulerCSP:
         if len(self.assignments) == len(self.variables):
             return self.assignments
 
-        # Verifica se o tempo de execução atingiu o cutoff
+        # Interrompe a busca se o cutoff for atingido
         if self.cutoff is not None and (time.perf_counter() - start_time) >= self.cutoff:
             print("\n>>> Tempo de execução atingiu o limite de Cutoff!")
-            return None  # Interrompe a busca se o cutoff for atingido
+            return None  
         
+        # Interrompe a busca se atingir o número máximo de Restarts
         if self.restarts >= self.max_restarts:
             print(f"\n>>> Limite de reinícios ({self.max_restarts}) atingido.")
             return None
@@ -113,22 +122,22 @@ class SchedulerCSP:
                 self.domains = original_domains
 
 
-        # Restart logic: Reiniciar a busca se falhar
+        # Reiniciar a busca se falhar, para evitar gargalos na iteração
         self.restarts += 1
-        print(f">>> Reiniciando a busca. Tentativa: {self.restarts}/{self.max_restarts}")
-        self.assignments = {}  # Resetar as atribuições
-        return self.backtrack(start_time)  # Reinicia a busca
+        print(f">>> A reiniciar a busca... Tentativa: {self.restarts}/{self.max_restarts}")
+        self.assignments = {}
+        return self.backtrack(start_time)
 
     
 
     def ac3(self):
         # Implementação do AC-3 para garantir consistência de arco
-        queue = deque(self.constraints)  # Adiciona todas as restrições na fila
+        queue = deque(self.constraints)
         while queue:
             var1, var2, constraint = queue.popleft()
             if self.revise(var1, var2, constraint):
                 if len(self.domains[var1]) == 0:
-                    return False  # Se algum domínio se tornar vazio, não há solução
+                    return False
                 # Propaga as mudanças para outras variáveis relacionadas
                 for (var3, _, _) in self.constraints:
                     if var3 != var2 and var3 != var1:
@@ -139,7 +148,7 @@ class SchedulerCSP:
         # Função que revisa o domínio de var1 em relação a var2
         revised = False
         for value1 in self.domains[var1]:
-            # Se não houver nenhum valor viável em var2 que satisfaça a restrição, remova o valor de var1
+            # Se não houver nenhum valor viável em var2 que satisfaça a restrição, remove o valor de var1
             if not any(constraint(value1, value2) for value2 in self.domains[var2]):
                 self.domains[var1].remove(value1)
                 revised = True
@@ -147,38 +156,37 @@ class SchedulerCSP:
 
 #######################################################################################################################
 
-def generate_domains(professores: Dict[str, List[str]], 
-                     horarios_manha: List[str], horarios_tarde: List[str], 
-                     dias_da_semana: List[str], class_room: Dict[str, str], 
-                     turmas_manha: List[str], turmas_tarde: List[str]):
+def generate_domains(teachers: Dict[str, List[str]], 
+                     morning_slots: List[str], afternoon_slots: List[str], 
+                     week_days: List[str], class_room: Dict[str, str], 
+                     morning_classes: List[str], afternoon_classes: List[str]):
 
     domains = {}
-    for professor, aulas in professores.items():
-        for aula in aulas:
-            if aula not in domains:
-                domains[aula] = []
-            turma = aula.split('_')[1]  # Identifica a turma a partir do nome da aula, ex: 'ET10A'
-            sala_fixa = class_room.get(turma, None)  # Obtém a sala fixa para a turma
+    for teacher, lessons in teachers.items():
+        for lesson in lessons:
+            if lesson not in domains:
+                domains[lesson] = []
+            class_ = lesson.split('_')[1]
+            fixed_room = class_room.get(class_, None)
 
-            # Define os horários disponíveis para a turma (manhã + tarde se for aplicável)
-            horarios_disponiveis = []
-            if turma in turmas_tarde:  # Adiciona horários da tarde apenas para turmas específicas
-                horarios_disponiveis = horarios_tarde
+            availables_slots = []
+            if class_ in afternoon_classes:  # Definie horários do turno da tarde apenas para turmas específicas
+                availables_slots = afternoon_slots
             else:
-                horarios_disponiveis = horarios_manha
+                availables_slots = morning_slots
             # Se houver uma sala fixa para a turma, restringe a sala ao valor correspondente
-            if sala_fixa:
-                for horario, dia in itertools.product(horarios_disponiveis, dias_da_semana):
-                    domains[aula].append((sala_fixa, professor, horario, dia))  # Sala fixa para a turma
+            if fixed_room:
+                for slot, week_day in itertools.product(availables_slots, week_days):
+                    domains[lesson].append((fixed_room, teacher, slot, week_day))
             else:
                 # Caso a turma não tenha uma sala fixa, permite todas as combinações de salas
-                for horario, dia in itertools.product(horarios_disponiveis, dias_da_semana):
-                    domains[aula].append((None, professor, horario, dia))  # Sem sala fixa
+                for slot, week_day in itertools.product(availables_slots, week_days):
+                    domains[lesson].append((None, teacher, slot, week_day))
 
     return domains
 
-
-classes = {
+# Dados de entrada
+class_lessons = {
     "ET10A": ["Matemática_ET10A", "Física_ET10A", "Química_ET10A", 
             "FAI_ET10A", "Português_ET10A", "Inglês_ET10A", 
             "EE_ET10A", "TTL_ET10A", "PO_ET10A", 
@@ -237,7 +245,6 @@ classes = {
     "I13A": ["Estágio_I13A"]
 }
 
-# Dados iniciais
 class_room = {
     "ET10A": "SALA1",
     "ET10B": "SALA2",
@@ -258,7 +265,7 @@ class_room = {
     "I12B": "SALA5",
     "I13A": "SALA11",
 }
-professores = {
+teacher_lessons = {
     "Lula Kreiger": ["Matemática_ET10A", "Matemática_ET10B", "Matemática_ET10C", 
                      "Matemática_ET11A", "Matemática_ET11B"],
     
@@ -342,34 +349,35 @@ professores = {
 }
 
 
-dias_da_semana = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira"]
-horarios_manha = ["07:00-07:50", "08:00-08:50", "09:00-09:50", "10:00-10:50", "11:00-11:50", "12:00-12:50"]
-horarios_tarde = ["13:00-13:50", "14:00-14:50", "15:00-15:50", "16:00-16:50", "17:00-17:50", "18:00-18:50"]
+week_days = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira"]
+morning_slots = ["07:00-07:50", "08:00-08:50", "09:00-09:50", "10:00-10:50", "11:00-11:50", "12:00-12:50"]
+afternoon_slots = ["13:00-13:50", "14:00-14:50", "15:00-15:50", "16:00-16:50", "17:00-17:50", "18:00-18:50"]
 
-turmas_manha = ["ET10A", "ET10B", "ET11A", "ET11B", 
+morning_classes = ["ET10A", "ET10B", "ET11A", "ET11B", 
                 "I10A", "I10B", "I11A", "I11B"]
 
-turmas_tarde = ["ET12A", "ET12B", "ET13A", "I12A", "I13A"]
+afternoon_classes = ["ET12A", "ET12B", "ET13A", "I12A", "I13A"]
 
-# Gerar domínios automaticamente
+# Gerar domínios automaticamente com base nos dados de entrada
 start_time = time.perf_counter()
-domains = generate_domains(professores, horarios_manha, horarios_tarde, dias_da_semana, 
-                           class_room, turmas_manha, turmas_tarde)
+domains = generate_domains(teacher_lessons, morning_slots, afternoon_slots, week_days, 
+                           class_room, morning_classes, afternoon_classes)
 variables = list(domains.keys())
 
-# Restrição de sala única por horário e dia
-def sala_unica_por_horario(val1, val2):
+
+# Restrição: uma turma por horário
+def no_conflict_class(val1, val2):
     return val1[0] != val2[0] or val1[2] != val2[2] or val1[3] != val2[3]
 
-# Restrição de professor único por horário e dia
-def professor_unico_por_horario(val1, val2):
+# Restrição: um professor por horário
+def no_conflict_teacher(val1, val2):
     return val1[1] != val2[1] or val1[2] != val2[2] or val1[3] != val2[3]
 
 
 constraints = []
 for var1, var2 in itertools.combinations(variables, 2):
-    constraints.append((var1, var2, sala_unica_por_horario))
-    constraints.append((var1, var2, professor_unico_por_horario))
+    constraints.append((var1, var2, no_conflict_class))
+    constraints.append((var1, var2, no_conflict_teacher))
 
 cutoff_time = 20.0
 max_restarts = 5
@@ -389,24 +397,23 @@ if solution is None:
 
 else:
     print("\n>>> SOLUÇÃO ENCONTRADA:")
-    # Inicializa a estrutura para armazenar os horários por turma e dia da semana
-    final_schedule = {turma: {dia: [] for dia in dias_da_semana} for turma in classes}
+    # Formatação do output
+    final_schedule = {class_: {week_day: [] for week_day in week_days} for class_ in class_lessons}
 
     # Organiza as aulas por turma e dia da semana
-    for turma in classes:
-        for aula in classes[turma]:
-            if aula in solution:
-                sala, prof, horario, dia = solution[aula]  # Ajustado para 4 elementos
-                final_schedule[turma][dia].append((horario, aula, prof, sala))  # Armazena no formato desejado
+    for class_ in class_lessons:
+        for lesson in class_lessons[class_]:
+            if lesson in solution:
+                room, teacher, slot, week_day = solution[lesson]
+                final_schedule[class_][week_day].append((slot, lesson, teacher, room))
 
-    # Exibe o resultado final agrupado por turma e dia
-    for turma, dias in final_schedule.items():
-        print(f"{turma}:")
-        for dia, aulas in dias.items():
-            print(f"  {dia}: {aulas}")
+    
+    for class_, week_days in final_schedule.items():
+        print(f"{class_}:")
+        for week_day, lessons in week_days.items():
+            print(f"  {week_day}: {lessons}")
         print("")
 
 
-
+    # Imprime o tempo de execução - apenas por curiosidade :)
     print(f"Tempo de execução: {(end_time-start_time):.4f}s.\n")
-
