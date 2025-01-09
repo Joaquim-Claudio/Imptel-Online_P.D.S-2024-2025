@@ -13,8 +13,6 @@ import trashIcon from "../assets/images/fi-br-trash.svg"
 import chIcon from "../assets/images/fi-br-change.svg"
 import searchIcon from "../assets/images/Frame34.svg";
 import { PAGE } from "../assets/utils/PageIdMap";
-
-
 import axios from "axios"
 
 const accounts = axios.create({
