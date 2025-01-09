@@ -9,8 +9,8 @@ import backIcon from "../assets/images/backIcon.svg";
 import Footer from "../components/Footer";
 import Table from "../components/Table";
 import BoxInfo from "../components/BoxInfo";
-import rightIcon from "../assets/images/right.svg"
-import leftIcon from "../assets/images/left.svg"
+import rightIcon from "../assets/images/right.svg";
+import leftIcon from "../assets/images/left.svg";
 function PaymentsValues(){
 
 
