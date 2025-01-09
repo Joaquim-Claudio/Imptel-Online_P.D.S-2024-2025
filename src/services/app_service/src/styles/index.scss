@@ -17,7 +17,7 @@
 body{
     font-family: "Montserrat", sans-serif; 
     background-color: var(--color-light);
-    overflow: hidden;
+    /*overflow: hidden;*/
     color: #253653;
 }
 
@@ -100,17 +100,21 @@ main{
 
 
 .sidebar{
+    position: fixed;
     flex-direction: column;    
     height: 100vh;
 }
 
 .toolbar{
+   
     width: 100%;
     color: var(--button-sidebar-active);
     font-size: 26pt;
     font-style:normal!important;
     padding-right: 1.5rem;
 }
+
+
 
 .tool-wrapper {
     justify-content: space-between;
@@ -486,6 +490,14 @@ label{
 
     
 }
+.btn-download{
+    background-color:#003565 ;
+    width: 115px;
+    height: 35px;
+    font-size: 9pt;
+    padding: 1px 2px;
+
+}
 
 
 .btn-save{
@@ -500,39 +512,175 @@ label{
     background-color: #DA7510;
 }
 
+.btn-pay{
+    background-color:#003565 ;
+    width: 86px;
+    height: 35px;
+    font-size: 9pt;
+    padding: 1px 2px;
+  
+}
+
+.payment-Container{
+    padding:0 50px;
+}
+
 .card-payments{
     display: inline-block;
-    border-radius: 8px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-
+ 
+   
     .card-text{
-        color: #003565;
-        background-color: #E1E6EB;
-        font-size: 16pt;
-        font-weight: 800;
+        color: #253653;
+        font-size: 14pt;
+        font-weight:300;
         text-align: center;
-        padding: 20px 0;
+        padding: 15px 0;
+        
     }
 }
 
 .card-img-top{
-    width: 380px;
-    height: 260px;
-    border-bottom: 3px solid #003565;
+    width: 330px;
+    height: 235px;
+
 }
 
 .cards{
-    padding: 0 70px;
+
     display: flex;
-    justify-content: space-between;
+    justify-content: left;
+}
+
+.cards-p{
+    margin-right: 30px;
+
 }
 
 .payment-header{
-    padding: 0 70px;
+    
+    h2{
+
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+        //padding: 1rem 0;
+        color: #003565;
+        font-weight: 600;
+        font-size: 18pt;
+    }
+   
 }
 
-button{
-    border: none;
-    background-color: var(--color-light);
+.textPayment{
+    padding-top: 10px;
+    color: #253653;
+    font-size: 10pt;
+    font-weight: 300;
+    width: 25em;
+    text-align: center;
+    padding-left: 10px ;
 }
+
+.backLink-Payment{
+    color:#001FD0;
+    font-weight: 500;
+    img{
+        text-decoration: none;
+        padding-right:10px ;      
+    }
+}
+
+.box{
+    /* top | right | bottom | left */
+    padding: 50px 0 0 50px ;
+}
+
+.box-info{
+    background-color: white;
+    width: 500px;
+    height: 80px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  
+    ul{
+        color: #253653;
+        font-weight: 500;
+        font-size: 10pt;
+        padding: 8px 10px;
+    }
+    li{
+        margin-left: 30px ;
+        font-weight: 600;
+        font-size: 10pt;
+        color: #196529;
+        padding: 2px 0;
+    }
+}
+
+
+.custom-table{
+    text-align: center;
+    width: 850px;
+    
+    td{
+        color: #253653;
+        background-color: var(--color-light);
+        font-weight: 500;
+        font-size: 9pt;    
+        border: none;
+        padding: 1px 0;
+        justify-content: center;
+        align-items: center;  
+        vertical-align: center;  
+    }
+    
+    
+    th{        
+        color: #253653;
+        background-color: var(--color-light);
+        font-weight: 300;
+        font-size: 11pt;
+        vertical-align: middle;     
+        
+    }
+
+}
+
+.pending-box{
+    display: inline-block;
+    align-items: center;
+    text-align: center;
+    width: 72px;
+    height: 24px;
+    border:1.5px solid #E02525;
+    border-radius: 4px;
+    color: red;
+    font-weight: 400;
+    font-size: 9pt;
+    padding: 2px 5px;
+
+}
+
+.links{
+    
+    color: #888888;
+    padding: 0 3px;
+    text-align: end;
+    justify-content: center;
+    
+    font-size: 10pt;
+    font-weight: 500;
+}
+
+.pai{
+    display: flex;
+    justify-content: flex-end; 
+    width: 100%;
+    padding-right: 150px;
+
+    /*corrigir depois o padding*/
+}
+
 

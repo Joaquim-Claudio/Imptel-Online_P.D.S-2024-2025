@@ -27,6 +27,10 @@ function Student({user}) {
 
 //Botão novo
 
+function handleKeywordsChange(event) {
+    setKeywords(event.target.value);
+}
+
 const [isCreating, setIsCreating]= React.useState(false);
 const handleNewStudent =() =>{
     setIsCreating(true);
@@ -122,10 +126,6 @@ const handleEditStudent =() =>{
     }
     function handlePhoneChange(event){
         setPhone(event.target.value);
-    }
-    
-    function handleKeywordsChange(event) {
-        setKeywords(event.target.value);
     }
 
     
@@ -230,9 +230,7 @@ const handleEditStudent =() =>{
                 <div className="col-10 col-md-9 col-xl-95">
                     <div className="container-fluid">
                         <Toolbar header={"Alunos"} />
-
-                        <main>
-                        
+                        <main>                        
                             <div className=" container-fluid ">
                                 <div>
                                     <form onSubmit={handleSearch} className="row justify-content-center">

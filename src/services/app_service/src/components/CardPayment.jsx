@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-function CardPayment({image, title, onClick}){
+function CardPayment({image, title, to}){
     return(
-        <button  onClick={onClick}>      
+        <Link  to={to}>      
             <div className="card-payments">
                 <img className="card-img-top" src={image}/>
                     <div className="card-text">
@@ -10,7 +11,7 @@ function CardPayment({image, title, onClick}){
                     </div>
 
             </div>
-        </button>
+        </Link>
 
 
     )

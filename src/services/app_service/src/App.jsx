@@ -8,10 +8,10 @@ import Student from "./pages/Student";
 import StudentList from "./pages/StudentList";
 import Enrollment from "./pages/Enrollment";
 import Payments from "./pages/Payments";
-import Test from "./pages/Test";
 import Login from "./pages/Login";
-
+import PaymentsInvoice from "./pages/PaymentsInvoice";
 import axios from "axios"
+import PaymentsValues from "./pages/PaymentsValues";
 
 const accounts = axios.create({
     baseURL: import.meta.env.VITE_ACCOUNT_SERVICE_URL,
@@ -102,7 +102,8 @@ function App() {
                 <Route path="/student_list" element={user ? <StudentList user={user}  /> : <Navigate to="/login" replace/>} />
                 <Route path="/enrollment" element={user ? <Enrollment user={user}  /> : <Navigate to="/login" replace/>} />
                 <Route path="/payments" element={user ? <Payments user={user} /> : <Navigate to="/login" replace/> } />
-                <Route path="/test" element={user ? <Test /> : <Navigate to="/login" replace/>} />
+                <Route path="/paymentsValues" element={user ? <PaymentsValues /> : <Navigate to="/login" replace/>} />
+                <Route path="/paymentsInvoice" element={user ? <PaymentsInvoice /> : <Navigate to="/login" replace/>} />
                 <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace/>} />
             </Routes>
             

@@ -4,28 +4,14 @@ import SideBar from "../components/SideBar";
 import Toolbar from "../components/Toolbar";
 import { PAGE } from "../assets/utils/PageIdMap";
 import CardPayment from "../components/CardPayment";
-import InputElement from "../components/InputElement";
-import searchIcon from "../assets/images/Frame34.svg";
-import ButtonNew from "../components/ButtonNew";
-import chIcon from "../assets/images/fi-br-change.svg"
-
-import ImageCard from "../assets/images/thumb-cartao-credito-loja-maquina.jpg"
+import educationImage from "../assets/images/education-growth-concept-assortment.png";
+import calculatorImage from "../assets/images/woman-doing-accounting.png"
 
 
-import axios from "axios"
 
-const registries = axios.create({
-    baseURL: import.meta.env.VITE_REGISTRY_SERVICE_URL,
-    withCredentials: true
-});
-
-const auxiliar = axios.create({
-    baseURL: import.meta.env.VITE_AUXILIAR_SERVICE_URL,
-    withCredentials: true
-});
 
 function Payments({user}){
-    const [activeSection, setActiveSection]=useState("home");
+   
     return(
        <div className="container-fluid">
             <div className="row">
@@ -37,89 +23,32 @@ function Payments({user}){
                         <Toolbar header={"Pagamentos"}/>
 
                         <main>
-                            <div className="container-fluid">
-                                {activeSection === "home" ? (
+                            <div className="container-fluid payment-Container">
                                     <>
                                     <header className="payment-header">
-                                        <h2 className="section-header pb-5">Área Financeira</h2>
+                                        <h2 >Área Financeira</h2>
                                     </header>
 
-                                    <div className="cards">
-                                        <CardPayment 
-                                            image={ImageCard} 
-                                            onClick={() => setActiveSection("valores")} 
-                                            title={"Valores a Pagamento"} 
-                                        />
-                                        <CardPayment 
-                                            image={ImageCard} 
-                                            onClick={() => setActiveSection("recibos")} 
-                                            title={"Recibos"} 
-                                        />
-                                    </div>
-                                    </>
-                                ) : activeSection === "valores" ? (
-                                    <>
-
-                                    <div className=" container-fluid ">
-                                            <div className="row justify-content-center">
-                                                <div className="col-5 pe-3">
-                                                    <InputElement 
-                                                        placeholder="Pesquisar: nome ou número de estudante" 
-                                                        icon={searchIcon} 
-                                                        forId={"search"}/>
-                                                </div>
-                                                <div className="col-1">
-                                                    <button className=" btn-search">
-                                                        <img src={searchIcon}  alt="" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div className="row justify-content-center">
-                                                <div className="col-8">
-
-                                                        <header className="text-center">
-                                                            <h2  className="section-header ">Valores a pagamento</h2>
-                                                        </header>
-                                                </div>
-                                            </div>
-                                    </div>
-
-                                    </>
-
-                                    
-                                ) : activeSection === "recibos" ? (
-                                    <>
-
-                                    <div className=" container-fluid ">
-                                        <div className="row justify-content-center">
-                                            <div className="col-5 pe-3">
-                                                <InputElement 
-                                                    placeholder="Pesquisar: nome ou número de estudante" 
-                                                    icon={searchIcon} 
-                                                    forId={"search"}/>
-                                            </div>
-                                            <div className="col-1">
-                                                <button className=" btn-search">
-                                                    <img src={searchIcon}  alt="" />
-                                                </button>
-                                            </div>
+                                    <div className="cards ">
+                                        <div className=" cards-p col-5">
+                                            <CardPayment 
+                                                image={educationImage} 
+                                                to="/paymentsValues" 
+                                                title={"Valores a Pagamento"} 
+                                            />
+                                            <div className="textPayment ">Verifique os seus pagamentos pendentes e mantenha-os em dia.</div>
                                         </div>
-                                        <div className="row justify-content-center">
-                                            <div className="col-8">
-
-                                                    <header className="text-center">
-                                                        <h2  className="section-header ">Recibos</h2>
-                                                    </header>
-                                            </div>
-                                        <div className="col-3 text-end">
-                                            <div className="action-group">
-                                                <ButtonNew className="btn-editar" icon={chIcon} label={"Registar"} onClick={() => setActiveSection("valores")} />
-                                            </div>
-                                        </div>
+                                        <div className="col-5  ">
+                                            <CardPayment 
+                                                image={calculatorImage} 
+                                                to="/paymentsInvoice" 
+                                                title={"Recibos"} 
+                                            />
+                                            <div className="textPayment ">Consulte os seus pagamentos anteriores e obtenha faturas/recibos.</div>
                                         </div>
                                     </div>
                                     </>
-                                ) : null}
+
                             </div>
                         </main>
 
