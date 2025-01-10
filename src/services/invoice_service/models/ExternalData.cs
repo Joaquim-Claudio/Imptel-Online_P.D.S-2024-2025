@@ -1,0 +1,1 @@
+namespace invoice_service.models;

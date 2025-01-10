@@ -13,7 +13,6 @@ public class UserData {
         this.Name = name;
         this.Role = role;
         this.AcadYear = acadYear;
-
     }
 }
 
