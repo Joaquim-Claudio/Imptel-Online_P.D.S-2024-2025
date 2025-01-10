@@ -5,6 +5,7 @@ import Toolbar from "../components/Toolbar"
 import Footer from "../components/Footer"
 import RadioInput from "../components/RadioInput";
 import Alert from "../components/Alert";
+import dropdownIcon from "../assets/images/fi-rr-caret-right.svg"
 
 import { PAGE } from "../assets/utils/PageIdMap";
 
@@ -183,15 +184,25 @@ function StudentList({user}) {
                                 <header>
                                     <h2 className="section-header">Cursos | Turmas</h2>
                                 </header>
+                                    <div className="filter">
+                                        
+                                        <button className="btn-dp " type="button" data-bs-toggle="collapse"  data-bs-target="#navAnoLectivo" aria-expanded="false" aria-controls="navAnoLectivo">
+                                           Ano Lectivo <img className="dropdown-icon" src={dropdownIcon}/>
+                            
+                                        </button>
+                                       
+                                        <div className="collapse " id="navAnoLectivo">                                    
 
-                                <div className="filter" onChange={handleSelection}>
-                                     
-                                    {yearList && yearList.map( (year) => (
-                                        <RadioInput key={year.id} value={year.name} name="acadyear"
-                                            defaultChecked={year.name === user.acadYear}/>
-                                    ))}
+                                            <div className="filter-radio" onChange={handleSelection}>
+                                                
+                                                {yearList && yearList.map( (year) => (
+                                                    <RadioInput key={year.id} value={year.name} name="acadyear"
+                                                        defaultChecked={year.name === user.acadYear}/>
+                                                ))}
 
-                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                 <div>
                                     {notFoundError || !result || !yearList? 
