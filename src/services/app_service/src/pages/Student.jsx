@@ -31,6 +31,7 @@ function handleKeywordsChange(event) {
 
 const [isCreating, setIsCreating]= React.useState(false);
 const handleNewStudent =() =>{
+
     setIsCreating(true);
     setInternId('');
     setName('');
@@ -41,11 +42,53 @@ const handleNewStudent =() =>{
     setPhone('');
 };
 
-const handleSaveStudent =()=>{
-    //setIsCreating(false);
-    setIsCreating(false);
-    setIsEditing(false);
+
+const handleSaveStudent = () => {
+    if (isCreating) {
+        try {
+            accounts.post("create/student", {
+                "Name": name,
+                "Role": "Student",
+                "DocId": docId,
+                "BirthDate": birthDate,
+                "Address": address,
+                "Email": email,
+                "Phone": phone
+            }).then(() => {
+                setIsCreating(false);
+                setIsEditing(false);
+            }).catch(err => {
+                console.error("Erro ao criar estudante:", err);
+            });
+        } catch (err) {
+            console.error("Erro ao enviar POST:", err);
+        }
+    } else if (isEditing) {
+        try {
+            accounts.put(`update/student/${internId}`, {
+                "Name": name,           
+                "Role": "Student",
+                "DocId": docId,
+                "BirthDate": birthDate,
+                "Address": address,
+                "Email": email,
+                "Phone": phone
+            }).then(() => {
+                setIsEditing(false);
+                setIsCreating(false);
+            }).catch(err => {
+                console.error("Erro ao atualizar estudante:", err);
+            });
+        } catch (err) {
+            console.error("Erro ao enviar PUT:", err);
+        }
+    }
 };
+
+
+
+           
+        
 
 const handleCancel=()=>{
     //setIsCancel(false);
@@ -69,6 +112,7 @@ const handleCancel=()=>{
 const [isEditing, setIsEditing] = React.useState(false);
 
 const handleEditStudent =() =>{
+    setIsCreating(false);
     setIsEditing(true);
 };
 
@@ -141,7 +185,6 @@ const handleEditStudent =() =>{
                 populate(response.data);
                 setKeywords("");
                 setIsLoading(false);
-
                 setIsEditing(false);
                 setIsCreating(false);
 
