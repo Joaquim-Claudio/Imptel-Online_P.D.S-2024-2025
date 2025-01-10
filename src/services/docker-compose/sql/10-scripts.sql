@@ -93,7 +93,9 @@ CREATE TABLE Payment (
     id SERIAL PRIMARY KEY,
     reference TEXT,
     payed BOOLEAN,
-    fee INTEGER REFERENCES Fee (id)
+    date DATE,
+    student_id INTEGER NOT NULL,
+    fee_id INTEGER NOT NULL
 );
 
 
@@ -102,14 +104,9 @@ CREATE TABLE Invoice (
     date DATE,
     reference TEXT,
     value DECIMAL,
+    method TEXT,
+    employee_id INTEGER NOT NULL,
     payment_id INTEGER REFERENCES Payment (id)
-);
-
-
-CREATE TABLE Tuition (
-    ord INTEGER,
-    payment_id INTEGER REFERENCES Payment (id),
-    registry_id INTEGER REFERENCES Registry (id)
 );
 
 
@@ -214,19 +211,16 @@ VALUES ('Matemática'),
        ('Tecnologias de Informação e Comunicação'),
        ('Desenho Técnico');
 
-
 INSERT INTO StudyPlan (acadyear, teacher_id, unit_id, class_id)
 VALUES ('2024/2025', 2, 1, 1),
        ('2024/2025', 2, 2, 2),
        ('2024/2025', 2, 4, 3),
        ('2024/2025', 2, 1, 2);
 
-
 INSERT INTO "Module" (studyplan_id)
 VALUES (1),
        (2),
        (3);
-
 
 INSERT INTO AcadYear (name, started_at, finished_at)
 VALUES ('2013', '2013-01-01', '2013-12-20'),
@@ -242,5 +236,35 @@ VALUES ('2013', '2013-01-01', '2013-12-20'),
        ('2023/2024', '2023-09-01', '2024-07-20'),
        ('2024/2025', '2024-09-01', null);
 
+INSERT INTO EnrollmentFee (description, price, limitdate, role, enrollment_id)
+VALUES ('Propina Setembro', 26500, '2024-09-16', 'Tuition', 1),
+       ('Propina Outubro', 26500, '2024-10-07', 'Tuition', 1),
+       ('Propina Novembro', 26500, '2024-11-05', 'Tuition', 1),
+       ('Propina Dezembro', 26500, '2024-12-05', 'Tuition', 1),
+       ('Propina Janeiro', 26500, '2025-01-06', 'Tuition', 1),
+       ('Propina Fevereiro', 26500, '2025-02-05', 'Tuition', 1),
+       ('Propina Março', 26500, '2025-03-05', 'Tuition', 1),
+       ('Propina Abril', 26500, '2025-04-07', 'Tuition', 1),
+       ('Propina Maio', 26500, '2025-05-05', 'Tuition', 1),
+       ('Propina Junho', 26500, '2025-06-05', 'Tuition', 1),
+       ('Propina Julho', 26500, '2025-07-07', 'Tuition', 1);
 
-INSERT INTO 
+INSERT INTO Payment (reference, payed, date, student_id, fee_id)
+VALUES ('PRP000001', true, '2024-09-10', 2, 1),
+       ('PRP000002', true, '2024-10-01', 2, 2),
+       ('PRP000003', true, '2024-11-01', 2, 3),
+       ('PRP000004', true, '2024-11-29', 2, 4),
+       ('PRP000005', true, '2024-11-29', 2, 5),
+       ('PRP000006', false, null, 2, 6),
+       ('PRP000007', false, null, 2, 7),
+       ('PRP000008', false, null, 2, 8),
+       ('PRP000009', false, null, 2, 9),
+       ('PRP000010', false, null, 2, 10),
+       ('PRP000011', false, null, 2, 11);
+
+INSERT INTO Invoice (date, reference, value, method, employee_id, payment_id)
+VALUES ('2024-09-10', '099', 26500, 'TPA', 1, 1),
+       ('2024-10-01', '111', 26500, 'TPA', 1, 2),
+       ('2024-11-01', '003', 26500, 'TPA', 1, 3),
+       ('2024-11-29', '755', 26500, 'TPA', 1, 4),
+       ('2024-11-29', '039', 26500, 'TPA', 1, 5);
