@@ -27,6 +27,7 @@ function Enrollment({user}) {
     
     const [isCreating, setIsCreating]= React.useState(false);
     const handleNewStudent =() =>{
+        setIsEditing(false);
         setIsCreating(true);
         setInternId('');
         setName('');
@@ -38,9 +39,45 @@ function Enrollment({user}) {
     };
     
     const handleSaveStudent =()=>{
-        //setIsCreating(false);
-        setIsCreating(false);
-        setIsEditing(false);
+        if (isCreating) {
+            try {
+                accounts.post("registries/create", {
+                    "Name": name,
+                    "Date": date,
+                    "status": status,
+                    "Approved": null,
+                    "Address": address,
+                    "Email": email,
+                    "Phone": phone
+                }).then(() => {
+                    setIsCreating(false);
+                    setIsEditing(false);
+                }).catch(err => {
+                    console.error("Erro ao criar estudante:", err);
+                });
+            } catch (err) {
+                console.error("Erro ao enviar POST:", err);
+            }
+        } else if (isEditing) {
+            try {
+                accounts.put(`update/student/${internId}`, {
+                    "Name": name,           
+                    "Role": "Student",
+                    "DocId": docId,
+                    "BirthDate": birthDate,
+                    "Address": address,
+                    "Email": email,
+                    "Phone": phone
+                }).then(() => {
+                    setIsEditing(false);
+                    setIsCreating(false);
+                }).catch(err => {
+                    console.error("Erro ao atualizar estudante:", err);
+                });
+            } catch (err) {
+                console.error("Erro ao enviar PUT:", err);
+            }
+        }
     };
     
     const handleCancel=()=>{
@@ -57,14 +94,13 @@ function Enrollment({user}) {
         setStatus(''); 
     };
     
-    
-    
     /////////////////////////////////////////////////////////////////////
     
     //Boão editar 
     const [isEditing, setIsEditing] = React.useState(false);
     
     const handleEditStudent =() =>{
+        setIsCreating(false);
         setIsEditing(true);
     };
     
