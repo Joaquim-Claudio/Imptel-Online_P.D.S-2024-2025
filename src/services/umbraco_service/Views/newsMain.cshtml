@@ -46,8 +46,8 @@
                 var description = item.Value("description");
                 var dateAndDepartment = item.Value("dateAndDepartment");
 
-				<div class="col-12 col-lg-4 pb-5">
-					<div class="card  mb-5 rounded-3  " style="width: 100%; "  >
+				<div class="card-news col-12 col-lg-4 pb-5">
+					<div class="card  mb-5 rounded-3  " style="width: 100%; height: ; "  >
 						<img  src="@image.Url()" class="card-img-top card-img-home rounded-top-3 " alt="...">
 						<div class="card-body">
 							<div class="row px-3 py-4">
@@ -58,7 +58,7 @@
 									<div class="card-subtitle  ">@title</div>
 								</div>
 								<div class="col-12 text-start">
-									<div class="card-context py-4  ">@description</div>
+									<div id="description" class=" card-context py-4  ">@description</div>
 								</div>
 								<div class="col-12 text-start">
 									<div class="card-end  pb-4 ">@dateAndDepartment</div>

@@ -2,6 +2,20 @@
 # sudo chmod -R 755 ./sql
 # dos2unix ./redis/10-initial.sh
 
+# useradd -u 1001 database.imptel
+# apt-get update && apt-get install openssh-server
+# apt-get install nano
+# service ssh start
+# nano /etc/ssh/sshd_config
+# passwd database.imptel
+
+# apt-get update
+# apt-get install openssh-client
+# apt-get install sshpass
+# export PGDATA=/bitnami/postgresql/data
+
+
+
 
 services:
   primary-database:
@@ -15,6 +29,7 @@ services:
       POSTGRES_USER: database.imptel
       POSTGRES_PASSWORD: Imp7e1_db
       POSTGRES_DATABASE: database.imptel
+      PGDATA: /bitnami/postgresql/data
       POSTGRES_REPLICATION_MODE: master
       POSTGRES_REPLICATION_USER: db_replicator
       POSTGRES_REPLICATION_PASSWORD: Imp7e1_db_replicator
@@ -33,6 +48,7 @@ services:
       POSTGRES_USER: database.imptel
       POSTGRES_PASSWORD: Imp7e1_db
       POSTGRES_DATABASE: database.imptel
+      PGDATA: /bitnami/postgresql/data
       POSTGRES_REPLICATION_MODE: slave
       POSTGRES_MASTER_HOST: primary-database
       POSTGRES_MASTER_PORT: 5432
@@ -42,6 +58,40 @@ services:
       - primary-database
     volumes:
       - database-replica-data:/bitnami/postgresql
+
+  pgpool:
+    image: bitnami/pgpool:latest
+    restart: always
+    ports:
+      - "7000:5432"
+      - "8000:9898"
+    networks:
+      - inner-link
+    environment:
+      - PGPOOL_BACKEND_NODES=0:primary-database:5432,1:replica-database:5432
+      - PGPOOL_SR_CHECK_USER=db_replicator
+      - PGPOOL_SR_CHECK_PASSWORD=Imp7e1_db_replicator
+      - PGPOOL_SR_CHECK_DATABASE=database.imptel
+      - PGPOOL_POSTGRES_USERNAME=database.imptel
+      - PGPOOL_POSTGRES_PASSWORD=Imp7e1_db
+      - PGPOOL_ADMIN_USERNAME=database.imptel.admin
+      - PGPOOL_ADMIN_PASSWORD=Imp7e1_db_admin
+      - PGPOOL_ENABLE_LOG_PER_NODE_STATEMENT=yes
+      - PGPOOL_ENABLE_LOAD_BALANCING=yes
+      - PGPOOL_NUM_INIT_CHILDREN=32
+      - PGPOOL_MAX_POOL=4
+      - PGPOOL_FAILOVER_ON_BACKEND_SHUTDOWN=yes
+      - PGPOOL_HEALTH_CHECK_PERIOD=10
+      - PGPOOL_HEALTH_CHECK_TIMEOUT=5
+      - PGPOOL_HEALTH_CHECK_MAX_RETRIES=3
+      - PGPOOL_LB_POLICY=roundrobin
+      - PGPOOL_USER_CONF_FILE=/config/pgpool.conf
+    depends_on:
+      - primary-database
+      - replica-database
+    volumes:
+      - ./pgpool/pgpool.conf:/config/pgpool.conf
+      - ./pgpool/temp.conf:/opt/bitnami/pgpool/conf/pgpool.conf
 
   
   session-database:

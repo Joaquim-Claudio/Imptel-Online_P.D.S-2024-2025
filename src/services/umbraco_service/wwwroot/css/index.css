@@ -188,6 +188,7 @@ body{
 /*news*/
 
 
+
 .card-title{
     color:#005FB5;
     font-size:17pt;
@@ -205,9 +206,19 @@ body{
 
 .card-context{
     font-size:14pt;
-    text-align: justify;
-
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;           /* Limita a 3 linhas */
+    overflow: hidden;                /* Esconde o texto excedente */
+    text-overflow: ellipsis; 
 }
+
+.card-news .card {
+    height: 650px;               
+    overflow: hidden;            
+  }
+  
+  
 
 .card-end{
     font-size: 14pt;
@@ -243,27 +254,6 @@ body{
     padding-bottom: 10px;
     font-size: 12pt;
 }
-/*
-header {
-    display: block;
-    unicode-bidi:isolate;
-}
-
-.overlay-img{
-    position:absolute;
-    top:0;
-    bottom:0;
-    right: 0;
-    left:0;
-    background-position: center;
-    background-size: cover;
-    opacity: 0.5;
-}*/
-
-
-
-
-
 
 
 
