@@ -23,27 +23,27 @@ services:
       - database-data:/bitnami/postgresql
       - ./sql:/docker-entrypoint-initdb.d
 
-  replica-database:
-    image: bitnami/postgresql:latest
-    restart: always
-    ports:
-      - 7002:5432
-    networks:
-      - inner-link
-    environment:
-      POSTGRES_USER: database.imptel
-      POSTGRES_PASSWORD: Imp7e1_db
-      POSTGRES_DATABASE: database.imptel
-      PGDATA: /bitnami/postgresql/data
-      POSTGRES_REPLICATION_MODE: slave
-      POSTGRES_MASTER_HOST: primary-database
-      POSTGRES_MASTER_PORT: 5432
-      POSTGRES_REPLICATION_USER: db_replicator
-      POSTGRES_REPLICATION_PASSWORD: Imp7e1_db_replicator
-    depends_on:
-      - primary-database
-    volumes:
-      - database-replica-data:/bitnami/postgresql
+  # replica-database:
+  #   image: bitnami/postgresql:latest
+  #   restart: always
+  #   ports:
+  #     - 7002:5432
+  #   networks:
+  #     - inner-link
+  #   environment:
+  #     POSTGRES_USER: database.imptel
+  #     POSTGRES_PASSWORD: Imp7e1_db
+  #     POSTGRES_DATABASE: database.imptel
+  #     PGDATA: /bitnami/postgresql/data
+  #     POSTGRES_REPLICATION_MODE: slave
+  #     POSTGRES_MASTER_HOST: primary-database
+  #     POSTGRES_MASTER_PORT: 5432
+  #     POSTGRES_REPLICATION_USER: db_replicator
+  #     POSTGRES_REPLICATION_PASSWORD: Imp7e1_db_replicator
+  #   depends_on:
+  #     - primary-database
+  #   volumes:
+  #     - database-replica-data:/bitnami/postgresql
 
   manager-database:
     image: bitnami/pgpool:latest
@@ -74,7 +74,7 @@ services:
       - PGPOOL_USER_CONF_FILE=/config/pgpool.conf
     depends_on:
       - primary-database
-      - replica-database
+      # - replica-database
     volumes:
       - ./pgpool/pgpool.conf:/config/pgpool.conf
       - ./pgpool/temp.conf:/opt/bitnami/pgpool/conf/pgpool.conf
@@ -94,101 +94,101 @@ services:
       - ./redis/redis.conf:/etc/redis/redis.conf
 
 
-  account-service:
-    image: account-service:1.0
-    restart: always
-    networks:
-      - inner-link
-    environment:
-      DB_USER: database.imptel
-      DB_PASSWORD: Imp7e1_db
-      DB_HOST: manager-database
-      DB_PORT: 5432
-      DB_NAME: database.imptel
-      # --
-      DB_READONLY_USER: database.imptel
-      DB_READONLY_PASSWORD: Imp7e1_db
-      DB_READONLY_HOST: replica-database
-      DB_READONLY_PORT: 5432
-      DB_READONLY_NAME: database.imptel
-      # --
-      REDIS_HOST: session-database
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: Imp7e1_db_session
-    depends_on:
-      - session-database
-      - primary-database
-    deploy:
-      replicas: 2
+  # account-service:
+  #   image: account-service:1.0
+  #   restart: always
+  #   networks:
+  #     - inner-link
+  #   environment:
+  #     DB_USER: database.imptel
+  #     DB_PASSWORD: Imp7e1_db
+  #     DB_HOST: manager-database
+  #     DB_PORT: 5432
+  #     DB_NAME: database.imptel
+  #     # --
+  #     DB_READONLY_USER: database.imptel
+  #     DB_READONLY_PASSWORD: Imp7e1_db
+  #     DB_READONLY_HOST: replica-database
+  #     DB_READONLY_PORT: 5432
+  #     DB_READONLY_NAME: database.imptel
+  #     # --
+  #     REDIS_HOST: session-database
+  #     REDIS_PORT: 6379
+  #     REDIS_PASSWORD: Imp7e1_db_session
+  #   depends_on:
+  #     - session-database
+  #     - primary-database
+    # deploy:
+    #   replicas: 2
 
 
-  registry-service:
-    image: registry-service:1.0
-    restart: always
-    networks:
-      - inner-link
-    environment:
-      DB_USER: database.imptel
-      DB_PASSWORD: Imp7e1_db
-      DB_HOST: manager-database
-      DB_PORT: 5432
-      DB_NAME: database.imptel
-      # --
-      DB_READONLY_USER: database.imptel
-      DB_READONLY_PASSWORD: Imp7e1_db
-      DB_READONLY_HOST: replica-database
-      DB_READONLY_PORT: 5432
-      DB_READONLY_NAME: database.imptel
-      # --
-      REDIS_HOST: session-database
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: Imp7e1_db_session
-    depends_on:
-      - session-database
-      - primary-database
-    deploy:
-      replicas: 2
+  # registry-service:
+  #   image: registry-service:1.0
+  #   restart: always
+  #   networks:
+  #     - inner-link
+  #   environment:
+  #     DB_USER: database.imptel
+  #     DB_PASSWORD: Imp7e1_db
+  #     DB_HOST: manager-database
+  #     DB_PORT: 5432
+  #     DB_NAME: database.imptel
+  #     # --
+  #     DB_READONLY_USER: database.imptel
+  #     DB_READONLY_PASSWORD: Imp7e1_db
+  #     DB_READONLY_HOST: replica-database
+  #     DB_READONLY_PORT: 5432
+  #     DB_READONLY_NAME: database.imptel
+  #     # --
+  #     REDIS_HOST: session-database
+  #     REDIS_PORT: 6379
+  #     REDIS_PASSWORD: Imp7e1_db_session
+  #   depends_on:
+  #     - session-database
+  #     - primary-database
+  #   # deploy:
+  #   #   replicas: 2
       
   
-  auxiliar-service:
-    image: auxiliar-service:1.0
-    restart: always
-    networks:
-      - inner-link
-    environment:
-      DB_USER: database.imptel
-      DB_PASSWORD: Imp7e1_db
-      DB_HOST: manager-database
-      DB_PORT: 5432
-      DB_NAME: database.imptel
-      # --
-      DB_READONLY_USER: database.imptel
-      DB_READONLY_PASSWORD: Imp7e1_db
-      DB_READONLY_HOST: replica-database
-      DB_READONLY_PORT: 5432
-      DB_READONLY_NAME: database.imptel
-      # --
-      REDIS_HOST: session-database
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: Imp7e1_db_session
-    depends_on:
-      - session-database
-      - primary-database
-    deploy:
-      replicas: 2
+  # auxiliar-service:
+  #   image: auxiliar-service:1.0
+  #   restart: always
+  #   networks:
+  #     - inner-link
+  #   environment:
+  #     DB_USER: database.imptel
+  #     DB_PASSWORD: Imp7e1_db
+  #     DB_HOST: manager-database
+  #     DB_PORT: 5432
+  #     DB_NAME: database.imptel
+  #     # --
+  #     DB_READONLY_USER: database.imptel
+  #     DB_READONLY_PASSWORD: Imp7e1_db
+  #     DB_READONLY_HOST: replica-database
+  #     DB_READONLY_PORT: 5432
+  #     DB_READONLY_NAME: database.imptel
+  #     # --
+  #     REDIS_HOST: session-database
+  #     REDIS_PORT: 6379
+  #     REDIS_PASSWORD: Imp7e1_db_session
+  #   depends_on:
+  #     - session-database
+  #     - primary-database
+  #   # deploy:
+  #   #   replicas: 2
     
 
-  app-service:
-    image: app-service:1.0
-    restart: always
-    networks:
-      - inner-link
-    depends_on:
-      - account-service
-      - registry-service
-      - auxiliar-service
-    deploy:
-      replicas: 2
+  # app-service:
+  #   image: app-service:1.0
+  #   restart: always
+  #   networks:
+  #     - inner-link
+  #   depends_on:
+  #     - account-service
+  #     - registry-service
+  #     - auxiliar-service
+    # deploy:
+    #   replicas: 2
 
   # umbraco-service:
   #   image: umbraco-service:1.0
@@ -199,17 +199,17 @@ services:
   #     replicas: 2
 
 
-  nginx-service:
-    image: nginx-service:1.0
-    ports:
-      - 80:80
-    networks:
-      - inner-link
-    depends_on:
-      - account-service
-      - registry-service
-      - auxiliar-service
-      - app-service
+  # nginx-service:
+  #   image: nginx-service:1.0
+  #   ports:
+  #     - 80:80
+  #   networks:
+  #     - inner-link
+  #   depends_on:
+  #     - account-service
+  #     - registry-service
+  #     - auxiliar-service
+  #     - app-service
     
     
 
