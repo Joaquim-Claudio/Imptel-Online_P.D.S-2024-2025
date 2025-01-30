@@ -10,7 +10,7 @@ dotnet user-secrets init
 dotnet user-secrets set "DB_USER" "database.imptel"
 dotnet user-secrets set "DB_PASSWORD" "Imp7e1_db"
 dotnet user-secrets set "DB_HOST" "localhost"
-dotnet user-secrets set "DB_PORT" "7001"
+dotnet user-secrets set "DB_PORT" "7000"
 dotnet user-secrets set "DB_NAME" "database.imptel"
 
 dotnet user-secrets set "REDIS_HOST" "localhost"
