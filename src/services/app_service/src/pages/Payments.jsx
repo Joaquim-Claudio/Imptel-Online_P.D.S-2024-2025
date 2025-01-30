@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import SideBar from "../components/SideBar";
 import Toolbar from "../components/Toolbar";
+import Footer from "../components/Footer"
 import { PAGE } from "../assets/utils/PageIdMap";
 import CardPayment from "../components/CardPayment";
 import educationImage from "../assets/images/education-growth-concept-assortment.png";
@@ -23,25 +24,25 @@ function Payments({user}){
                         <Toolbar header={"Pagamentos"}/>
 
                         <main>
-                            <div className="container-fluid payment-Container">
+                            <div className="container-fluid">
                                     <>
-                                    <header className="payment-header">
+                                    <header className="main-header">
                                         <h2 >Área Financeira</h2>
                                     </header>
 
                                     <div className="cards ">
-                                        <div className=" cards-p col-5">
+                                        <div className="col-4">
                                             <CardPayment 
                                                 image={educationImage} 
-                                                to="/paymentsValues" 
+                                                to="/payments/pending-payments"
                                                 title={"Valores a Pagamento"} 
                                             />
                                             <div className="textPayment ">Verifique os seus pagamentos pendentes e mantenha-os em dia.</div>
                                         </div>
-                                        <div className="col-5  ">
+                                        <div className="col-4">
                                             <CardPayment 
                                                 image={calculatorImage} 
-                                                to="/paymentsInvoice" 
+                                                to="/payments/invoices" 
                                                 title={"Recibos"} 
                                             />
                                             <div className="textPayment ">Consulte os seus pagamentos anteriores e obtenha faturas/recibos.</div>
@@ -57,6 +58,8 @@ function Payments({user}){
 
                 </div>
             </div>
+
+            <Footer acadYear={user.acadYear}/>
        </div>
     )
 

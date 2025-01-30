@@ -9,9 +9,10 @@ import backIcon from "../assets/images/backIcon.svg";
 import Footer from "../components/Footer";
 import Table from "../components/Table";
 import BoxInfo from "../components/BoxInfo";
-import rightIcon from "../assets/images/right.svg";
-import leftIcon from "../assets/images/left.svg";
-function PaymentsValues(){
+import rightIcon from "../assets/images/right.svg"
+import leftIcon from "../assets/images/left.svg"
+import TableInvoice from "../components/TableInvoice";
+function PaymentsInvoice(){
 
 
         const [keywords, setKeywords] = React.useState("");
@@ -89,7 +90,7 @@ function PaymentsValues(){
                                 <div className=" container-fluid ">
                                     <div>
                                     <div >
-                                        <Link to={"/payments"} className="backLink-Payment">
+                                        <Link to={"/payments"} className="back-link">
                                             <img src={backIcon} className="pr-5" /> Voltar
                                         </Link>
                                     </div>
@@ -125,12 +126,11 @@ function PaymentsValues(){
                                                                                                                                 
                                         </div>
                                     </div>
-                                    <Table
-                                    /> 
+                                    <TableInvoice/> 
                                 </div>
                                 <div className="row">
                                     <div className="pai ">
-                                        <Link to={""}  className="links" > <img src={leftIcon} alt="" /> Anterior</Link>
+                                        <Link to={""} className="links" > <img src={leftIcon} alt="" /> Anterior</Link>
                                         <Link to={""} className="links">Próximo <img src={rightIcon} alt="" /></Link>
                                     </div>
                                 </div>
@@ -144,4 +144,4 @@ function PaymentsValues(){
         )
 }
 
-export default PaymentsValues;
+export default PaymentsInvoice;

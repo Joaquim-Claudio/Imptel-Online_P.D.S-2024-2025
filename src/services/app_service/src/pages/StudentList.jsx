@@ -181,8 +181,8 @@ function StudentList({user}) {
 
                         <main>
                             <div className="container-fluid">
-                                <header>
-                                    <h2 className="section-header">Cursos | Turmas</h2>
+                                <header className="main-header">
+                                    <h2>Cursos | Turmas</h2>
                                 </header>
                                     <div className="filter">
                                         

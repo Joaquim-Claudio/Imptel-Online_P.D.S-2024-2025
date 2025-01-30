@@ -9,6 +9,10 @@
     --box-shadow-color: rgba(230, 230, 230, 0.85);
 }
 
+.h-100vh {
+    height: 100vh;
+}
+
 .bkg-white{
     background-color: white;
     box-shadow: 2px 1px 4px rgba($color: #000000, $alpha: 0.1);
@@ -17,14 +21,16 @@
 body{
     font-family: "Montserrat", sans-serif; 
     background-color: var(--color-light);
-    /*overflow: hidden;*/
+    overflow: hidden;
     color: #253653;
 }
 
 main{
     padding: var(--inner-padding);
+    padding-bottom: 6rem;
     padding-right: var(--outter-padding);
-    overflow: auto;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .container-fluid {
@@ -100,7 +106,6 @@ main{
 
 
 .sidebar{
-    position: fixed;
     flex-direction: column;    
     height: 100vh;
 }
@@ -273,7 +278,6 @@ input[type="radio"]:checked::after {
 
 .section-header{
     margin-top: 3rem;
-    //padding: 1rem 0;
     color: #003565;
     font-weight: 600;
     font-size: 18pt;
@@ -342,14 +346,6 @@ label{
 .btn-search:hover, .btn-search:focus {
     background-color: #0d4e8c;
     box-shadow: none;
-}
-
-.footer-text{
-    text-align: end;
-    margin-right: 2rem;
-    margin-top: 2rem;
-    font-size: 10pt;
-    font-weight: 600;
 }
 
 .dropdown-btn{
@@ -520,9 +516,6 @@ label{
   
 }
 
-.payment-Container{
-    padding:0 50px;
-}
 
 .card-payments{
     display: inline-block;
@@ -548,23 +541,18 @@ label{
 }
 
 .cards{
-
+    margin-top: 2rem;
     display: flex;
     justify-content: left;
 }
 
-.cards-p{
-    margin-right: 30px;
 
-}
-
-.payment-header{
+.main-header{
     
     h2{
 
         margin-top: 1rem;
-        margin-bottom: 2rem;
-        //padding: 1rem 0;
+        margin-bottom: 1rem;
         color: #003565;
         font-weight: 600;
         font-size: 18pt;
@@ -582,10 +570,12 @@ label{
     padding-left: 10px ;
 }
 
-.backLink-Payment{
-    color:#001FD0;
+.back-link{
+    color:#003565;
     font-weight: 500;
     img{
+        width: 28px;
+        height: auto;
         text-decoration: none;
         padding-right:10px ;      
     }
@@ -673,13 +663,22 @@ label{
     font-weight: 500;
 }
 
-.pai{
-    display: flex;
-    justify-content: flex-end; 
-    width: 100%;
-    padding-right: 150px;
+// .pai{
+//     display: flex;
+//     justify-content: flex-end; 
+//     width: 100%;
+//     padding-right: 150px;
 
-    /*corrigir depois o padding*/
+//     /*corrigir depois o padding*/
+// }
+
+
+.footer-text{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 2rem;
+    margin-bottom: 1rem;
+    font-size: 10pt;
+    font-weight: 600;
 }
-
-

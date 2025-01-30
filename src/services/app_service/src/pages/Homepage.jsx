@@ -11,7 +11,7 @@ function Homepage ({user}) {
 
         <div className="container-fluid">
             <div className="row">
-                <div className="col-2 col-md-3 col-xl-25 px-4 bkg-white">
+                <div className="col-2 col-md-3 col-xl-25 px-4 bkg-white h-100vh">
                     <SideBar activeId={PAGE.HOMEPAGE} />
                 </div>
                 <div className="col-10 col-md-9 col-xl-95">
@@ -36,7 +36,7 @@ function Homepage ({user}) {
                     </div>
                 </div>
             </div>
-            
+
             <Footer acadYear={user.acadYear}/>
         </div>
 
